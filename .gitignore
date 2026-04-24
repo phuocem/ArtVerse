@@ -1,0 +1,93 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# SECURITY: Sensitive Configuration Files (DO NOT COMMIT)
+**/firebase_options.dart
+**/google-services.json
+**/GoogleService-Info.plist
+.env
+.env.local
+.env.*.local
+android/local.properties
+android/key.properties
+ios/Runner/GoogleService-Info.plist
+.cursorrules
+
+# Security keys and certificates
+*.keystore
+*.jks
+*.p12
+*.key
+*.pem
+*.crt
+
+# Local database and cache
+*.db
+*.sqlite
+*.sqlite3
+*.realm
+
+# Professional Studio Configs & Scripts
+build_optimized.bat
+build_optimized.sh
+CHANGELOG.md
+firebase.json
+MEMORY.md
+devtools_options.yaml
+.windsurfrules
+AI_RULES.md
+analysis_options.yaml
+.vscode/
+
+# Analysis & Temp Logs
+analysis_result.txt
+analyze_output.txt
+analyze_result.txt
+draw_analyze.txt
+*.txt.bak
+
+# Pet Assets (Excluded from Git)
+assets/images/pets/
