@@ -222,7 +222,6 @@ class MarketplaceController extends GetxController {
       }).toList();
 
       filterResources(selectedCategory.value);
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }

@@ -3,28 +3,30 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../controllers/draw_controller.dart';
+import '../../controllers/draw_controller.dart';
+
+import '../../../../core/theme/app_colors.dart';
 
 class DS {
   DS._();
-  static const bg       = Color(0xFF07070F);
-  static const surface  = Color(0xFF0D0D1A);
-  static const card     = Color(0xFF111120);
-  static const cardHi   = Color(0xFF161628);
-  static const border   = Color(0xFF1E1E32);
-  static const borderHi = Color(0xFF2A2A44);
-  static const crimson  = Color(0xFFFF2D55);
-  static const gold     = Color(0xFFF5A623);
-  static const cyan     = Color(0xFF00E5FF);
-  static const violet   = Color(0xFF7C5CFC);
-  static const mint     = Color(0xFF00D49F);
-  static const rose     = Color(0xFFFF6B9D);
-  static const text     = Color(0xFFEEEEFF);
-  static const textDim  = Color(0xFF6B6B8A);
-  static const textFaint= Color(0xFF2D2D46);
-  static const crimsonGrad = LinearGradient(colors: [Color(0xFFFF2D55), Color(0xFFFF6B9D)], begin: Alignment.topLeft, end: Alignment.bottomRight);
-  static const goldGrad = LinearGradient(colors: [Color(0xFFF5A623), Color(0xFFFFD160)], begin: Alignment.topLeft, end: Alignment.bottomRight);
-  static const violetGrad = LinearGradient(colors: [Color(0xFF7C5CFC), Color(0xFFB39DFB)], begin: Alignment.topLeft, end: Alignment.bottomRight);
+  static const bg       = AppColors.bg;
+  static const surface  = AppColors.surface;
+  static const card     = AppColors.surface2;
+  static const cardHi   = AppColors.surface2; // Merged with card
+  static const border   = AppColors.border;
+  static const borderHi = AppColors.border; // Merged
+  static const crimson  = AppColors.pink;
+  static const gold     = AppColors.amber;
+  static const cyan     = AppColors.teal;
+  static const violet   = AppColors.violet;
+  static const mint     = AppColors.teal;
+  static const rose     = AppColors.pink;
+  static const text     = AppColors.textPrimary;
+  static const textDim  = AppColors.textTertiary;
+  static const textFaint= AppColors.textSecondary;
+  static const crimsonGrad = AppColors.violetPink;
+  static const goldGrad = AppColors.goldGrad;
+  static const violetGrad = AppColors.violetPink;
   static const r4  = BorderRadius.all(Radius.circular(4));
   static const r8  = BorderRadius.all(Radius.circular(8));
   static const r10 = BorderRadius.all(Radius.circular(10));
@@ -120,12 +122,7 @@ class StudioSlider extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label.toUpperCase(), style: TextStyle(color: DS.textDim, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
-              Obx(() => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(color: c.withValues(alpha: 0.1), borderRadius: DS.r8, border: Border.all(color: c.withValues(alpha: 0.25))),
-                child: Text(isPercent ? '${(value.value * 100).toInt()}%$suffix' : '${value.value.toInt()}$suffix', style: TextStyle(color: c, fontSize: 10, fontWeight: FontWeight.w900, fontFamily: 'monospace')),
-              )),
+              Row(children: [Text(label, style: const TextStyle(color: DS.textFaint, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1)), const Spacer(), Text('${isPercent ? (value.value * 100).toInt() : value.value.toInt()}${isPercent ? '%' : 'px'}', style: const TextStyle(color: DS.text, fontSize: 11, fontWeight: FontWeight.w800, fontFamily: 'monospace'))]),
             ],
           ),
           const SizedBox(height: 8),
@@ -255,18 +252,19 @@ class LayoutSelector extends StatelessWidget {
 
 class AnimatedBadge extends StatelessWidget {
   final String text;
-  final Color color;
-  const AnimatedBadge(this.text, {super.key, this.color = DS.crimson});
+  final Color? color;
+  const AnimatedBadge(this.text, {super.key, this.color});
   @override
   Widget build(BuildContext context) {
-    return Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: color, borderRadius: DS.r4), child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1)));
+    final bgColor = color ?? DS.crimson;
+    return Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: bgColor, borderRadius: DS.r4), child: Text(text, style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1)));
   }
 }
 
 class PulsingDot extends StatefulWidget {
-  final Color color;
+  final Color? color;
   final double size;
-  const PulsingDot({super.key, this.color = DS.mint, this.size = 8});
+  const PulsingDot({super.key, this.color, this.size = 8});
   @override
   State<PulsingDot> createState() => _PulsingDotState();
 }
@@ -284,12 +282,13 @@ class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateM
   void dispose() { _ctrl.dispose(); super.dispose(); }
   @override
   Widget build(BuildContext context) {
+    final c = widget.color ?? DS.mint;
     return AnimatedBuilder(
       animation: _anim,
       builder: (_, __) => Container(
         width: widget.size,
         height: widget.size,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: widget.color, boxShadow: [BoxShadow(color: widget.color.withValues(alpha: _anim.value * 0.7), blurRadius: 8, spreadRadius: 1)]),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: c, boxShadow: [BoxShadow(color: c.withValues(alpha: _anim.value * 0.7), blurRadius: 8, spreadRadius: 1)]),
       ),
     );
   }

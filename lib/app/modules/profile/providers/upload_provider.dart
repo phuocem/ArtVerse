@@ -3,13 +3,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:artverse/app/data/services/security_service.dart';
-import 'package:artverse/app/data/services/network_security_service.dart';
+
 
 class UploadProvider {
   static String get supabaseUrl => dotenv.env['SUPABASE_URL'] ?? '';
   static String get supabaseAnonKey => dotenv.env['SUPABASE_ANON_KEY'] ?? '';
   final _securityService = Get.find<SecurityService>();
-  final _networkService = NetworkSecurityService.instance;
+
   final SupabaseClient _supabase = Supabase.instance.client;
   static const int maxImageSize = 10 * 1024 * 1024;
   static const int maxVideoSize = 100 * 1024 * 1024;

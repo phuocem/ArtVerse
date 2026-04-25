@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -114,7 +113,7 @@ class ProfileController extends GetxController
     Get.generalDialog(
       barrierDismissible: false,
       barrierLabel: 'First Time Setup',
-      barrierColor: Colors.black.withOpacity(0.9),
+      barrierColor: Colors.black.withValues(alpha: 0.9),
       transitionDuration: const Duration(milliseconds: 600),
       pageBuilder: (context, anim1, anim2) {
         return Center(
@@ -126,7 +125,7 @@ class ProfileController extends GetxController
               decoration: BoxDecoration(
                 color: const Color(0xFF16161A),
                 borderRadius: BorderRadius.circular(40),
-                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
               ),
               child: SingleChildScrollView(
                 child: Column(
@@ -194,7 +193,7 @@ class ProfileController extends GetxController
                                       if (user.id == null) throw "Không tìm thấy User ID";
                                       if (user.email.isEmpty) throw "Không tìm thấy Email người dùng";
                                       
-                                      this.isMaleMode.value = isMale.value;
+                                      isMaleMode.value = isMale.value;
 
                                       final update = {
                                         'name': rawName,
@@ -264,9 +263,9 @@ class ProfileController extends GetxController
           duration: const Duration(milliseconds: 300),
           width: 160, height: 160,
           decoration: BoxDecoration(
-            color: active ? color.withOpacity(0.12) : Colors.white.withOpacity(0.02),
+            color: active ? color.withValues(alpha: 0.12) : Colors.white.withValues(alpha: 0.02),
             borderRadius: BorderRadius.circular(32),
-            border: Border.all(color: active ? color : Colors.white.withOpacity(0.05), width: 2),
+            border: Border.all(color: active ? color : Colors.white.withValues(alpha: 0.05), width: 2),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -291,9 +290,9 @@ class ProfileController extends GetxController
           height: 56,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.03),
+            color: Colors.white.withValues(alpha: 0.03),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: Row(
             children: [
@@ -392,7 +391,6 @@ class ProfileController extends GetxController
         isLogined.value = false;
         isCurrentUser.value = true;
       }
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }
@@ -413,7 +411,6 @@ class ProfileController extends GetxController
           await checkIsFollowing(userId);
         }
       }
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }
@@ -612,7 +609,6 @@ class ProfileController extends GetxController
       }
       final newPosts = docs.map((data) => PostModel.fromJson(data)).toList();
       post.addAll(newPosts);
-    } catch (e) {
     } finally {
       isLoadingMore.value = false;
     }
@@ -778,7 +774,7 @@ class ProfileController extends GetxController
     Get.generalDialog(
       barrierDismissible: true,
       barrierLabel: 'Edit Profile',
-      barrierColor: Colors.black.withOpacity(0.85),
+      barrierColor: Colors.black.withValues(alpha: 0.85),
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (context, anim1, anim2) {
         return Center(
@@ -797,10 +793,10 @@ class ProfileController extends GetxController
                     lc.backgroundColor,
                   ],
                 ),
-                border: Border.all(color: lc.primaryColor.withOpacity(0.3), width: 1),
+                border: Border.all(color: lc.primaryColor.withValues(alpha: 0.3), width: 1),
                 boxShadow: [
-                  BoxShadow(color: lc.primaryColor.withOpacity(0.15), blurRadius: 40, spreadRadius: 2),
-                  BoxShadow(color: Colors.black.withOpacity(0.6), blurRadius: 80),
+                  BoxShadow(color: lc.primaryColor.withValues(alpha: 0.15), blurRadius: 40, spreadRadius: 2),
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 80),
                 ],
               ),
               child: ClipRRect(
@@ -880,7 +876,7 @@ class ProfileController extends GetxController
                                   shape: BoxShape.circle,
                                   border: Border.all(color: lc.glassBorderColor),
                                 ),
-                                child: Icon(Icons.close_rounded, color: lc.textColor.withOpacity(0.6), size: 15),
+                                child: Icon(Icons.close_rounded, color: lc.textColor.withValues(alpha: 0.6), size: 15),
                               ),
                             ),
                           ),
@@ -919,9 +915,9 @@ class ProfileController extends GetxController
               decoration: BoxDecoration(
                 color: active ? lc.primaryColor : Colors.transparent,
                 shape: BoxShape.circle,
-                boxShadow: active ? [BoxShadow(color: lc.primaryColor.withOpacity(0.4), blurRadius: 12)] : []
+                boxShadow: active ? [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.4), blurRadius: 12)] : []
               ),
-              child: Icon(icons[i], color: active ? lc.onPrimaryColor : lc.textColor.withOpacity(0.4), size: 16),
+              child: Icon(icons[i], color: active ? lc.onPrimaryColor : lc.textColor.withValues(alpha: 0.4), size: 16),
             ),
           );
         })),
@@ -939,8 +935,8 @@ class ProfileController extends GetxController
             width: 70, height: 70,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: lc.primaryColor.withOpacity(0.4), width: 2),
-              boxShadow: [BoxShadow(color: lc.primaryColor.withOpacity(0.2), blurRadius: 16)],
+              border: Border.all(color: lc.primaryColor.withValues(alpha: 0.4), width: 2),
+              boxShadow: [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.2), blurRadius: 16)],
             ),
             child: ClipOval(
               child: selected.value != null
@@ -949,7 +945,7 @@ class ProfileController extends GetxController
                     ? CachedNetworkImage(imageUrl: current, fit: BoxFit.cover)
                     : Container(
                         color: lc.glassColor,
-                        child: Icon(Icons.person_rounded, color: lc.primaryColor.withOpacity(0.4), size: 32),
+                        child: Icon(Icons.person_rounded, color: lc.primaryColor.withValues(alpha: 0.4), size: 32),
                       )),
             ),
           ),
@@ -997,6 +993,7 @@ class ProfileController extends GetxController
     }
   }
 
+  // ignore: unused_element
   Widget _buildFrameSelector(RxString currentFrame) {
     final frames = [
       {'id': 'frame_gold', 'name': 'IMPERIAL GOLD'},
@@ -1023,9 +1020,9 @@ class ProfileController extends GetxController
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F0F14).withOpacity(0.8),
+                    color: const Color(0xFF0F0F14).withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: active ? AppColors.teal : Colors.white.withOpacity(0.1), width: active ? 2 : 1),
+                    border: Border.all(color: active ? AppColors.teal : Colors.white.withValues(alpha: 0.1), width: active ? 2 : 1),
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1057,7 +1054,7 @@ class ProfileController extends GetxController
             maxLines: maxLines,
             style: TextStyle(color: lc.textColor, fontSize: 13, fontWeight: FontWeight.w600),
             decoration: InputDecoration(
-              prefixIcon: Icon(icon, color: lc.primaryColor.withOpacity(0.5), size: 16),
+              prefixIcon: Icon(icon, color: lc.primaryColor.withValues(alpha: 0.5), size: 16),
               filled: true,
               fillColor: lc.glassColor,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -1080,16 +1077,16 @@ class ProfileController extends GetxController
           children: specialties.map((s) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: lc.primaryColor.withOpacity(0.1),
+              color: lc.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: lc.primaryColor.withOpacity(0.3)),
+              border: Border.all(color: lc.primaryColor.withValues(alpha: 0.3)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(s, style: TextStyle(color: lc.primaryColor, fontSize: 10, fontWeight: FontWeight.w700)),
                 const SizedBox(width: 6),
-                GestureDetector(onTap: () => specialties.remove(s), child: Icon(Icons.close, size: 11, color: lc.primaryColor.withOpacity(0.7))),
+                GestureDetector(onTap: () => specialties.remove(s), child: Icon(Icons.close, size: 11, color: lc.primaryColor.withValues(alpha: 0.7))),
               ],
             ),
           )).toList(),
@@ -1110,7 +1107,8 @@ class ProfileController extends GetxController
     );
   }
 
-  Widget _buildBreathingGlow() => Container(width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.teal.withOpacity(0.03), blurRadius: 100, spreadRadius: 40)]));
+  // ignore: unused_element
+  Widget _buildBreathingGlow() => Container(width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.teal.withValues(alpha: 0.03), blurRadius: 100, spreadRadius: 40)]));
 
   Widget _buildFloatingActionHub(String id, RxBool isUpdating, TextEditingController name, TextEditingController bio, TextEditingController loc, TextEditingController web, TextEditingController insta, TextEditingController twit, TextEditingController handle, Rx<File?> selectedAvatar, String? currentAvatar, RxList<String> specialties, void Function() onUpdated, RxString frame, LayoutController lc) {
     return Obx(() => GestureDetector(
@@ -1142,10 +1140,10 @@ class ProfileController extends GetxController
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 14),
         decoration: BoxDecoration(
-          gradient: isUpdating.value ? null : LinearGradient(colors: [lc.primaryColor, lc.primaryColor.withOpacity(0.7)]),
+          gradient: isUpdating.value ? null : LinearGradient(colors: [lc.primaryColor, lc.primaryColor.withValues(alpha: 0.7)]),
           color: isUpdating.value ? lc.glassColor : null,
           borderRadius: BorderRadius.circular(30),
-          boxShadow: isUpdating.value ? [] : [BoxShadow(color: lc.primaryColor.withOpacity(0.3), blurRadius: 16, offset: const Offset(0, 6))],
+          boxShadow: isUpdating.value ? [] : [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.3), blurRadius: 16, offset: const Offset(0, 6))],
         ),
         child: isUpdating.value
           ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: lc.primaryColor, strokeWidth: 2))

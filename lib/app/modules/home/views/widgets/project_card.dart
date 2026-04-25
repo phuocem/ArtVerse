@@ -1,10 +1,8 @@
-import 'dart:math' as math;
 import 'dart:typed_data';
-import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:video_player/video_player.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../layout/controllers/layout_controller.dart';
@@ -217,10 +215,6 @@ class _ProjectCardState extends State<ProjectCard> {
     );
   }
 
-  Color _getCategoryColor() {
-    if (widget.isAnimation) return const Color(0xFFFBD2FF);
-    return const Color(0xFFFFD1D1);
-  }
 
   String _formatTimeAgo() {
     try {
@@ -239,7 +233,7 @@ class _ProjectCardState extends State<ProjectCard> {
       context: context, backgroundColor: Colors.transparent,
       builder: (context) => Container(
         margin: const EdgeInsets.all(24), padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(color: lc.isDark.value ? const Color(0xFF16161D) : Colors.white, borderRadius: BorderRadius.circular(32), border: Border.all(color: lc.textColor.withOpacity(0.1))),
+        decoration: BoxDecoration(color: lc.isDark.value ? const Color(0xFF16161D) : Colors.white, borderRadius: BorderRadius.circular(32), border: Border.all(color: lc.textColor.withValues(alpha: 0.1))),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -266,15 +260,14 @@ class _VideoBackgroundPlayer extends StatefulWidget {
   final int startAtSeconds;
 
   const _VideoBackgroundPlayer({
-    Key? key,
+    super.key,
     required this.assetPath,
     this.startAtSeconds = 0,
-  }) : super(key: key);
+  });
 
   
   static VideoPlayerController? _sharedController;
   static bool _isInitializing = false;
-  static bool _isReady = false;
 
   static Future<void> _ensureInitialized(String path, int startAt) async {
     if (_sharedController != null || _isInitializing) return;
@@ -298,7 +291,6 @@ class _VideoBackgroundPlayer extends StatefulWidget {
       }
     });
 
-    _isReady = true;
     _isInitializing = false;
   }
 

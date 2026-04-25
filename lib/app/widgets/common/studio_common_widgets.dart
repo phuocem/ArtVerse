@@ -56,7 +56,7 @@ class GradientButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           boxShadow: [
             BoxShadow(
-              color: gradient.colors.first.withOpacity(0.3),
+              color: gradient.colors.first.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -105,7 +105,7 @@ class GlassCard extends StatelessWidget {
       width: width,
       padding: padding,
       decoration: BoxDecoration(
-        color: AppColors.surface.withOpacity(0.7),
+        color: AppColors.surface.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(color: AppColors.border2, width: 0.5),
       ),

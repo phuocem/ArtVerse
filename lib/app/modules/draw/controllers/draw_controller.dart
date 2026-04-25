@@ -12,18 +12,18 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_STUDIOvider/path_STUDIOvider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../data/models/draw/draw_STUDIOject_model.dart';
+import '../../../data/models/draw/draw_project_model.dart';
 import '../../../data/models/draw/drawn_line_model.dart';
 import '../../../data/models/draw/frame_model.dart';
 import '../../../data/models/draw/layer_model.dart';
 import '../../../data/services/database_service.dart';
-import '../../STUDIOfile/controllers/STUDIOfile_controller.dart';
-import '../../STUDIOfile/controllers/upload_controller.dart';
-import '../views/studio_widgets.dart';
-import '../views/sketcher.dart';
+import '../../profile/controllers/profile_controller.dart';
+import '../../profile/controllers/upload_controller.dart';
+import '../views/widgets/studio_widgets.dart';
+import '../views/widgets/sketcher.dart';
 import 'collab_controller.dart';
 
 enum ToolType { brush, eraser, line, rectangle, circle, bucket, text }
@@ -33,7 +33,7 @@ enum GridType { dots, lines, isometric }
 enum PerspectiveType { none, onePoint, twoPoint, threePoint }
 
 class DrawController extends GetxController {
-  final STUDIOfileController = Get.find<STUDIOfileController>();
+  final profileController = Get.find<ProfileController>();
   final repaintKey = GlobalKey();
   final scrollController = ScrollController();
   final undoStack = <List<List<DrawnLine>>>[].obs;
@@ -63,8 +63,8 @@ class DrawController extends GetxController {
   final frames = <FrameModel>[].obs;
   final currentFrameIndex = 0.obs;
   final currentLayerIndex = 0.obs;
-  String? currentSTUDIOjectId;
-  String? currentSTUDIOjectName;
+  String? currentProjectId;
+  String? currentProjectName;
   final isAnimation = false.obs;
   final isPlaying = false.obs;
   final isFrameListExpanded = true.obs;
@@ -137,7 +137,7 @@ class DrawController extends GetxController {
   final frameDurationMs = 100.obs;
   
   
-  final parentSTUDIOjectId = Rxn<String>();
+  final parentProjectId = Rxn<String>();
   final remixDepth = 0.obs;
 
   final selectedSpacing = 10.0.obs;
@@ -208,8 +208,8 @@ class DrawController extends GetxController {
     });
   }
 
-  void generatePaletteFromAI(String STUDIOmpt) {
-    final p = STUDIOmpt.toLowerCase();
+  void generatePaletteFromAI(String prompt) {
+    final p = prompt.toLowerCase();
     if (p.contains("cyan") || p.contains("ocean") || p.contains("biển") || p.contains("nước")) {
       aiGeneratedPalette.value = [
         const Color(0xFF00E5FF),
@@ -317,13 +317,13 @@ class DrawController extends GetxController {
   void _startAutoSaveTimer() {
     _autoSaveTimer?.cancel();
     _autoSaveTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (isChanged.value && currentSTUDIOjectId != null) {
-        saveSTUDIOjectToHive(currentSTUDIOjectId!, currentSTUDIOjectName ?? "Untitled");
+      if (isChanged.value && currentProjectId != null) {
+        saveProjectToHive(currentProjectId!, currentProjectName ?? "Untitled");
       }
     });
   }
 
-  late final _box = Get.find<DatabaseService>().drawSTUDIOjectBox;
+  late final _box = Get.find<DatabaseService>().drawProjectBox;
 
   final Rx<ui.Picture?> currentBackgroundPicture = Rx<ui.Picture?>(null);
   
@@ -334,26 +334,26 @@ class DrawController extends GetxController {
     _layerCache.remove(index);
   }
 
-  Future<void> saveSTUDIOjectToHive(String STUDIOjectId, String name) async {
-    final STUDIOject = DrawSTUDIOjectModel(
-      id: STUDIOjectId,
+  Future<void> saveProjectToHive(String projectId, String name) async {
+    final project = DrawProjectModel(
+      id: projectId,
       name: name,
       updatedAt: DateTime.now(),
       frames: frames.map((f) => f.copy()).toList(),
       isAnimation: isAnimation.value,
     );
-    await _box.put(STUDIOjectId, STUDIOject);
+    await _box.put(projectId, project);
   }
 
-  void loadSTUDIOject(String id) {
-    final STUDIOject = _box.get(id);
-    if (STUDIOject != null) {
-      frames.assignAll(STUDIOject.frames.map((f) => f.copy()).toList());
+  void loadProject(String id) {
+    final project = _box.get(id);
+    if (project != null) {
+      frames.assignAll(project.frames.map((f) => f.copy()).toList());
       currentFrameIndex.value = 0;
       currentLayerIndex.value = 0;
-      currentSTUDIOjectId = id;
-      currentSTUDIOjectName = STUDIOject.name;
-      isAnimation.value = STUDIOject.isAnimation;
+      currentProjectId = id;
+      currentProjectName = project.name;
+      isAnimation.value = project.isAnimation;
       updateBackgroundPicture();
     }
   }
@@ -444,14 +444,7 @@ class DrawController extends GetxController {
     update();
   }
 
-  void toggleLayerVisibility(int index) {
-    for (var frame in frames) {
-      if (index < frame.layers.length) {
-        frame.layers[index].isVisible = !frame.layers[index].isVisible;
-      }
-    }
-    update();
-  }
+
   List<List<DrawnLine>>? copiedFrame;
   static const Size canvasSize = Size(1050, 590.625);
   final IconData brushIcon = MdiIcons.brushVariant;
@@ -599,15 +592,15 @@ class DrawController extends GetxController {
   void addPoint(Offset point) {
     if (currentTempLine.value != null) {
       actualPoint.value = point;
-      Offset STUDIOcessedPoint = point;
+      Offset processedPoint = point;
 
       
       if (isStabilizerEnabled.value && lazyPoint.value != null) {
         final dist = (point - lazyPoint.value!).distance;
         if (dist > stabilizerLength.value) {
           final direction = (point - lazyPoint.value!) / dist;
-          STUDIOcessedPoint = point - direction * stabilizerLength.value;
-          lazyPoint.value = STUDIOcessedPoint;
+          processedPoint = point - direction * stabilizerLength.value;
+          lazyPoint.value = processedPoint;
         } else {
           Get.find<CollabController>().updateLocalCursor(point);
           return;
@@ -620,31 +613,31 @@ class DrawController extends GetxController {
       if (isPerspectiveSnapping.value &&
           perspectiveType.value != PerspectiveType.none &&
           currentTempLine.value!.points.isNotEmpty) {
-        STUDIOcessedPoint = snapToPerspectiveLine(STUDIOcessedPoint);
+        processedPoint = snapToPerspectiveLine(processedPoint);
       }
 
       
       if (isIsometricSnapEnabled.value &&
           currentTempLine.value!.points.isNotEmpty) {
-        STUDIOcessedPoint = snapToIsometricGrid(STUDIOcessedPoint);
+        processedPoint = snapToIsometricGrid(processedPoint);
       }
 
       if (selectedTool.value == ToolType.brush ||
           selectedTool.value == ToolType.eraser) {
-        currentTempLine.value!.addPoint(STUDIOcessedPoint);
+        currentTempLine.value!.addPoint(processedPoint);
       } else {
         if (selectedTool.value == ToolType.line) {
-          currentTempLine.value!.replacePoints([startPoint, STUDIOcessedPoint]);
+          currentTempLine.value!.replacePoints([startPoint, processedPoint]);
         } else if (selectedTool.value == ToolType.rectangle) {
           currentTempLine.value!.replacePoints([
             startPoint,
-            Offset(STUDIOcessedPoint.dx, startPoint.dy),
-            STUDIOcessedPoint,
-            Offset(startPoint.dx, STUDIOcessedPoint.dy),
+            Offset(processedPoint.dx, startPoint.dy),
+            processedPoint,
+            Offset(startPoint.dx, processedPoint.dy),
             startPoint,
           ]);
         } else if (selectedTool.value == ToolType.circle) {
-          final radius = (STUDIOcessedPoint - startPoint).distance;
+          final radius = (processedPoint - startPoint).distance;
           final List<Offset> circlePoints = [];
           for (int i = 0; i <= 36; i++) {
             final angle = i * 10 * math.pi / 180;
@@ -668,7 +661,9 @@ class DrawController extends GetxController {
   
   Offset snapToIsometricGrid(Offset point) {
     if (currentTempLine.value == null ||
-        currentTempLine.value!.points.isEmpty) return point;
+        currentTempLine.value!.points.isEmpty) {
+      return point;
+    }
 
     final prev = currentTempLine.value!.points.last;
     final delta = point - prev;
@@ -711,7 +706,9 @@ class DrawController extends GetxController {
   
   Offset snapToPerspectiveLine(Offset point) {
     if (currentTempLine.value == null ||
-        currentTempLine.value!.points.isEmpty) return point;
+        currentTempLine.value!.points.isEmpty) {
+      return point;
+    }
 
     final prev = currentTempLine.value!.points.first; 
     if ((point - prev).distance < 1) return point;
@@ -746,11 +743,11 @@ class DrawController extends GetxController {
 
       
       final t = (point.dx - vp.dx) * dir.dx + (point.dy - vp.dy) * dir.dy;
-      final STUDIOjected = Offset(vp.dx + dir.dx * t, vp.dy + dir.dy * t);
-      final dist = (STUDIOjected - point).distance;
+      final projected = Offset(vp.dx + dir.dx * t, vp.dy + dir.dy * t);
+      final dist = (projected - point).distance;
       if (dist < bestDist) {
         bestDist = dist;
-        bestSnap = STUDIOjected;
+        bestSnap = projected;
       }
     }
     return bestSnap;
@@ -1007,6 +1004,7 @@ class DrawController extends GetxController {
         }
 
         
+        // ignore: unused_local_variable
         final paint = Paint()
           ..color = Colors.white.withValues(alpha: layer.opacity)
           ..blendMode = BlendMode.values[layer.blendModeIndex];
@@ -1278,17 +1276,17 @@ class DrawController extends GetxController {
   }
 
   Future<void> save() async {
-    if (currentSTUDIOjectId != null && currentSTUDIOjectName != null) {
-      await saveSTUDIOjectToHive(currentSTUDIOjectId!, currentSTUDIOjectName!);
+    if (currentProjectId != null && currentProjectName != null) {
+      await saveProjectToHive(currentProjectId!, currentProjectName!);
       isChanged.value = false;
       Get.snackbar(
         "Success",
-        "STUDIOject saved successfully.",
+        "project saved successfully.",
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2),
       );
     } else {
-      Get.snackbar("Error", "No STUDIOject selected to save.");
+      Get.snackbar("Error", "No project selected to save.");
     }
   }
 
@@ -1306,10 +1304,10 @@ class DrawController extends GetxController {
               TextButton(
                 onPressed: () async {
                   await safeBack();
-                  if (currentSTUDIOjectId != null && currentSTUDIOjectName != null) {
-                    await saveSTUDIOjectToHive(
-                      currentSTUDIOjectId!,
-                      currentSTUDIOjectName!,
+                  if (currentProjectId != null && currentProjectName != null) {
+                    await saveProjectToHive(
+                      currentProjectId!,
+                      currentProjectName!,
                     );
                   }
                   await safeBack();
@@ -1607,8 +1605,8 @@ class DrawController extends GetxController {
   }
 
   Future<void> exportToGif() async {
-    final String? STUDIOjectName = await _getSTUDIOjectNameFromUser();
-    if (STUDIOjectName == null || STUDIOjectName.isEmpty) return;
+    final String? projectName = await _getprojectNameFromUser();
+    if (projectName == null || projectName.isEmpty) return;
 
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory == null) return;
@@ -1654,7 +1652,7 @@ class DrawController extends GetxController {
       await File(filePath).writeAsBytes(bytes);
     }
 
-    final outputPath = p.join(selectedDirectory, '$STUDIOjectName.gif');
+    final outputPath = p.join(selectedDirectory, '$projectName.gif');
 
     final cmd =
         "-y -framerate $fps -i ${framesDir.path}/frame_%03d.png "
@@ -1681,8 +1679,8 @@ class DrawController extends GetxController {
   }
 
   Future<void> exportToMp4() async {
-    final String? STUDIOjectName = await _getSTUDIOjectNameFromUser();
-    if (STUDIOjectName == null || STUDIOjectName.isEmpty) return;
+    final String? projectName = await _getprojectNameFromUser();
+    if (projectName == null || projectName.isEmpty) return;
 
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory == null) return;
@@ -1727,7 +1725,7 @@ class DrawController extends GetxController {
       await File(filePath).writeAsBytes(bytes);
     }
 
-    final outputPath = p.join(selectedDirectory, '$STUDIOjectName.mp4');
+    final outputPath = p.join(selectedDirectory, '$projectName.mp4');
     final cmd =
         "-y -framerate $fps -i ${framesDir.path}/frame_%03d.png "
         "-vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" "
@@ -1750,7 +1748,7 @@ class DrawController extends GetxController {
     }
   }
 
-  Future<void> uploadImageToSTUDIOfile(
+  Future<void> uploadImageToprofile(
     String userId, {
     int? selectedFrameIndex,
   }) async {
@@ -1765,14 +1763,14 @@ class DrawController extends GetxController {
     }
 
     final uploadController = Get.find<UploadController>();
-    uploadController.nameController.text = currentSTUDIOjectName ?? 'New Artwork';
+    uploadController.nameController.text = currentProjectName ?? 'New Artwork';
     uploadController.descriptionController.text =
         'Created using Calliope drawing app';
 
     uploadController.allowRemix.value = true;
-    uploadController.currentSTUDIOjectToUpload = DrawSTUDIOjectModel(
-      id: currentSTUDIOjectId ?? "remix_${DateTime.now().millisecondsSinceEpoch}",
-      name: currentSTUDIOjectName ?? uploadController.nameController.text,
+    uploadController.currentProjectToUpload = DrawProjectModel(
+      id: currentProjectId ?? "remix_${DateTime.now().millisecondsSinceEpoch}",
+      name: currentProjectName ?? uploadController.nameController.text,
       updatedAt: DateTime.now(),
       frames: frames.map((f) => f.copy()).toList(),
     );
@@ -1784,8 +1782,8 @@ class DrawController extends GetxController {
   }
 
   Future<void> showCommunityShareDialog() async {
-    final userId = STUDIOfileController.currentUser.value?.id;
-    if (userId == null || !STUDIOfileController.isLogined.value) {
+    final userId = profileController.currentUser.value?.id;
+    if (userId == null || !profileController.isLogined.value) {
       Get.snackbar(
         "Login Required",
         "Please login to share your artwork with the community.",
@@ -1947,7 +1945,7 @@ class DrawController extends GetxController {
                                       width: 100,
                                       height: 100,
                                       child: Center(
-                                        child: CircularSTUDIOgressIndicator(),
+                                        child: CircularProgressIndicator(),
                                       ),
                                     );
                                   },
@@ -1982,17 +1980,17 @@ class DrawController extends GetxController {
                       ).writeAsBytes(bytes);
 
                       uploadController.nameController.text =
-                          currentSTUDIOjectName ?? 'New Artwork';
+                          currentProjectName ?? 'New Artwork';
                       uploadController.descriptionController.text =
                           'Created using Calliope drawing app';
 
                       uploadController.allowRemix.value = true;
-                      uploadController.currentSTUDIOjectToUpload = DrawSTUDIOjectModel(
+                      uploadController.currentProjectToUpload = DrawProjectModel(
                         id:
-                            currentSTUDIOjectId ??
+                            currentProjectId ??
                             "remix_${DateTime.now().millisecondsSinceEpoch}",
                         name:
-                            currentSTUDIOjectName ??
+                            currentProjectName ??
                             uploadController.nameController.text,
                         updatedAt: DateTime.now(),
                         frames: frames.map((f) => f.copy()).toList(),
@@ -2014,7 +2012,7 @@ class DrawController extends GetxController {
     );
   }
 
-  Future<void> uploadVideoToSTUDIOfile(
+  Future<void> uploadVideoToprofile(
     int fps,
     String userId, {
     int? selectedFrameIndex,
@@ -2087,14 +2085,14 @@ class DrawController extends GetxController {
     }
 
     uploadController.nameController.text =
-        customName ?? currentSTUDIOjectName ?? 'New Video';
+        customName ?? currentProjectName ?? 'New Video';
     uploadController.descriptionController.text =
         customDescription ?? 'Created using Calliope drawing app';
 
     uploadController.allowRemix.value = true;
-    uploadController.currentSTUDIOjectToUpload = DrawSTUDIOjectModel(
-      id: currentSTUDIOjectId ?? "remix_${DateTime.now().millisecondsSinceEpoch}",
-      name: currentSTUDIOjectName ?? uploadController.nameController.text,
+    uploadController.currentProjectToUpload = DrawProjectModel(
+      id: currentProjectId ?? "remix_${DateTime.now().millisecondsSinceEpoch}",
+      name: currentProjectName ?? uploadController.nameController.text,
       updatedAt: DateTime.now(),
       frames: frames.map((f) => f.copy()).toList(),
     );
@@ -2254,7 +2252,7 @@ class DrawController extends GetxController {
                               !snapshot.hasData) {
                             return const SizedBox(
                               width: 80,
-                              child: Center(child: CircularSTUDIOgressIndicator()),
+                              child: Center(child: CircularProgressIndicator()),
                             );
                           }
                           return GestureDetector(
@@ -2314,7 +2312,7 @@ class DrawController extends GetxController {
                       : () async {
                         await safeBack();
 
-                        await uploadVideoToSTUDIOfile(
+                        await uploadVideoToprofile(
                           fps,
                           userId,
                           selectedFrameIndex: selectedFrameIndex,
@@ -2326,7 +2324,7 @@ class DrawController extends GetxController {
                       ? const SizedBox(
                         width: 20,
                         height: 20,
-                        child: CircularSTUDIOgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       )
                       : const Text("Upload video"),
             );
@@ -2410,12 +2408,12 @@ class DrawController extends GetxController {
   }
 }
 
-Future<String?> _getSTUDIOjectNameFromUser() async {
+Future<String?> _getprojectNameFromUser() async {
   final TextEditingController controller = TextEditingController();
 
   return await Get.dialog<String>(
     AlertDialog(
-      title: const Text("Enter STUDIOject Name"),
+      title: const Text("Enter project Name"),
       content: TextField(
         controller: controller,
         decoration: const InputDecoration(hintText: "e.g., my_animation"),
@@ -2504,7 +2502,7 @@ Future<bool> _showPostCustomizationDialog(UploadController controller) async {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: const Text(
-                            "Attaches your STUDIOject file so others can color or draw over your template.",
+                            "Attaches your project file so others can color or draw over your template.",
                             style: TextStyle(fontSize: 12),
                           ),
                           activeColor: const Color(0xFF8C52FF),
@@ -2543,7 +2541,7 @@ Future<bool> _showPostCustomizationDialog(UploadController controller) async {
                                     ? const SizedBox(
                                       width: 16,
                                       height: 16,
-                                      child: CircularSTUDIOgressIndicator(
+                                      child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                         color: Colors.white,
                                       ),

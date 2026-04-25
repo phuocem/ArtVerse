@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../core/theme/app_colors.dart';
 
 import '../../../data/models/post_model.dart';
 import '../../profile/controllers/profile_controller.dart';
@@ -245,7 +244,6 @@ class CommunityController extends GetxController
       }
 
       await _processPostsAndUpdate(results, isAppend: true);
-    } catch (e) {
     } finally {
       isLoadingMore.value = false;
     }
@@ -306,7 +304,6 @@ class CommunityController extends GetxController
       );
 
       await _processPostsAndUpdate(results, isAppend: false);
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }

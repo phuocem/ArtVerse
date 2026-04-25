@@ -10,7 +10,7 @@ class SecurityService extends GetxService {
   static const List<String> allowedVideoExtensions = ['.mp4', '.mov', '.avi'];
   static const List<String> allowedProjectExtensions = ['.json'];
   static final RegExp emailPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-  static final RegExp urlPattern = RegExp(r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&
+  static final RegExp urlPattern = RegExp(r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&/=%]*)$');
   static final RegExp usernamePattern = RegExp(r'^[a-zA-Z0-9_]{3,30}$');
 
   String sanitizeText(String input, {int maxLength = 1000}) {
@@ -27,7 +27,7 @@ class SecurityService extends GetxService {
   }
 
   bool isValidEmail(String email) => emailPattern.hasMatch(email);
-  bool isValidUrl(String url) => url.startsWith('https:
+  bool isValidUrl(String url) => url.startsWith('https://');
   bool isValidUsername(String username) => usernamePattern.hasMatch(username);
   bool isValidFileExtension(String filename, List<String> allowedExtensions) {
     final extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
@@ -51,8 +51,10 @@ class SecurityService extends GetxService {
   }
 
   String sanitizeFilePath(String path) {
-    String sanitized = path.replaceAll('..', '').replaceAll('
-    while (sanitized.startsWith('/')) sanitized = sanitized.substring(1);
+    String sanitized = path.replaceAll('..', '').replaceAll('\\', '/');
+    while (sanitized.startsWith('/')) {
+      sanitized = sanitized.substring(1);
+    }
     return sanitized;
   }
 

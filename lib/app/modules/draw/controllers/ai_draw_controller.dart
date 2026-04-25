@@ -47,7 +47,7 @@ class AiDrawController extends GetxController {
   
   
   void generatePoseSkeleton() {
-    final center = const Offset(500, 300);
+    const center = Offset(500, 300);
     final skeleton = [
       
       DrawnLine(
@@ -76,7 +76,7 @@ class AiDrawController extends GetxController {
     
     
     final List<DrawnLine> lines = [];
-    final center = const Offset(600, 400);
+    const center = Offset(600, 400);
     
     if (prompt.contains('cat')) {
       
@@ -89,8 +89,8 @@ class AiDrawController extends GetxController {
       
       final List<Offset> circlePoints = [];
       for (int i = 0; i <= 36; i++) {
-        final angle = i * 10 * 3.14 / 180;
-        circlePoints.add(center + Offset(100 * (1 + 0.2 * i % 2), 100 * (1 + 0.2 * i % 2)));
+        final double a = i * 10 * 3.14 / 180;
+        circlePoints.add(center + Offset(100 * (1 + 0.2 * a % 2), 100 * (1 + 0.2 * a % 2)));
       }
       lines.add(DrawnLine(points: circlePoints, colorValue: Colors.white38.toARGB32(), width: 2));
     }

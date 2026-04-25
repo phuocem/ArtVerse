@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/models/user_model.dart';
@@ -220,7 +219,7 @@ class LayoutController extends GetxController
                     profileController.isLogined.value
                         ? NetworkImage(
                           profileController.currentUser.value?.avatarUrl ??
-                              'https:
+                              'https://api.dicebear.com/7.x/avataaars/svg?seed=ArtVerse'
                         )
                         : const AssetImage('assets/avatar.png') as ImageProvider,
                 radius: 20,

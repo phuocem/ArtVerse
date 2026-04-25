@@ -36,7 +36,6 @@ class SettingsController extends GetxController {
         _fetchFaqs(),
         _getDiagnostics(),
       ]);
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }

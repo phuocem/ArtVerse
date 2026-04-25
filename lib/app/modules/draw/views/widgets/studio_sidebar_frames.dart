@@ -1,8 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
-import '../../layout/controllers/layout_controller.dart';
+import '../../controllers/draw_controller.dart';
 import 'studio_widgets.dart';
 
 class StudioSidebarFrames extends StatelessWidget {
@@ -26,7 +24,7 @@ class StudioSidebarFrames extends StatelessWidget {
       height: 36, padding: const EdgeInsets.symmetric(horizontal: 16), decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: DS.border))),
       child: Row(
         children: [
-          const Icon(Icons.film_outlined, size: 13, color: DS.textDim),
+          const Icon(Icons.slideshow_rounded, size: 13, color: DS.textDim),
           const SizedBox(width: 6),
           const Text('TIMELINE', style: TextStyle(color: DS.textDim, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 2.5, fontFamily: 'monospace')),
           const SizedBox(width: 10),
@@ -34,7 +32,7 @@ class StudioSidebarFrames extends StatelessWidget {
           const Spacer(),
           Container(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), decoration: BoxDecoration(color: DS.card, borderRadius: DS.r8, border: Border.all(color: DS.border)), child: const Row(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.speed_rounded, size: 11, color: DS.textDim), SizedBox(width: 4), Text('24 FPS', style: TextStyle(color: DS.textDim, fontSize: 9, fontWeight: FontWeight.w700, fontFamily: 'monospace'))])),
           const SizedBox(width: 8),
-          Obx(() => InkWell(onTap: controller.togglePlay, borderRadius: DS.r50, child: Container(padding: const EdgeInsets.all(6), decoration: BoxDecoration(gradient: controller.isPlaying.value ? DS.goldGrad : DS.violetGrad, shape: BoxShape.circle, boxShadow: DS.glowShadow(controller.isPlaying.value ? DS.gold : DS.violet, radius: 10)), child: Icon(controller.isPlaying.value ? Icons.pause_rounded : Icons.play_arrow_rounded, color: Colors.white, size: 12)))),
+          Obx(() => InkWell(onTap: () => controller.isPlaying.toggle(), borderRadius: DS.r50, child: Container(padding: const EdgeInsets.all(6), decoration: BoxDecoration(gradient: controller.isPlaying.value ? DS.goldGrad : DS.violetGrad, shape: BoxShape.circle, boxShadow: DS.glowShadow(controller.isPlaying.value ? DS.gold : DS.violet, radius: 10)), child: Icon(controller.isPlaying.value ? Icons.pause_rounded : Icons.play_arrow_rounded, color: Colors.white, size: 12)))),
         ],
       ),
     );
@@ -84,7 +82,7 @@ class _FrameTile extends StatelessWidget {
               FutureBuilder(future: controller.renderThumbnail(index), builder: (_, snap) => snap.hasData ? Image.memory(snap.data!, fit: BoxFit.cover, width: 86, height: double.infinity) : Container(color: DS.surface, child: const Center(child: SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 1.5, color: DS.violet))))),
               if (isSelected) Positioned.fill(child: Container(color: DS.violet.withValues(alpha: 0.08))),
               Positioned(bottom: 4, right: 6, child: Container(padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1), decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.6), borderRadius: DS.r4), child: Text('${index + 1}', style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w900, fontFamily: 'monospace')))),
-              Positioned(top: 4, right: 4, child: GestureDetector(onTap: () => controller.deleteFrame(index), child: Container(padding: const EdgeInsets.all(3), decoration: BoxDecoration(color: DS.crimson.withValues(alpha: 0.8), shape: BoxShape.circle), child: const Icon(Icons.close_rounded, color: Colors.white, size: 8)))),
+              Positioned(top: 4, right: 4, child: GestureDetector(onTap: () => controller.removeFrame(index), child: Container(padding: const EdgeInsets.all(3), decoration: BoxDecoration(color: DS.crimson.withValues(alpha: 0.8), shape: BoxShape.circle), child: const Icon(Icons.close_rounded, color: Colors.white, size: 8)))),
             ],
           ),
         ),

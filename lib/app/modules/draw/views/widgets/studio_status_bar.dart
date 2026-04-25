@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
+import '../../controllers/draw_controller.dart';
 import 'studio_widgets.dart';
 
 class StudioStatusBar extends StatelessWidget {

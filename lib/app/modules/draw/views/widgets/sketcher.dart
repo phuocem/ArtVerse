@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../data/models/draw/drawn_line_model.dart';
-import '../controllers/draw_controller.dart';
+import '../../../../data/models/draw/drawn_line_model.dart';
+import '../../controllers/draw_controller.dart';
 
 class SketcherFull extends CustomPainter {
   final List<DrawnLine> mainLines;
@@ -64,11 +64,21 @@ class SketcherFull extends CustomPainter {
     final linePaint = Paint()..color = Colors.teal.withValues(alpha: 0.18)..strokeWidth = 0.8;
     const edgeSteps = 12;
     final edgePoints = <Offset>[];
-    for (int i = 0; i <= edgeSteps; i++) edgePoints.add(Offset(size.width * i / edgeSteps, 0));
-    for (int i = 0; i <= edgeSteps; i++) edgePoints.add(Offset(size.width * i / edgeSteps, size.height));
-    for (int i = 1; i < edgeSteps; i++) edgePoints.add(Offset(0, size.height * i / edgeSteps));
-    for (int i = 1; i < edgeSteps; i++) edgePoints.add(Offset(size.width, size.height * i / edgeSteps));
-    for (final ep in edgePoints) canvas.drawLine(vp, ep, linePaint);
+    for (int i = 0; i <= edgeSteps; i++) {
+      edgePoints.add(Offset(size.width * i / edgeSteps, 0));
+    }
+    for (int i = 0; i <= edgeSteps; i++) {
+      edgePoints.add(Offset(size.width * i / edgeSteps, size.height));
+    }
+    for (int i = 1; i < edgeSteps; i++) {
+      edgePoints.add(Offset(0, size.height * i / edgeSteps));
+    }
+    for (int i = 1; i < edgeSteps; i++) {
+      edgePoints.add(Offset(size.width, size.height * i / edgeSteps));
+    }
+    for (final ep in edgePoints) {
+      canvas.drawLine(vp, ep, linePaint);
+    }
     final crossPaint = Paint()..color = Colors.teal.withValues(alpha: 0.1)..strokeWidth = 0.5;
     for (int i = 1; i <= 8; i++) {
       final t = i / 9.0;

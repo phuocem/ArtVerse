@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
-import '../controllers/collab_controller.dart';
-import '../../layout/controllers/layout_controller.dart';
+import '../../controllers/draw_controller.dart';
+import '../../controllers/collab_controller.dart';
 import 'studio_widgets.dart';
-import '../../../data/models/draw/layer_model.dart';
+import '../../../../data/models/draw/layer_model.dart';
 
 class StudioSidebarLayers extends StatelessWidget {
   const StudioSidebarLayers({super.key});

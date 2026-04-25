@@ -87,10 +87,10 @@ class SettingsRepository {
     }
   }
 
-  String getPrivacyPolicyUrl() => 'https:
-  String getTermsOfServiceUrl() => 'https:
-  String getHelpCenterUrl() => 'https:
-  String getCommunityGuidelinesUrl() => 'https:
+  String getPrivacyPolicyUrl() => 'https://artverse.app/privacy';
+  String getTermsOfServiceUrl() => 'https://artverse.app/terms';
+  String getHelpCenterUrl() => 'https://artverse.app/help';
+  String getCommunityGuidelinesUrl() => 'https://artverse.app/guidelines';
 
   void logAction(String action) {
   }

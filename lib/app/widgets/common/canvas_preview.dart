@@ -14,7 +14,7 @@ class CanvasPreviewWidget extends StatelessWidget {
         border: Border.all(color: AppColors.border2, width: 0.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: Colors.black.withValues(alpha: 0.4),
             blurRadius: 40,
             offset: const Offset(0, 20),
           ),
@@ -33,7 +33,7 @@ class CanvasPreviewWidget extends StatelessWidget {
                 height: 280,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.violetPinkColor.withOpacity(0.15),
+                  color: AppColors.violetPinkColor.withValues(alpha: 0.15),
                 ),
               ),
             ),
@@ -71,7 +71,7 @@ class CanvasPreviewWidget extends StatelessWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-        color: AppColors.bg.withOpacity(0.8),
+        color: AppColors.bg.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.border2, width: 0.5),
       ),
@@ -85,7 +85,7 @@ class GridPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = AppColors.border.withOpacity(0.2)
+          ..color = AppColors.border.withValues(alpha: 0.2)
           ..strokeWidth = 0.5;
 
     const step = 20.0;

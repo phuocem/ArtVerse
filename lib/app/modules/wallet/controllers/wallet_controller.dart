@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/services/database_service.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../repositories/wallet_repository.dart';
 

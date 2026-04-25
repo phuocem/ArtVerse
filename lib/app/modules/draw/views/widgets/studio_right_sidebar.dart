@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
+import '../../controllers/draw_controller.dart';
 import 'studio_sidebar_layers.dart';
 import 'studio_sidebar_frames.dart';
 import 'studio_widgets.dart';
@@ -113,7 +113,7 @@ class _PropertiesTab extends StatelessWidget {
   Widget _hexRow() {
     return Row(
       children: [
-        Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: BoxDecoration(color: DS.textFaint, borderRadius: DS.r8), child: const Text('HEX', style: TextStyle(color: DS.textDim, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5))),
+        Container(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), decoration: const BoxDecoration(color: DS.textFaint, borderRadius: DS.r8), child: const Text('HEX', style: TextStyle(color: DS.textDim, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5))),
         const SizedBox(width: 8),
         Expanded(child: Container(height: 36, padding: const EdgeInsets.symmetric(horizontal: 10), decoration: BoxDecoration(color: DS.card, borderRadius: DS.r12, border: Border.all(color: DS.border)), alignment: Alignment.centerLeft, child: Obx(() => Text('#${controller.selectedColor.value.toARGB32().toRadixString(16).padLeft(8, '0').toUpperCase().substring(2)}', style: const TextStyle(color: DS.text, fontSize: 12, fontFamily: 'monospace', fontWeight: FontWeight.w600))))),
         const SizedBox(width: 8),

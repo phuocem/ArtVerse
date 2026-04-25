@@ -43,7 +43,7 @@ Future<void> main() async {
               textAlign: TextAlign.center,
               maxLines: 5,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white70,
                 fontSize: 14,
                 decoration: TextDecoration.none,

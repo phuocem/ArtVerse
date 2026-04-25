@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/profile_controller.dart';
 import '../../layout/controllers/layout_controller.dart';
-import 'dialogs/top_up_dialog.dart';
 
 class StudioUpgradeView extends GetView<ProfileController> {
   const StudioUpgradeView({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:math' as math;
+
 import 'package:artverse/app/modules/layout/controllers/layout_controller.dart';
 import 'package:artverse/app/modules/profile/controllers/profile_controller.dart';
 

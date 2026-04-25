@@ -58,7 +58,6 @@ class LeaderboardController extends GetxController {
       _dataCache[cacheKey] = users;
       _lastFetchTimes[cacheKey] = DateTime.now();
       activeList.assignAll(users);
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }
@@ -86,7 +85,6 @@ class LeaderboardController extends GetxController {
     try {
       final users = await repository.fetchRegionalRankings(region);
       regionalRankings.assignAll(users);
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }

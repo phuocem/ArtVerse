@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
@@ -7,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/home_controller.dart';
 import 'widgets/project_card.dart' as app_widgets;
 import '../../layout/controllers/layout_controller.dart';
-import 'widgets/create_project_dialog.dart';
+import '../../../core/theme/app_colors.dart';
+import 'dialogs/create_project_dialog.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -20,295 +19,454 @@ class HomeView extends GetView<HomeController> {
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          _buildAmbientBackground(lc),
-          CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: [
-              SliverToBoxAdapter(child: _buildCinematicHeader(lc)),
-              SliverToBoxAdapter(child: _buildStatsBar(lc)),
-              SliverToBoxAdapter(child: _buildProjectGridSection(lc)),
-              
-              const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
+          // Ambient orbs
+          _AmbientOrbs(lc: lc),
+
+          // Main content
+          Column(
+            children: [
+              _TopBar(controller: controller, lc: lc),
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Main project grid
+                    Expanded(
+                      flex: 7,
+                      child: _ProjectArea(controller: controller, lc: lc),
+                    ),
+                    // Right activity panel
+                    SizedBox(
+                      width: 280,
+                      child: _ActivityPanel(controller: controller, lc: lc),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ],
       ),
     );
   }
+}
 
-  
-  
-  
-  Widget _buildAmbientBackground(LayoutController lc) {
-    return Stack(
-      children: [
-        Positioned(
-          top: -200, left: -150,
-          child: Container(
-            width: 700, height: 700,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                lc.primaryColor.withValues(alpha: 0.06),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 300, right: -200,
-          child: Container(
-            width: 500, height: 500,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                lc.accentColor.withValues(alpha: 0.04),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+// ════════════════════════════════════════════════════════════════════════
+// TOP BAR
+// ════════════════════════════════════════════════════════════════════════
 
-  
-  Widget _buildCinematicHeader(LayoutController lc) {
-    return SizedBox(
-      height: 350,
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
-        child: Stack(
+class _TopBar extends StatelessWidget {
+  final HomeController controller;
+  final LayoutController lc;
+  const _TopBar({required this.controller, required this.lc});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 56,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        color: AppColors.surface.withValues(alpha: 0.8),
+        border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+      ),
+      child: Row(
         children: [
-          
-          Positioned.fill(
-            child: PageView.builder(
-              controller: controller.bannerPageController,
-              onPageChanged: (i) => controller.bannerIndex.value = i,
-              itemCount: controller.bannerImages.length,
-              itemBuilder: (ctx, i) {
-                return Image.asset(
-                  controller.bannerImages[i],
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
-                  filterQuality: FilterQuality.high,
-                  width: double.infinity,
-                  color: Colors.black.withValues(alpha: 0.35),
-                  colorBlendMode: BlendMode.darken,
-                );
-              },
+          // Title
+          Text(
+            'Studio',
+            style: GoogleFonts.lexend(
+              color: AppColors.textPrimary,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
             ),
           ),
-
-          
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0.0, 0.5, 1.0],
-                  colors: [
-                    Colors.black.withValues(alpha: 0.3),
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.6),
-                  ],
-                ),
-              ),
+          const SizedBox(width: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: AppColors.violet.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(4),
             ),
-          ),
-
-          
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [Colors.black.withValues(alpha: 0.4), Colors.transparent],
-                  stops: const [0.0, 0.6],
-                ),
-              ),
-            ),
-          ),
-
-          
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.03,
-              child: CustomPaint(painter: _GrainPainter()),
-            ),
-          ),
-
-          
-          Positioned(
-            bottom: 24, left: 64, right: 64,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: lc.primaryColor.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: lc.primaryColor.withValues(alpha: 0.4), width: 0.5),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(width: 4, height: 4,
-                          decoration: BoxDecoration(shape: BoxShape.circle, color: lc.primaryColor)),
-                      const SizedBox(width: 6),
-                      Text(
-                        'SEASON 2026 · PRESTIGE COLLECTION',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: lc.primaryColor, fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 2,
-                        ),
-                      ),
-                    ],
-                  ),
-                ).animate().fadeIn(delay: 200.ms, duration: 600.ms).slideY(begin: 0.3, end: 0),
-
-                const SizedBox(height: 10),
-
-                Text(
-                  'The\nCreative\nFrontier.',
-                  style: GoogleFonts.cinzel(
-                    color: Colors.white, fontSize: 32, fontWeight: FontWeight.w900, height: 1.0, letterSpacing: -1.5,
-                  ),
-                ).animate().fadeIn(delay: 350.ms, duration: 700.ms).slideY(begin: 0.2, end: 0),
-
-                const SizedBox(height: 10),
-
-                Text(
-                  'Where imagination becomes legacy.',
-                  style: GoogleFonts.plusJakartaSans(
-                    color: Colors.white.withValues(alpha: 0.55), fontSize: 11, fontWeight: FontWeight.w300, letterSpacing: 0.5,
-                  ),
-                ).animate().fadeIn(delay: 450.ms, duration: 600.ms),
-
-                const SizedBox(height: 16),
-
-                Row(
-                  children: [
-                    _buildHeroCTA(lc, Icons.add_rounded, 'NEW PROJECT', true, () => _showCreateDialog(0)),
-                    const SizedBox(width: 12),
-                    _buildHeroCTA(lc, Icons.explore_rounded, 'EXPLORE', false, () => _showCreateDialog(0)),
-                  ],
-                ).animate().fadeIn(delay: 550.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
-              ],
-            ),
-          ),
-
-          
-          Positioned(
-            bottom: 12, left: 64,
-            child: Obx(() => Row(
-              children: List.generate(controller.bannerImages.length, (i) =>
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 400),
-                  margin: const EdgeInsets.only(right: 4),
-                  width: controller.bannerIndex.value == i ? 16 : 4,
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: controller.bannerIndex.value == i
-                        ? lc.primaryColor
-                        : Colors.white.withValues(alpha: 0.25),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
+            child: Obx(() => Text(
+              '${controller.filteredProjects.length}',
+              style: GoogleFonts.ibmPlexMono(
+                color: AppColors.violet,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
               ),
             )),
           ),
 
-          
-          Positioned(
-            right: 32, top: 80,
-            child: RotatedBox(
-              quarterTurns: 1,
-              child: Text(
-                'ARTVERSE STUDIO  ◆  PRESTIGE EDITION  ◆  2026',
-                style: GoogleFonts.plusJakartaSans(
-                  color: Colors.white.withValues(alpha: 0.06), fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 4,
-                ),
-              ),
-            ),
-          ),
+          const Spacer(),
 
-          
-          Positioned(
-            left: 12, top: 0, bottom: 0,
-            child: Center(
-              child: _buildBannerNavButton(
-                icon: Icons.chevron_left_rounded,
-                onTap: () {
-                  final prev = (controller.bannerIndex.value - 1 + controller.bannerImages.length) % controller.bannerImages.length;
-                  controller.bannerPageController.animateToPage(prev, duration: 600.ms, curve: Curves.easeInOutCubic);
-                },
+          // Filter chips
+          Obx(() => _FilterRow(controller: controller, lc: lc)),
+
+          const SizedBox(width: 16),
+
+          // New Project button
+          GestureDetector(
+            onTap: () => Get.dialog<void>(CreateProjectDialog(controller: controller, initialType: 0)),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: AppColors.violetPink,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(color: AppColors.violet.withValues(alpha: 0.3), blurRadius: 12, offset: const Offset(0, 4)),
+                ],
               ),
-            ),
-          ),
-          Positioned(
-            right: 12, top: 0, bottom: 0,
-            child: Center(
-              child: _buildBannerNavButton(
-                icon: Icons.chevron_right_rounded,
-                onTap: () {
-                  final next = (controller.bannerIndex.value + 1) % controller.bannerImages.length;
-                  controller.bannerPageController.animateToPage(next, duration: 600.ms, curve: Curves.easeInOutCubic);
-                },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.add_rounded, color: Colors.white, size: 14),
+                  const SizedBox(width: 6),
+                  Text(
+                    'New Project',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ],
       ),
-      ),
     );
   }
+}
 
-  Widget _buildBannerNavButton({required IconData icon, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.15),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 0.5),
-        ),
-        child: Icon(icon, color: Colors.white.withValues(alpha: 0.5), size: 24),
-      ),
-    ).animate().fadeIn(delay: 800.ms).scale(begin: const Offset(0.8, 0.8));
-  }
+// ── Filter Row ───────────────────────────────────────────────────────────
 
-  Widget _buildHeroCTA(LayoutController lc, IconData icon, String label, bool isPrimary, VoidCallback onTap) {
-    
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isPrimary ? lc.primaryColor : Colors.white.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isPrimary ? lc.primaryColor : Colors.white.withValues(alpha: 0.2),
-            width: 1,
+class _FilterRow extends StatelessWidget {
+  final HomeController controller;
+  final LayoutController lc;
+  const _FilterRow({required this.controller, required this.lc});
+
+  static const _filters = [
+    ('All', 'all'),
+    ('Animation', 'anim'),
+    ('Artwork', 'art'),
+    ('Starred', 'starred'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: _filters.map((f) {
+        final active = controller.filterType.value == f.$2;
+        return GestureDetector(
+          onTap: () => controller.filterType.value = f.$2,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            margin: const EdgeInsets.only(left: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: active ? AppColors.violet.withValues(alpha: 0.12) : Colors.transparent,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: active ? AppColors.violet.withValues(alpha: 0.3) : AppColors.border,
+                width: 0.5,
+              ),
+            ),
+            child: Text(
+              f.$1,
+              style: GoogleFonts.plusJakartaSans(
+                color: active ? AppColors.violet : AppColors.textTertiary,
+                fontSize: 11,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
           ),
-          boxShadow: isPrimary
-              ? [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.35), blurRadius: 15, offset: const Offset(0, 6))]
-              : null,
+        );
+      }).toList(),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// PROJECT AREA
+// ════════════════════════════════════════════════════════════════════════
+
+class _ProjectArea extends StatelessWidget {
+  final HomeController controller;
+  final LayoutController lc;
+  const _ProjectArea({required this.controller, required this.lc});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        // Hero banner
+        SliverToBoxAdapter(child: _HeroBanner(controller: controller, lc: lc)),
+
+        // Stats row
+        SliverToBoxAdapter(child: _StatsRow(controller: controller, lc: lc)),
+
+        // Section header
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+            child: Row(
+              children: [
+                Text(
+                  'YOUR WORKS',
+                  style: GoogleFonts.plusJakartaSans(
+                    color: AppColors.textTertiary,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 3,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(child: Container(height: 0.5, color: AppColors.border)),
+              ],
+            ),
+          ),
         ),
+
+        // Project grid
+        Obx(() {
+          final projects = controller.filteredProjects;
+          if (projects.isEmpty) {
+            return SliverToBoxAdapter(child: _EmptyState(lc: lc));
+          }
+          return SliverPadding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+            sliver: SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (context, i) {
+                  final p = projects[i];
+                  return app_widgets.ProjectCard(
+                    id: p.id,
+                    title: p.name,
+                    createdAt: p.updatedAt.toIso8601String(),
+                    frameCount: p.frames.length,
+                    isAnimation: p.isAnimation,
+                    isFavorite: p.isFavorite,
+                    onTap: () => Get.toNamed<void>('/draw', arguments: {'projectId': p.id}),
+                    onDelete: () => controller.deleteProject(p.id),
+                    onFavoriteChanged: (_) => controller.toggleFavorite(p.id),
+                  ).animate(delay: Duration(milliseconds: 50 * i))
+                      .fadeIn(duration: 400.ms)
+                      .slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic);
+                },
+                childCount: projects.length,
+              ),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 16,
+                childAspectRatio: 0.82,
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+}
+
+// ── Hero Banner ──────────────────────────────────────────────────────────
+
+class _HeroBanner extends StatelessWidget {
+  final HomeController controller;
+  final LayoutController lc;
+  const _HeroBanner({required this.controller, required this.lc});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      margin: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 0.5),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Background
+          PageView.builder(
+            controller: controller.bannerPageController,
+            onPageChanged: (i) => controller.bannerIndex.value = i,
+            itemCount: controller.bannerImages.length,
+            itemBuilder: (ctx, i) => Image.asset(
+              controller.bannerImages[i],
+              fit: BoxFit.cover,
+              color: Colors.black.withValues(alpha: 0.4),
+              colorBlendMode: BlendMode.darken,
+            ),
+          ),
+
+          // Gradient overlay
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [Colors.black87, Colors.transparent],
+                stops: [0.0, 0.7],
+              ),
+            ),
+          ),
+
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.violet.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: AppColors.violet.withValues(alpha: 0.4), width: 0.5),
+                  ),
+                  child: Text(
+                    'SEASON 2026',
+                    style: GoogleFonts.ibmPlexMono(
+                      color: AppColors.violet,
+                      fontSize: 8,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'The Creative\nFrontier.',
+                  style: GoogleFonts.lexend(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w900,
+                    height: 1.1,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                GestureDetector(
+                  onTap: () => Get.dialog<void>(CreateProjectDialog(controller: controller, initialType: 0)),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    decoration: BoxDecoration(
+                      gradient: AppColors.violetPink,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'START CREATING →',
+                      style: GoogleFonts.plusJakartaSans(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Page dots
+          Positioned(
+            bottom: 12,
+            right: 16,
+            child: Obx(() => Row(
+              children: List.generate(controller.bannerImages.length, (i) {
+                final active = controller.bannerIndex.value == i;
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.only(left: 4),
+                  width: active ? 16 : 4,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: active ? Colors.white : Colors.white30,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                );
+              }),
+            )),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 600.ms);
+  }
+}
+
+// ── Stats Row ────────────────────────────────────────────────────────────
+
+class _StatsRow extends StatelessWidget {
+  final HomeController controller;
+  final LayoutController lc;
+  const _StatsRow({required this.controller, required this.lc});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final total = controller.filteredProjects.length;
+      final anims = controller.filteredProjects.where((p) => p.isAnimation).length;
+      final starred = controller.filteredProjects.where((p) => p.isFavorite).length;
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: isPrimary ? lc.onPrimaryColor : Colors.white.withValues(alpha: 0.8), size: 14),
-            const SizedBox(width: 8),
+            _StatCard(value: '$total', label: 'TOTAL', color: AppColors.violet),
+            const SizedBox(width: 12),
+            _StatCard(value: '$anims', label: 'ANIM', color: AppColors.teal),
+            const SizedBox(width: 12),
+            _StatCard(value: '${total - anims}', label: 'ART', color: AppColors.pink),
+            const SizedBox(width: 12),
+            _StatCard(value: '$starred', label: 'STAR', color: AppColors.amber),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String value;
+  final String label;
+  final Color color;
+  const _StatCard({required this.value, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.15), width: 0.5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              value,
+              style: GoogleFonts.lexend(
+                color: color,
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
             Text(
               label,
-              style: GoogleFonts.plusJakartaSans(
-                color: isPrimary ? lc.onPrimaryColor : Colors.white.withValues(alpha: 0.7),
-                fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5,
+              style: GoogleFonts.ibmPlexMono(
+                color: color.withValues(alpha: 0.6),
+                fontSize: 8,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 2,
               ),
             ),
           ],
@@ -316,229 +474,317 @@ class HomeView extends GetView<HomeController> {
       ),
     );
   }
+}
 
-  
-  Widget _buildStatsBar(LayoutController lc) {
-    return Obx(() {
-      final total = controller.filteredProjects.length;
-      final anims = controller.filteredProjects.where((p) => p.isAnimation).length;
-      final statics = total - anims;
-      final starred = controller.filteredProjects.where((p) => p.isFavorite).length;
+// ════════════════════════════════════════════════════════════════════════
+// ACTIVITY PANEL (right side)
+// ════════════════════════════════════════════════════════════════════════
 
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        decoration: BoxDecoration(
-          color: lc.cardColor.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: lc.textColor.withValues(alpha: 0.05), width: 1),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _statItem(lc, '$total', 'TOTAL WORKS', Icons.palette_rounded),
-                _statDivider(lc),
-                _statItem(lc, '$anims', 'ANIMATIONS', Icons.animation_rounded),
-                _statDivider(lc),
-                _statItem(lc, '$statics', 'STATIC ART', Icons.brush_rounded),
-                _statDivider(lc),
-                _statItem(lc, '$starred', 'STARRED', Icons.star_rounded),
-              ],
-            ),
-          ),
-        ),
-      );
-    }).animate().fadeIn(delay: 100.ms, duration: 600.ms).slideY(begin: 0.1, end: 0);
-  }
+class _ActivityPanel extends StatelessWidget {
+  final HomeController controller;
+  final LayoutController lc;
+  const _ActivityPanel({required this.controller, required this.lc});
 
-  Widget _statItem(LayoutController lc, String value, String label, IconData icon) {
-    return Column(
-      children: [
-        Icon(icon, color: lc.primaryColor.withValues(alpha: 0.6), size: 16),
-        const SizedBox(height: 6),
-        Text(value, style: GoogleFonts.lexend(color: lc.textColor, fontSize: 18, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 2),
-        Text(label, style: GoogleFonts.plusJakartaSans(
-          color: lc.textColor.withValues(alpha: 0.3), fontSize: 8, fontWeight: FontWeight.w700, letterSpacing: 2)),
-      ],
-    );
-  }
-
-  Widget _statDivider(LayoutController lc) =>
-      Container(width: 1, height: 32, color: lc.textColor.withValues(alpha: 0.06));
-
-  
-  Widget _buildProjectGridSection(LayoutController lc) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 48),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(left: BorderSide(color: AppColors.border, width: 0.5)),
+      ),
+      child: ListView(
+        padding: const EdgeInsets.all(20),
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('CREATIVE VAULT', style: GoogleFonts.plusJakartaSans(
-                    color: lc.primaryColor, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 3)),
-                  const SizedBox(height: 4),
-                  Text('Project Ledger', style: GoogleFonts.cinzel(
-                    color: lc.textColor, fontSize: 28, fontWeight: FontWeight.w400, letterSpacing: 1)),
-                ],
-              ),
-              const Spacer(),
-              _buildFilterChips(lc),
-            ],
+          const _SectionLabel('QUICK ACTIONS'),
+          const SizedBox(height: 12),
+          _QuickAction(
+            icon: Icons.draw_rounded,
+            label: 'New Canvas',
+            sub: 'Start from blank',
+            color: AppColors.violet,
+            onTap: () => Get.dialog<void>(CreateProjectDialog(controller: controller, initialType: 0)),
+          ),
+          const SizedBox(height: 8),
+          _QuickAction(
+            icon: Icons.animation_rounded,
+            label: 'New Animation',
+            sub: 'Frame-by-frame',
+            color: AppColors.teal,
+            onTap: () => Get.dialog<void>(CreateProjectDialog(controller: controller, initialType: 1)),
+          ),
+          const SizedBox(height: 8),
+          _QuickAction(
+            icon: Icons.cloud_sync_rounded,
+            label: 'Sync All',
+            sub: 'Upload to cloud',
+            color: AppColors.amber,
+            onTap: () => Get.snackbar('Cloud Sync', 'Open a project and tap Sync to upload to cloud.',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: AppColors.surface2,
+                  colorText: AppColors.textPrimary,
+                  duration: const Duration(seconds: 3)),
           ),
 
+          const SizedBox(height: 28),
+          const _SectionLabel('RECENT ACTIVITY'),
           const SizedBox(height: 12),
-          Container(height: 0.5, color: lc.textColor.withValues(alpha: 0.07)),
-          const SizedBox(height: 24),
 
-          
           Obx(() {
-            final projects = controller.filteredProjects;
-            if (projects.isEmpty) return _buildEmptyState(lc);
-
-            return GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 220, mainAxisSpacing: 24, crossAxisSpacing: 16, childAspectRatio: 0.85,
-              ),
-              itemCount: projects.length,
-              itemBuilder: (ctx, i) {
-                final p = projects[i];
-                return app_widgets.ProjectCard(
-                  id: p.id,
-                  title: p.name,
-                  createdAt: p.updatedAt.toIso8601String(),
-                  frameCount: p.frames.length,
-                  isAnimation: p.isAnimation,
-                  isFavorite: p.isFavorite,
+            final recent = controller.filteredProjects.take(5).toList();
+            if (recent.isEmpty) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Text(
+                    'No projects yet',
+                    style: GoogleFonts.plusJakartaSans(
+                      color: AppColors.textTertiary,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+              );
+            }
+            return Column(
+              children: recent.asMap().entries.map((e) {
+                final p = e.value;
+                return _RecentItem(
+                  name: p.name,
+                  isAnim: p.isAnimation,
+                  date: p.updatedAt,
                   onTap: () => Get.toNamed<void>('/draw', arguments: {'projectId': p.id}),
-                  onDelete: () => controller.deleteProject(p.id),
-                  onFavoriteChanged: (_) => controller.toggleFavorite(p.id),
-                ).animate(delay: Duration(milliseconds: 60 * i))
-                    .fadeIn(duration: 500.ms)
-                    .slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic);
-              },
+                ).animate(delay: Duration(milliseconds: 60 * e.key))
+                    .fadeIn(duration: 400.ms)
+                    .slideX(begin: 0.05, end: 0);
+              }).toList(),
             );
           }),
         ],
       ),
     );
   }
+}
 
-  Widget _buildFilterChips(LayoutController lc) {
-    final filters = [
-      ('ALL', 'all', Icons.apps_rounded),
-      ('ANIMATION', 'anim', Icons.animation_rounded),
-      ('STATIC', 'art', Icons.brush_rounded),
-      ('STARRED', 'starred', Icons.star_rounded),
-    ];
-    return Row(
-      children: filters.map((f) =>
-        
-        Obx(() {
-          final active = controller.filterType.value == f.$2;
-          return GestureDetector(
-            onTap: () => controller.filterType.value = f.$2,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              margin: const EdgeInsets.only(left: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: GoogleFonts.ibmPlexMono(
+        color: AppColors.textTertiary,
+        fontSize: 9,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 2,
+      ),
+    );
+  }
+}
+
+class _QuickAction extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String sub;
+  final Color color;
+  final VoidCallback onTap;
+  const _QuickAction({required this.icon, required this.label, required this.sub, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.06),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.15), width: 0.5),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
-                color: active ? lc.primaryColor.withValues(alpha: 0.12) : Colors.transparent,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: active ? lc.primaryColor.withValues(alpha: 0.4) : lc.textColor.withValues(alpha: 0.06),
-                  width: 1,
-                ),
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
+              child: Icon(icon, color: color, size: 16),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: GoogleFonts.plusJakartaSans(
+                  color: AppColors.textPrimary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                )),
+                Text(sub, style: GoogleFonts.plusJakartaSans(
+                  color: AppColors.textTertiary,
+                  fontSize: 10,
+                )),
+              ],
+            ),
+            const Spacer(),
+            const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 10),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RecentItem extends StatelessWidget {
+  final String name;
+  final bool isAnim;
+  final DateTime date;
+  final VoidCallback onTap;
+  const _RecentItem({required this.name, required this.isAnim, required this.date, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final diff = DateTime.now().difference(date);
+    final timeStr = diff.inDays > 0 ? '${diff.inDays}d ago' : diff.inHours > 0 ? '${diff.inHours}h ago' : 'Just now';
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppColors.surface2,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.border, width: 0.5),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: isAnim ? AppColors.teal.withValues(alpha: 0.1) : AppColors.violet.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Icon(
+                isAnim ? Icons.animation_rounded : Icons.brush_rounded,
+                size: 14,
+                color: isAnim ? AppColors.teal : AppColors.violet,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(f.$3, size: 13, color: active ? lc.primaryColor : lc.textColor.withValues(alpha: 0.25)),
-                  const SizedBox(width: 6),
-                  Text(f.$1, style: GoogleFonts.plusJakartaSans(
-                    color: active ? lc.primaryColor : lc.textColor.withValues(alpha: 0.3),
-                    fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5,
-                  )),
+                  Text(
+                    name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.plusJakartaSans(
+                      color: AppColors.textPrimary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    timeStr,
+                    style: GoogleFonts.ibmPlexMono(
+                      color: AppColors.textTertiary,
+                      fontSize: 9,
+                    ),
+                  ),
                 ],
               ),
             ),
-          );
-        }),
-      ).toList(),
+          ],
+        ),
+      ),
     );
   }
+}
 
-  Widget _buildEmptyState(LayoutController lc) {
+// ════════════════════════════════════════════════════════════════════════
+// AMBIENT ORBS
+// ════════════════════════════════════════════════════════════════════════
+
+class _AmbientOrbs extends StatelessWidget {
+  final LayoutController lc;
+  const _AmbientOrbs({required this.lc});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: [
+      Positioned(top: -100, left: -80,
+        child: _Orb(radius: 350, color: AppColors.violet.withValues(alpha: 0.04))),
+      Positioned(bottom: 100, right: -100,
+        child: _Orb(radius: 280, color: AppColors.teal.withValues(alpha: 0.03))),
+    ]);
+  }
+}
+
+class _Orb extends StatelessWidget {
+  final double radius;
+  final Color color;
+  const _Orb({required this.radius, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: radius * 2,
+      height: radius * 2,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(colors: [color, Colors.transparent]),
+      ),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// EMPTY STATE
+// ════════════════════════════════════════════════════════════════════════
+
+class _EmptyState extends StatelessWidget {
+  final LayoutController lc;
+  const _EmptyState({required this.lc});
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 300,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.8, end: 1.0),
-              duration: const Duration(milliseconds: 2000),
-              curve: Curves.easeInOut,
-              builder: (ctx, scale, _) => Transform.scale(
-                scale: scale,
-                child: Container(
-                  width: 96, height: 96,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(colors: [
-                      lc.primaryColor.withValues(alpha: 0.08), lc.primaryColor.withValues(alpha: 0.02),
-                    ]),
-                    boxShadow: [BoxShadow(
-                      color: lc.primaryColor.withValues(alpha: 0.12 * scale),
-                      blurRadius: 40 * scale, spreadRadius: 4,
-                    )],
-                  ),
-                  child: Icon(Icons.add_rounded, size: 36, color: lc.primaryColor.withValues(alpha: 0.3)),
-                ),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: AppColors.violet.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.violet.withValues(alpha: 0.15)),
               ),
+              child: Icon(Icons.add_rounded, size: 32, color: AppColors.violet.withValues(alpha: 0.4)),
             ),
-            const SizedBox(height: 28),
-            Text('YOUR CANVAS AWAITS', style: GoogleFonts.plusJakartaSans(
-              color: lc.textColor.withValues(alpha: 0.15), fontSize: 10, letterSpacing: 4, fontWeight: FontWeight.w900)),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
+            Text('YOUR CANVAS AWAITS', style: GoogleFonts.ibmPlexMono(
+              color: AppColors.textTertiary,
+              fontSize: 9,
+              letterSpacing: 3,
+              fontWeight: FontWeight.w700,
+            )),
+            const SizedBox(height: 8),
             Text('Create your first masterpiece', style: GoogleFonts.plusJakartaSans(
-              color: lc.textColor.withValues(alpha: 0.1), fontSize: 13, fontWeight: FontWeight.w400)),
+              color: AppColors.textTertiary,
+              fontSize: 13,
+              fontWeight: FontWeight.w400,
+            )),
           ],
-        ),
+        ).animate().fadeIn(duration: 600.ms),
       ),
     );
   }
-
-  void _showCreateDialog(int type) {
-    Get.dialog<void>(CreateProjectDialog(controller: controller, initialType: type));
-  }
-}
-
-
-class _GrainPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.white;
-    final rng = math.Random(42);
-    for (int i = 0; i < 3000; i++) {
-      canvas.drawCircle(
-        Offset(rng.nextDouble() * size.width, rng.nextDouble() * size.height),
-        rng.nextDouble() * 0.8, paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter old) => false;
 }

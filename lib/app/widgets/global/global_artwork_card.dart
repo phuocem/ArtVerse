@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:artverse/app/data/models/post_model.dart';
-import '../../layout/controllers/layout_controller.dart';
+import '../../modules/layout/controllers/layout_controller.dart';
 
 class GlobalArtworkCard extends StatefulWidget {
   final PostModel post;
@@ -199,6 +199,7 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
     );
   }
 
+  // ignore: unused_element
   Widget _typeBadge(String label, LayoutController lc) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

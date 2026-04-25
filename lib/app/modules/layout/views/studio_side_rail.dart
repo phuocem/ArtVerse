@@ -9,8 +9,8 @@ import '../../settings/controllers/settings_controller.dart';
 import '../../settings/repositories/settings_repository.dart';
 import '../../settings/providers/settings_provider.dart';
 
-class ProSideRail extends GetView<LayoutController> {
-  const ProSideRail({super.key});
+class StudioSideRail extends GetView<LayoutController> {
+  const StudioSideRail({super.key});
 
   static const _nav = [
     (idx: 0, icon: Icons.auto_awesome_mosaic_rounded, label: 'Home'),

@@ -65,7 +65,6 @@ class SearchController extends GetxController {
         await repository.saveSearchQuery(userId, query);
         await _loadInitialData();
       }
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }

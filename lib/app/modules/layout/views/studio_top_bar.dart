@@ -13,7 +13,7 @@ class ProTopBar extends GetView<LayoutController> {
       height: 72,
       padding: const EdgeInsets.symmetric(horizontal: 48),
       decoration: BoxDecoration(
-        color: AppColors.bg.withOpacity(0.4), 
+        color: AppColors.bg.withValues(alpha: 0.4), 
       ),
       child: ClipRRect(
         child: BackdropFilter(
@@ -41,7 +41,7 @@ class ProTopBar extends GetView<LayoutController> {
   Widget _buildBranding() {
     return Row(
       children: [
-        Icon(Icons.bubble_chart_rounded, color: AppColors.violet2.withOpacity(0.8), size: 32),
+        Icon(Icons.bubble_chart_rounded, color: AppColors.violet2.withValues(alpha: 0.8), size: 32),
         const SizedBox(width: 16),
         const Text(
           "ArtVerse",
@@ -68,9 +68,9 @@ class ProTopBar extends GetView<LayoutController> {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -84,13 +84,13 @@ class ProTopBar extends GetView<LayoutController> {
                 curve: Curves.easeOutCubic,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                 decoration: BoxDecoration(
-                  color: isSelected ? AppColors.violet.withOpacity(0.2) : Colors.transparent,
+                  color: isSelected ? AppColors.violet.withValues(alpha: 0.2) : Colors.transparent,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Text(
                   item['label'] as String,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : AppColors.textSecondary.withOpacity(0.7),
+                    color: isSelected ? Colors.white : AppColors.textSecondary.withValues(alpha: 0.7),
                     fontSize: 13,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                   ),
@@ -117,9 +117,9 @@ class ProTopBar extends GetView<LayoutController> {
     return Container(
       width: 44, height: 44,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Stack(
         alignment: Alignment.center,

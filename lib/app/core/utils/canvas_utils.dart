@@ -48,7 +48,7 @@ class CanvasUtils {
   
   
   static Future<ui.Image> pixelsToImage(Uint32List pixels, int width, int height) async {
-    final completer = ui.ImmutableBuffer.fromUint8List(pixels.buffer.asUint8List());
+    ui.ImmutableBuffer.fromUint8List(pixels.buffer.asUint8List());
     final codec = await ui.instantiateImageCodec(pixels.buffer.asUint8List());
     final frame = await codec.getNextFrame();
     return frame.image;

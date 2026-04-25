@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:artverse/app/data/models/resource_model.dart';
 import 'package:artverse/app/modules/layout/controllers/layout_controller.dart';
 import 'package:artverse/app/modules/marketplace/controllers/marketplace_controller.dart';

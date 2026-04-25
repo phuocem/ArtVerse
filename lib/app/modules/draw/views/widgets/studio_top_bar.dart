@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
-import '../../../data/models/draw/drawn_line_model.dart';
+import '../../controllers/draw_controller.dart';
+import '../../../../data/models/draw/drawn_line_model.dart';
 import 'studio_widgets.dart';
 
 class StudioTopBar extends StatefulWidget {
@@ -95,7 +95,7 @@ class _StudioTopBarState extends State<StudioTopBar> with TickerProviderStateMix
         const SizedBox(width: 6),
         Obx(() => Text(isPercent ? '${(value.value * 100).toInt()}%' : value.value.toInt().toString(), style: const TextStyle(color: DS.text, fontSize: 11, fontWeight: FontWeight.w900, fontFamily: 'monospace'))),
         const SizedBox(width: 6),
-        SizedBox(width: 72, child: Obx(() => SliderTheme(data: SliderThemeData(trackHeight: 2, thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5), overlayShape: const RoundSliderOverlayShape(overlayRadius: 10), activeTrackColor: DS.violet, inactiveTrackColor: DS.border, thumbColor: Colors.white), child: Slider(value: value.value.clamp(min, max), min: min, max: max, onChanged: (v) => value.value = v)))),
+        SizedBox(width: 72, child: Obx(() => SliderTheme(data: const SliderThemeData(trackHeight: 2, thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5), overlayShape: RoundSliderOverlayShape(overlayRadius: 10), activeTrackColor: DS.violet, inactiveTrackColor: DS.border, thumbColor: Colors.white), child: Slider(value: value.value.clamp(min, max), min: min, max: max, onChanged: (v) => value.value = v)))),
       ],
     );
   }

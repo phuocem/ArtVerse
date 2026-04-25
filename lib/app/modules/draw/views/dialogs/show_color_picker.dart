@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
+import '../../controllers/draw_controller.dart';
 import '../widgets/studio_widgets.dart';
 
 void showColorPicker(BuildContext context, DrawController controller) {
@@ -44,7 +44,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog> with SingleTicke
               padding: const EdgeInsets.fromLTRB(20, 18, 16, 14), decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: DS.border))),
               child: Row(
                 children: [
-                  Container(padding: const EdgeInsets.all(8), decoration: BoxDecoration(gradient: DS.crimsonGrad, borderRadius: DS.r10), child: const Icon(Icons.palette_rounded, color: Colors.white, size: 16)),
+                  Container(padding: const EdgeInsets.all(8), decoration: const BoxDecoration(gradient: DS.crimsonGrad, borderRadius: DS.r10), child: const Icon(Icons.palette_rounded, color: Colors.white, size: 16)),
                   const SizedBox(width: 12),
                   const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('THƯ VIỆN MÀU', style: TextStyle(color: DS.text, fontWeight: FontWeight.w900, fontSize: 14, letterSpacing: 1)), Text('Chọn màu để vẽ', style: TextStyle(color: DS.textDim, fontSize: 11))]),
                   const Spacer(),
@@ -79,7 +79,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog> with SingleTicke
   Widget _paletteGrid() {
     return Obx(() {
       if (widget.controller.importedPalettes.isEmpty) {
-        return Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.palette_outlined, size: 36, color: DS.textFaint), const SizedBox(height: 8), const Text('Chưa có palette nào', style: TextStyle(color: DS.textDim, fontSize: 12)), const Text('Nhập palette .ase hoặc .aco', style: TextStyle(color: DS.textFaint, fontSize: 10))]);
+        return const Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.palette_outlined, size: 36, color: DS.textFaint), SizedBox(height: 8), Text('Chưa có palette nào', style: TextStyle(color: DS.textDim, fontSize: 12)), Text('Nhập palette .ase hoặc .aco', style: TextStyle(color: DS.textFaint, fontSize: 10))]);
       }
       return SingleChildScrollView(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: widget.controller.importedPalettes.map((pl) {
         final colors = (pl['colors'] as List).cast<String>();

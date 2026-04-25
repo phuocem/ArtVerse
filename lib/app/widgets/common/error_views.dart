@@ -16,16 +16,16 @@ class TabletOnlyView extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
-          child: Column(
+          child: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.tablet_android,
                 size: 64,
                 color: Colors.indigoAccent,
               ),
-              const SizedBox(height: 24),
-              const Text(
+              SizedBox(height: 24),
+              Text(
                 'Tablet Only',
                 style: TextStyle(
                   color: Colors.white,
@@ -33,8 +33,8 @@ class TabletOnlyView extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 'ArtVerse Studio requires a larger screen.\nPlease use a Tablet or iPad.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -84,7 +84,7 @@ class InitializationErrorApp extends StatelessWidget {
                 Text(
                   error,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
                   ),

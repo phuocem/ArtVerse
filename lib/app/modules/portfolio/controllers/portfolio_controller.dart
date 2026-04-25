@@ -38,7 +38,6 @@ class PortfolioController extends GetxController {
         _loadStats(userId),
       ]);
       _calculateCompletion();
-    } catch (e) {
     } finally {
       isLoading.value = false;
     }

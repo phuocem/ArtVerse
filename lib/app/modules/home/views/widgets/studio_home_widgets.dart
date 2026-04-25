@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../data/models/post_model.dart';
-import 'home_ui_models.dart';
 
 class QuickCard extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -36,13 +34,13 @@ class _QuickCardState extends State<QuickCard> {
               color: AppColors.surface,
               borderRadius: BorderRadius.circular(32),
               border: Border.all(
-                color: _hovered ? color.withOpacity(0.5) : AppColors.border2,
+                color: _hovered ? color.withValues(alpha: 0.5) : AppColors.border2,
                 width: 1.5,
               ),
               boxShadow: _hovered
                   ? [
                     BoxShadow(
-                      color: color.withOpacity(0.1),
+                      color: color.withValues(alpha: 0.1),
                       blurRadius: 32,
                       offset: const Offset(0, 16),
                     ),

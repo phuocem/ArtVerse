@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/ai_draw_controller.dart';
+import '../../controllers/ai_draw_controller.dart';
 import '../widgets/studio_widgets.dart';
 
 class StudioAiDialog extends StatelessWidget {
@@ -12,7 +12,7 @@ class StudioAiDialog extends StatelessWidget {
     final textCtrl = TextEditingController();
     return Dialog(
       backgroundColor: DS.card,
-      shape: RoundedRectangleBorder(borderRadius: DS.r24, side: const BorderSide(color: DS.border)),
+      shape: const RoundedRectangleBorder(borderRadius: DS.r24, side: BorderSide(color: DS.border)),
       child: Padding(
         padding: const EdgeInsets.all(28),
         child: Column(
@@ -43,7 +43,7 @@ class StudioAiDialog extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(child: Container(
                 height: 42,
-                decoration: BoxDecoration(gradient: DS.crimsonGrad, borderRadius: DS.r12),
+                decoration: const BoxDecoration(gradient: DS.crimsonGrad, borderRadius: DS.r12),
                 child: TextButton(
                   onPressed: () { aiCtrl.generateSketchFromPrompt(textCtrl.text); Get.back(); },
                   child: const Text('Tạo nét ✦', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, letterSpacing: 0.5)),

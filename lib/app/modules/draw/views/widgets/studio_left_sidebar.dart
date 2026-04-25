@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
-import '../../../data/models/draw/drawn_line_model.dart';
+import '../../controllers/draw_controller.dart';
+import '../../../../data/models/draw/drawn_line_model.dart';
 import 'studio_widgets.dart';
 import '../dialogs/show_color_picker.dart';
 import '../dialogs/studio_perspective_sheet.dart';
@@ -73,8 +73,8 @@ class StudioLeftSidebar extends StatelessWidget {
 
   Widget _eraserTool() {
     return Obx(() {
-      final isSel = controller.selectedTool.value == ToolType.eraser && controller.selectedBrushType.value == BrushType.eraser;
-      return _toolTile('Tẩy', Icons.auto_fix_normal_rounded, DS.rose, isSel, () => controller.setBrushPreset(type: BrushType.eraser));
+      final isSel = controller.selectedTool.value == ToolType.eraser;
+      return _toolTile('Tẩy', Icons.auto_fix_normal_rounded, DS.rose, isSel, () => controller.selectEraser());
     });
   }
 

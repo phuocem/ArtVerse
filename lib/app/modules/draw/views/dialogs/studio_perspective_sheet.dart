@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/draw_controller.dart';
+import '../../controllers/draw_controller.dart';
 import '../widgets/studio_widgets.dart';
-import '../../../data/models/draw/drawn_line_model.dart';
 
 class StudioPerspectiveSheet extends StatelessWidget {
   final DrawController controller;
@@ -17,7 +16,7 @@ class StudioPerspectiveSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Container(width: 40, height: 4, decoration: BoxDecoration(color: DS.border, borderRadius: DS.r4))),
+          Center(child: Container(width: 40, height: 4, decoration: const BoxDecoration(color: DS.border, borderRadius: DS.r4))),
           const SizedBox(height: 20),
           sectionLabel('CHẾ ĐỘ PHỐI CẢNH', accent: DS.gold),
           const SizedBox(height: 4),
@@ -73,7 +72,7 @@ class StudioPerspectiveSheet extends StatelessWidget {
           Text(title, style: TextStyle(color: value ? DS.text : DS.textDim, fontSize: 12, fontWeight: FontWeight.w700)),
           Text(subtitle, style: const TextStyle(color: DS.textDim, fontSize: 9)),
         ])),
-        Switch(value: value, onChanged: onChanged, activeColor: accent, activeTrackColor: accent.withValues(alpha: 0.3), inactiveTrackColor: DS.border, inactiveThumbColor: DS.textDim),
+        Switch(value: value, onChanged: onChanged, activeThumbColor: accent, activeTrackColor: accent.withValues(alpha: 0.3), inactiveTrackColor: DS.border, inactiveThumbColor: DS.textDim),
       ]),
     );
   }

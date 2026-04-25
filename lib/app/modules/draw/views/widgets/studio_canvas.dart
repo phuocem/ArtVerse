@@ -3,10 +3,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../../../data/models/draw/drawn_line_model.dart';
-import '../../layout/controllers/layout_controller.dart';
-import '../controllers/draw_controller.dart';
-import '../controllers/collab_controller.dart';
+import '../../controllers/draw_controller.dart';
+import '../../controllers/collab_controller.dart';
 import 'studio_widgets.dart';
 import 'sketcher.dart';
 
@@ -110,11 +108,11 @@ class StudioCanvas extends StatelessWidget {
     });
   }
   Widget _buildMainStrokes(DrawController ctrl) {
-    return Obx(() => CustomPaint(painter: SketcherFull(mainLines: ctrl.backgroundPicture.value != null ? [] : ctrl.lines, backgroundPicture: ctrl.backgroundPicture.value, onionSkinLines: ctrl.onionSkinData, backgroundColor: Colors.transparent, opacity: 1.0, symmetryType: ctrl.symmetryType.value, perspectiveType: ctrl.perspectiveType.value, vanishingPoints: ctrl.vanishingPoints), size: DrawController.canvasSize));
+    return Obx(() => CustomPaint(painter: SketcherFull(mainLines: ctrl.currentBackgroundPicture.value != null ? [] : ctrl.currentLines, backgroundPicture: ctrl.currentBackgroundPicture.value, onionSkinLines: ctrl.getMultiOnionLines(), backgroundColor: Colors.transparent, opacity: 1.0, symmetryType: ctrl.symmetryType.value, perspectiveType: ctrl.perspectiveType.value, vanishingPoints: ctrl.vanishingPoints), size: DrawController.canvasSize));
   }
   Widget _buildActiveStroke(DrawController ctrl) {
     return Obx(() {
-      final tempLine = ctrl.currentLine.value;
+      final tempLine = ctrl.currentTempLine.value;
       if (tempLine == null) return const SizedBox.shrink();
       return CustomPaint(painter: SketcherFull(mainLines: const [], tempLine: tempLine, opacity: 1.0, symmetryType: ctrl.symmetryType.value, lazyPoint: ctrl.lazyPoint.value, actualPoint: ctrl.actualPoint.value, perspectiveType: ctrl.perspectiveType.value, vanishingPoints: ctrl.vanishingPoints), size: DrawController.canvasSize);
     });

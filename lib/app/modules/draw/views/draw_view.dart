@@ -9,7 +9,6 @@ import 'widgets/studio_status_bar.dart';
 import 'widgets/studio_canvas_container.dart';
 import 'widgets/studio_vertical_sliders.dart';
 import 'widgets/studio_dot_grid_painter.dart';
-import 'widgets/studio_rulers.dart';
 
 class DrawView extends StatelessWidget {
   const DrawView({super.key});
@@ -37,7 +36,7 @@ class DrawView extends StatelessWidget {
                   child: Stack(
                     children: [
                       Positioned.fill(child: CustomPaint(painter: StudioDotGridPainter())),
-                      const StudioRulers(),
+                      _buildRulers(),
                       const Positioned.fill(
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(22, 22, 22, 22),
@@ -63,7 +62,7 @@ class DrawView extends StatelessWidget {
     );
   }
 
-  Widget const StudioRulers() {
+  Widget _buildRulers() {
     return Stack(
       children: [
         Positioned(
