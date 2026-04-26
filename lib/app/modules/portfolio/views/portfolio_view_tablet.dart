@@ -5,10 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/global/global_artwork_card.dart';
 import '../controllers/portfolio_controller.dart';
-
 class PortfolioViewTablet extends GetView<PortfolioController> {
   const PortfolioViewTablet({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,13 +32,9 @@ class PortfolioViewTablet extends GetView<PortfolioController> {
     );
   }
 }
-
-// ── Top Bar ───────────────────────────────────────────────────────────────
-
 class _PortfolioTopBar extends StatelessWidget {
   final PortfolioController controller;
   const _PortfolioTopBar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,8 +57,6 @@ class _PortfolioTopBar extends StatelessWidget {
           Obx(() => Text('${controller.projects.length} works',
             style: GoogleFonts.ibmPlexMono(color: AppColors.textTertiary, fontSize: 10))),
           const Spacer(),
-
-          // Filter status chips
           Obx(() => Row(
             children: [
               _StatusChip(label: 'All', value: -1, selected: controller.filterStatus.value,
@@ -82,14 +74,12 @@ class _PortfolioTopBar extends StatelessWidget {
     );
   }
 }
-
 class _StatusChip extends StatelessWidget {
   final String label;
   final int value;
   final int selected;
   final VoidCallback onTap;
   const _StatusChip({required this.label, required this.value, required this.selected, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     final active = selected == value;
@@ -113,13 +103,9 @@ class _StatusChip extends StatelessWidget {
     );
   }
 }
-
-// ── Sidebar ───────────────────────────────────────────────────────────────
-
 class _PortfolioSidebar extends StatelessWidget {
   final PortfolioController controller;
   const _PortfolioSidebar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -130,7 +116,6 @@ class _PortfolioSidebar extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          // Completion score
           Obx(() {
             final score = controller.completionScore.value;
             return Column(
@@ -165,12 +150,9 @@ class _PortfolioSidebar extends StatelessWidget {
               ],
             );
           }),
-
           const SizedBox(height: 24),
           Container(height: 0.5, color: AppColors.border),
           const SizedBox(height: 20),
-
-          // Stats
           Text('STATS', style: GoogleFonts.ibmPlexMono(
             color: AppColors.textTertiary, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 2)),
           const SizedBox(height: 12),
@@ -191,12 +173,9 @@ class _PortfolioSidebar extends StatelessWidget {
               )).toList(),
             );
           }),
-
           const SizedBox(height: 24),
           Container(height: 0.5, color: AppColors.border),
           const SizedBox(height: 20),
-
-          // Collections
           Text('COLLECTIONS', style: GoogleFonts.ibmPlexMono(
             color: AppColors.textTertiary, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 2)),
           const SizedBox(height: 12),
@@ -233,13 +212,9 @@ class _PortfolioSidebar extends StatelessWidget {
     );
   }
 }
-
-// ── Grid ──────────────────────────────────────────────────────────────────
-
 class _PortfolioGrid extends StatelessWidget {
   final PortfolioController controller;
   const _PortfolioGrid({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -247,7 +222,6 @@ class _PortfolioGrid extends StatelessWidget {
       final filtered = controller.filterStatus.value == -1
           ? all
           : all.where((p) => p.status == controller.filterStatus.value).toList();
-
       if (filtered.isEmpty) {
         return Center(
           child: Column(
@@ -261,7 +235,6 @@ class _PortfolioGrid extends StatelessWidget {
           ).animate().fadeIn(duration: 500.ms),
         );
       }
-
       return GridView.builder(
         padding: const EdgeInsets.all(24),
         gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(

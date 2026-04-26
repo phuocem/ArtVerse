@@ -23,7 +23,6 @@ import '../../../data/models/draw/draw_project_model.dart';
 import '../repositories/profile_repository.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../layout/controllers/layout_controller.dart';
-
 class ProfileController extends GetxController
     with GetSingleTickerProviderStateMixin {
   final ProfileRepository repository;
@@ -50,10 +49,7 @@ class ProfileController extends GetxController
   final equippedFrameUrl = RxnString();
   final ownedGear = <dynamic>[].obs;
   List<PostModel> get filteredPosts => post;
-
-
   late final userBox = Get.find<DatabaseService>().userBox;
-
   @override
   void onInit() {
     super.onInit();
@@ -65,7 +61,6 @@ class ProfileController extends GetxController
       if (user != null) {
         isLogined.value = true;
         _handleUserLoggedIn(user.id);
-        
         Future.delayed(const Duration(milliseconds: 500), () {
           if (Get.currentRoute != '/layout') {
             Get.offAllNamed<void>('/layout');
@@ -77,7 +72,6 @@ class ProfileController extends GetxController
       }
     });
   }
-
   Future<void> _handleUserLoggedIn(String uid) async {
     if (currentUser.value == null) {
       try {
@@ -94,22 +88,18 @@ class ProfileController extends GetxController
        _loadPersonaGear();
     }
   }
-
   void _checkFirstTimeSetup(UserModel user) {
-    
     if (user.handle == null || user.handle!.isEmpty || user.gender == null || user.gender!.isEmpty) {
       Future.delayed(const Duration(seconds: 1), () {
         showFirstTimeSetupDialog(user);
       });
     }
   }
-
   void showFirstTimeSetupDialog(UserModel user) {
     final nameController = TextEditingController(text: user.name);
     final handleController = TextEditingController(text: user.name.toLowerCase().replaceAll(' ', ''));
     final isMale = true.obs;
     final isUpdating = false.obs;
-    
     Get.generalDialog(
       barrierDismissible: false,
       barrierLabel: 'First Time Setup',
@@ -141,8 +131,6 @@ class ProfileController extends GetxController
                     const Text("Let's personalize your studio persona",
                         style: TextStyle(color: Colors.white38, fontSize: 14)),
                     const SizedBox(height: 48),
-
-                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -153,14 +141,12 @@ class ProfileController extends GetxController
                             false, "FEMININE", Icons.female_rounded, isMale),
                       ],
                     ),
-
                     const SizedBox(height: 48),
                     _buildSetupField(
                         "Your Artist Name", nameController, Icons.brush_rounded),
                     const SizedBox(height: 20),
                     _buildSetupField("Studio Handle (@)", handleController,
                         Icons.alternate_email_rounded),
-
                     const SizedBox(height: 48),
                     Obx(() => SizedBox(
                           width: double.infinity,
@@ -172,7 +158,6 @@ class ProfileController extends GetxController
                                     try {
                                       final rawName = nameController.text.trim();
                                       final rawHandle = handleController.text.trim();
-                                      
                                       if (rawName.isEmpty) {
                                         _showSnackbar("Warning", "Vui lòng nhập tên của bạn");
                                         return;
@@ -181,38 +166,27 @@ class ProfileController extends GetxController
                                         _showSnackbar("Warning", "Vui lòng nhập Studio Handle");
                                         return;
                                       }
-
-                                      
                                       final cleanHandle = rawHandle
                                           .toLowerCase()
                                           .replaceAll(RegExp(r'\s+'), '')
                                           .replaceAll(RegExp(r'[^a-z0-9_]'), '');
-                                      
                                       isUpdating.value = true;
-                                      
                                       if (user.id == null) throw "Không tìm thấy User ID";
                                       if (user.email.isEmpty) throw "Không tìm thấy Email người dùng";
-                                      
                                       isMaleMode.value = isMale.value;
-
                                       final update = {
                                         'name': rawName,
                                         'handle': cleanHandle.isEmpty ? "user_${user.id!.substring(0, 5)}" : cleanHandle,
                                         'gender': isMale.value ? 'male' : 'female',
                                         'email': user.email,
                                       };
-                                      
                                       await repository.updateUserData(user.id!, update).timeout(const Duration(seconds: 15));
-
                                       user.name = rawName;
                                       user.handle = update['handle']!;
                                       user.gender = update['gender']!;
-                                      
                                       await userBox.put('current_user', user);
                                       currentUser.refresh();
-
                                       Get.back(); 
-                                      
                                       _showSnackbar("Studio Ready", "Chào mừng bạn gia nhập ArtVerse, ${user.name}!");
                                     } catch (e) {
                                       debugPrint("PROFILE_SETUP_ERROR: $e");
@@ -252,7 +226,6 @@ class ProfileController extends GetxController
       }
     );
   }
-
   Widget _buildGenderCard(bool male, String label, IconData icon, RxBool group) {
     return Obx(() {
       final active = group.value == male;
@@ -279,7 +252,6 @@ class ProfileController extends GetxController
       );
     });
   }
-
   Widget _buildSetupField(String label, TextEditingController controller, IconData icon) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,7 +283,6 @@ class ProfileController extends GetxController
       ],
     );
   }
-
   void _loadPersonaGear() {
     final db = Get.find<DatabaseService>();
     final gear = db.settingsBox.get('persona_gear', defaultValue: <dynamic>[]);
@@ -321,11 +292,9 @@ class ProfileController extends GetxController
       equippedFrameUrl.value = frames.last['thumbnail_url'];
     }
   }
-
   void setEquippedFrame(String? url) {
     equippedFrameUrl.value = url;
   }
-
   void _scrollListener() {
     if (scrollController.hasClients &&
         scrollController.position.pixels >=
@@ -338,19 +307,16 @@ class ProfileController extends GetxController
       }
     }
   }
-
   @override
   void onClose() {
     scrollController.dispose();
     super.onClose();
   }
-
   @override
   void onReady() async {
     super.onReady();
     await reload();
   }
-
   Future<bool> checkNetworkConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.none)) {
@@ -372,7 +338,6 @@ class ProfileController extends GetxController
       return false;
     }
   }
-
   Future<void> reload() async {
     isLoading.value = true;
     try {
@@ -395,7 +360,6 @@ class ProfileController extends GetxController
       isLoading.value = false;
     }
   }
-
   Future<void> initProfile(String? userId) async {
     if (userId == null) {
       await loadCurrentUserFromHive();
@@ -415,7 +379,6 @@ class ProfileController extends GetxController
       isLoading.value = false;
     }
   }
-
   Future<void> loadCurrentUserFromHive() async {
     final box = userBox;
     final user = box.get('current_user');
@@ -428,7 +391,6 @@ class ProfileController extends GetxController
       isLogined.value = false;
     }
   }
-
   Future<void> checkIsFollowing(String targetUserId) async {
     final currentId = currentUser.value?.id;
     if (currentId == null) return;
@@ -438,7 +400,6 @@ class ProfileController extends GetxController
       followingMap[targetUserId] = false;
     }
   }
-
   Future<void> toggleFollowUser(UserModel? userToFollow) async {
     if (!isLogined.value) {
       Get.snackbar("error".tr, "login_required_follow".tr);
@@ -483,11 +444,9 @@ class ProfileController extends GetxController
       Get.snackbar("error".tr, "follow_error".tr);
     }
   }
-
   Future<void> toggleFollow() async {
     await toggleFollowUser(viewedUser.value);
   }
-
   Future<List<UserModel>> getFollowers(String userId) async {
     try {
       final supabase = Supabase.instance.client;
@@ -508,7 +467,6 @@ class ProfileController extends GetxController
       return [];
     }
   }
-
   Future<List<UserModel>> getFollowing(String userId) async {
     try {
       final supabase = Supabase.instance.client;
@@ -529,7 +487,6 @@ class ProfileController extends GetxController
       return [];
     }
   }
-
   Future<UserModel> getUser(String userId, {bool showLoading = true}) async {
     if (_userCache.containsKey(userId)) {
       return _userCache[userId]!;
@@ -552,7 +509,6 @@ class ProfileController extends GetxController
       if (showLoading) isLoading.value = false;
     }
   }
-
   Future<void> getAllPostsByCurrentUser(String userId) async {
     if (!await checkNetworkConnection()) {
       Get.snackbar("No Internet", "Unable to load posts");
@@ -584,7 +540,6 @@ class ProfileController extends GetxController
       post.value = [];
     }
   }
-
   Future<void> loadMorePostsByCurrentUser(String userId) async {
     if (!await checkNetworkConnection() || !_hasMorePosts) return;
     isLoadingMore.value = true;
@@ -613,11 +568,9 @@ class ProfileController extends GetxController
       isLoadingMore.value = false;
     }
   }
-
   Future<void> fetchPostsByUser(String userId) async {
     await getAllPostsByCurrentUser(userId);
   }
-
   Future<void> signInWithGoogle() async {
     if (!await checkNetworkConnection()) {
       Get.snackbar("No Internet", "Cannot login while offline");
@@ -661,7 +614,6 @@ class ProfileController extends GetxController
       _showSnackbar("Lỗi đăng nhập", e.toString());
     }
   }
-
   void _showSnackbar(String title, String message) {
     snackbarKey.currentState?.hideCurrentSnackBar();
     snackbarKey.currentState?.showSnackBar(
@@ -682,7 +634,6 @@ class ProfileController extends GetxController
       ),
     );
   }
-
   Future<void> upgradeToStudio() async {
     final user = currentUser.value;
     if (user == null) return;
@@ -710,7 +661,6 @@ class ProfileController extends GetxController
       isLoading.value = false;
     }
   }
-
   Future<void> topUp(double amount) async {
     final user = currentUser.value;
     if (user == null) return;
@@ -731,7 +681,6 @@ class ProfileController extends GetxController
       isLoading.value = false;
     }
   }
-
   Future<void> signOutGoogleAndClearHive() async {
     try {
       await repository.logout();
@@ -744,7 +693,6 @@ class ProfileController extends GetxController
       _showSnackbar("Logout error", e.toString());
     }
   }
-
   void showEditProfileDialog({
     required String id,
     required String name,
@@ -758,19 +706,16 @@ class ProfileController extends GetxController
     final handleController = TextEditingController(text: currentUser.value?.handle ?? '');
     final handleText = (currentUser.value?.handle ?? '').obs;
     handleController.addListener(() => handleText.value = handleController.text);
-
     final locationController = TextEditingController(text: currentUser.value?.location ?? '');
     final websiteController = TextEditingController(text: currentUser.value?.website ?? '');
     final instagramController = TextEditingController(text: currentUser.value?.instagramUrl ?? '');
     final twitterController = TextEditingController(text: currentUser.value?.twitterUrl ?? '');
-
     final Rx<File?> selectedAvatar = Rx<File?>(null);
     final isUpdating = false.obs;
     final activeTab = 0.obs;
     final specialties = (currentUser.value?.specialties ?? <String>[]).obs;
     final selectedFrame = (currentUser.value?.selectedFrame ?? "").obs;
     final specialtyController = TextEditingController();
-
     Get.generalDialog(
       barrierDismissible: true,
       barrierLabel: 'Edit Profile',
@@ -893,7 +838,6 @@ class ProfileController extends GetxController
       transitionBuilder: (context, anim1, anim2, child) => FadeTransition(opacity: anim1, child: child),
     );
   }
-
   Widget _buildFluidSidebar(RxInt activeTab, LayoutController lc) {
     final icons = [Icons.face_retouching_natural_rounded, Icons.hub_rounded, Icons.auto_awesome_rounded];
     return Container(
@@ -924,7 +868,6 @@ class ProfileController extends GetxController
       ),
     );
   }
-
   Widget _buildCelestialAvatar(Rx<File?> selected, String? current, RxString frame, LayoutController lc) {
     return Obx(() => SizedBox(
       width: 80, height: 80,
@@ -971,7 +914,6 @@ class ProfileController extends GetxController
       ),
     ));
   }
-
   Widget _buildCurrentFluidTab(int tab, TextEditingController h, TextEditingController b, TextEditingController l, TextEditingController w, TextEditingController i, TextEditingController t, RxList<String> specs, TextEditingController sub, RxString frame, LayoutController lc) {
     switch(tab) {
       case 0: return Column(children: [
@@ -992,8 +934,6 @@ class ProfileController extends GetxController
       default: return const SizedBox();
     }
   }
-
-  // ignore: unused_element
   Widget _buildFrameSelector(RxString currentFrame) {
     final frames = [
       {'id': 'frame_gold', 'name': 'IMPERIAL GOLD'},
@@ -1040,7 +980,6 @@ class ProfileController extends GetxController
       ],
     );
   }
-
   Widget _buildWhisperField(IconData icon, String hint, TextEditingController ctrl, LayoutController lc, {int maxLines = 1}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -1067,7 +1006,6 @@ class ProfileController extends GetxController
       ),
     );
   }
-
   Widget _buildSpecialtyCanvas(RxList<String> specialties, TextEditingController sub, LayoutController lc) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1106,10 +1044,7 @@ class ProfileController extends GetxController
       ],
     );
   }
-
-  // ignore: unused_element
   Widget _buildBreathingGlow() => Container(width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.teal.withValues(alpha: 0.03), blurRadius: 100, spreadRadius: 40)]));
-
   Widget _buildFloatingActionHub(String id, RxBool isUpdating, TextEditingController name, TextEditingController bio, TextEditingController loc, TextEditingController web, TextEditingController insta, TextEditingController twit, TextEditingController handle, Rx<File?> selectedAvatar, String? currentAvatar, RxList<String> specialties, void Function() onUpdated, RxString frame, LayoutController lc) {
     return Obx(() => GestureDetector(
       onTap: isUpdating.value ? null : () async {
@@ -1151,17 +1086,13 @@ class ProfileController extends GetxController
       ),
     ));
   }
-
-
   Future<void> updateStatus({required int id, required int status}) async {
     Get.snackbar("Unavailable", "Online features have been removed.");
   }
-
   Future<void> deletePost({required String id}) async {
     post.removeWhere((p) => p.id == id);
     Get.snackbar("Deleted", "Post removed locally.");
   }
-
   Future<void> confirmDeletePost(String id) async {
     Get.defaultDialog(
       title: 'Confirm',
@@ -1175,7 +1106,6 @@ class ProfileController extends GetxController
       },
     );
   }
-
   void showStatusOptionsDialog(post) {
     Get.defaultDialog(
       title: 'Choose action',
@@ -1193,7 +1123,6 @@ class ProfileController extends GetxController
       ),
     );
   }
-
   void showSettingsOptions() {
     Get.defaultDialog(
       title: 'Settings',
@@ -1242,7 +1171,6 @@ class ProfileController extends GetxController
       ),
     );
   }
-
   Future<void> exportAllHiveData(String filePath) async {
     final Map<String, dynamic> exportData = {};
     await checkOpenBox();
@@ -1265,7 +1193,6 @@ class ProfileController extends GetxController
     final file = File(filePath);
     await file.writeAsString(jsonEncode(exportData));
   }
-
   Future<void> exportAll() async {
     final hasPermission = await requestStoragePermission();
     if (!hasPermission) return;
@@ -1315,7 +1242,6 @@ class ProfileController extends GetxController
       ),
     );
   }
-
   Future<bool> requestStoragePermission() async {
     if (await Permission.manageExternalStorage.isGranted) return true;
     final status = await Permission.manageExternalStorage.request();
@@ -1323,7 +1249,6 @@ class ProfileController extends GetxController
     await openAppSettings();
     return false;
   }
-
   Future<void> checkOpenBox() async {
     if (!Hive.isBoxOpen('draw_project')) {
       await Hive.openBox<DrawProjectModel>('draw_project');
@@ -1338,7 +1263,6 @@ class ProfileController extends GetxController
       await Hive.openBox<DrawnLine>('drawnLine');
     }
   }
-
   Future<void> importAllHiveData(String filePath) async {
     final file = File(filePath);
     if (!file.existsSync()) {
@@ -1396,7 +1320,6 @@ class ProfileController extends GetxController
       throw Exception("Error parsing or writing Hive data.\nDetails: $e");
     }
   }
-
   Future<void> importAll() async {
     try {
       bool isCancel = true;

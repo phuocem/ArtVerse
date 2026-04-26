@@ -5,30 +5,25 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../controllers/leaderboard_controller.dart';
 import '../../../data/models/user_model.dart';
-
 class LeaderboardView extends GetView<LeaderboardController> {
   const LeaderboardView({super.key});
-
   static const _categories = [
     ('Likes', 'likes'),
     ('Views', 'views'),
     ('Followers', 'followers'),
     ('Artworks', 'artworks'),
   ];
-
   static const _timeframes = [
     ('All Time', 'all_time'),
     ('Monthly', 'monthly'),
     ('Weekly', 'weekly'),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          // Top bar
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -41,7 +36,6 @@ class LeaderboardView extends GetView<LeaderboardController> {
                 Text('Leaderboard', style: GoogleFonts.lexend(
                   color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w700)),
                 const Spacer(),
-                // Category
                 Obx(() => Row(
                   children: _categories.map((cat) {
                     final active = controller.selectedCategory.value == cat.$2;
@@ -70,7 +64,6 @@ class LeaderboardView extends GetView<LeaderboardController> {
                   }).toList(),
                 )),
                 const SizedBox(width: 16),
-                // Timeframe
                 Obx(() => Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -100,8 +93,6 @@ class LeaderboardView extends GetView<LeaderboardController> {
               ],
             ),
           ),
-
-          // Content
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -124,9 +115,7 @@ class LeaderboardView extends GetView<LeaderboardController> {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Podium (top 3)
                   SizedBox(width: 300, child: _Podium(users: users.take(3).toList())),
-                  // List (4+)
                   Expanded(child: _RankList(users: users.skip(3).toList())),
                 ],
               );
@@ -137,11 +126,9 @@ class LeaderboardView extends GetView<LeaderboardController> {
     );
   }
 }
-
 class _Podium extends StatelessWidget {
   final List<UserModel> users;
   const _Podium({required this.users});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -153,10 +140,8 @@ class _Podium extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 16),
-          // #1
           if (users.isNotEmpty) _PodiumEntry(user: users[0], rank: 1, height: 120),
           const SizedBox(height: 16),
-          // #2 #3
           Row(
             children: [
               if (users.length > 1) Expanded(child: _PodiumEntry(user: users[1], rank: 2, height: 80)),
@@ -169,13 +154,11 @@ class _Podium extends StatelessWidget {
     );
   }
 }
-
 class _PodiumEntry extends StatelessWidget {
   final UserModel user;
   final int rank;
   final double height;
   const _PodiumEntry({required this.user, required this.rank, required this.height});
-
   @override
   Widget build(BuildContext context) {
     final colors = [AppColors.amber, AppColors.textSecondary, const Color(0xFFCD7F32)];
@@ -221,11 +204,9 @@ class _PodiumEntry extends StatelessWidget {
     ).animate().fadeIn(duration: 600.ms).slideY(begin: 0.2, end: 0);
   }
 }
-
 class _RankList extends StatelessWidget {
   final List<UserModel> users;
   const _RankList({required this.users});
-
   @override
   Widget build(BuildContext context) {
     return ListView.builder(

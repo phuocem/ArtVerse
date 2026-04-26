@@ -4,31 +4,24 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../controllers/profile_controller.dart';
-
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
-
   @override
   State<SplashView> createState() => _SplashViewState();
 }
-
 class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   late AnimationController _bgCtrl;
   late AnimationController _logoCtrl;
   late AnimationController _fadeCtrl;
-
   late Animation<double> _bgAnim;
   late Animation<double> _logoScale;
   late Animation<double> _logoOpacity;
   late Animation<double> _tagOpacity;
   late Animation<double> _fadeOut;
-
   @override
   void initState() {
     super.initState();
-
     _bgCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat();
-
     _logoCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
     _logoScale = CurvedAnimation(parent: _logoCtrl, curve: Curves.elasticOut)
         .drive(Tween(begin: 0.6, end: 1.0));
@@ -36,17 +29,13 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         .drive(Tween(begin: 0.0, end: 1.0));
     _tagOpacity = CurvedAnimation(parent: _logoCtrl, curve: const Interval(0.5, 1.0))
         .drive(Tween(begin: 0.0, end: 1.0));
-
     _fadeCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     _fadeOut = CurvedAnimation(parent: _fadeCtrl, curve: Curves.easeIn)
         .drive(Tween(begin: 1.0, end: 0.0));
-
     _bgAnim = _bgCtrl;
-
     Future.delayed(const Duration(milliseconds: 300), () {
       if (mounted) _logoCtrl.forward();
     });
-
     Future.delayed(const Duration(milliseconds: 2600), () async {
       if (mounted) await _fadeCtrl.forward();
       if (mounted) {
@@ -55,7 +44,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       }
     });
   }
-
   @override
   void dispose() {
     _bgCtrl.dispose();
@@ -63,7 +51,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     _fadeCtrl.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -73,20 +60,16 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
         body: Stack(
           fit: StackFit.expand,
           children: [
-            // Animated mesh gradient background
             AnimatedBuilder(
               animation: _bgAnim,
               builder: (_, __) => CustomPaint(
                 painter: _MeshPainter(_bgAnim.value),
               ),
             ),
-
-            // Center content
             Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Logo mark
                   ScaleTransition(
                     scale: _logoScale,
                     child: FadeTransition(
@@ -95,8 +78,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                     ),
                   ),
                   const SizedBox(height: 28),
-
-                  // Wordmark
                   FadeTransition(
                     opacity: _logoOpacity,
                     child: Text(
@@ -110,8 +91,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                     ),
                   ),
                   const SizedBox(height: 8),
-
-                  // Tagline
                   FadeTransition(
                     opacity: _tagOpacity,
                     child: Text(
@@ -127,8 +106,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
                 ],
               ),
             ),
-
-            // Bottom version
             Positioned(
               bottom: 40,
               left: 0,
@@ -150,7 +127,6 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       ),
     );
   }
-
   Widget _buildLogoMark() {
     return Container(
       width: 88,
@@ -179,13 +155,9 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     );
   }
 }
-
-// ── Animated Mesh Background ─────────────────────────────────────────────
-
 class _MeshPainter extends CustomPainter {
   final double t;
   _MeshPainter(this.t);
-
   @override
   void paint(Canvas canvas, Size size) {
     final orbs = [
@@ -207,11 +179,9 @@ class _MeshPainter extends CustomPainter {
       );
     }
   }
-
   @override
   bool shouldRepaint(_MeshPainter old) => old.t != t;
 }
-
 class _Orb {
   final Offset center;
   final double radius;

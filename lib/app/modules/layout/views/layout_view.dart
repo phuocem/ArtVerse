@@ -11,10 +11,8 @@ import '../../marketplace/views/marketplace_view_tablet.dart';
 import '../../challenge/views/challenge_view_tablet.dart';
 import '../../dashboard/views/dashboard_view_tablet.dart';
 import '../../profile/views/profile_view_tablet.dart';
-
 class LayoutView extends GetView<LayoutController> {
   const LayoutView({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -22,10 +20,7 @@ class LayoutView extends GetView<LayoutController> {
         backgroundColor: AppColors.bg,
         body: Row(
           children: [
-            // ── Left Sidebar ──────────────────────────
             const _LeftSidebar(),
-
-            // ── Content Area ──────────────────────────
             Expanded(
               child: LazyIndexedStack(
                 index: controller.currentIndex.value,
@@ -42,7 +37,6 @@ class LayoutView extends GetView<LayoutController> {
           ],
         ),
       );
-
       if (controller.isColorBlindMode.value) {
         return ColorFiltered(
           colorFilter: ColorFilter.matrix(_getColorMatrix(controller.colorBlindType.value)),
@@ -52,7 +46,6 @@ class LayoutView extends GetView<LayoutController> {
       return body;
     });
   }
-
   List<double> _getColorMatrix(String type) {
     switch (type) {
       case 'protanopia':
@@ -65,14 +58,8 @@ class LayoutView extends GetView<LayoutController> {
     }
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// LEFT SIDEBAR
-// ════════════════════════════════════════════════════════════════════════
-
 class _LeftSidebar extends GetView<LayoutController> {
   const _LeftSidebar();
-
   static final _items = [
     _NavItem(icon: MdiIcons.viewDashboardOutline, activeIcon: MdiIcons.viewDashboard, label: 'Studio', index: 0),
     _NavItem(icon: MdiIcons.compassOutline, activeIcon: MdiIcons.compass, label: 'Discover', index: 1),
@@ -81,7 +68,6 @@ class _LeftSidebar extends GetView<LayoutController> {
     _NavItem(icon: MdiIcons.chartLineVariant, activeIcon: MdiIcons.chartLine, label: 'Pulse', index: 4),
     _NavItem(icon: MdiIcons.accountOutline, activeIcon: MdiIcons.account, label: 'Profile', index: 5),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -96,22 +82,17 @@ class _LeftSidebar extends GetView<LayoutController> {
         ),
         child: Column(
           children: [
-            // Logo
             const SizedBox(height: 20),
             _buildLogo(),
             const SizedBox(height: 8),
             Container(height: 0.5, color: AppColors.border, margin: const EdgeInsets.symmetric(horizontal: 16)),
             const SizedBox(height: 16),
-
-            // Nav items
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 children: _items.map((item) => _NavTile(item: item)).toList(),
               ),
             ),
-
-            // Bottom actions
             _buildBottomActions(isDark),
             const SizedBox(height: 16),
           ],
@@ -119,7 +100,6 @@ class _LeftSidebar extends GetView<LayoutController> {
       );
     });
   }
-
   Widget _buildLogo() {
     return Container(
       width: 40,
@@ -140,7 +120,6 @@ class _LeftSidebar extends GetView<LayoutController> {
       ),
     );
   }
-
   Widget _buildBottomActions(bool isDark) {
     return Column(
       children: [
@@ -163,13 +142,9 @@ class _LeftSidebar extends GetView<LayoutController> {
     );
   }
 }
-
-// ── Nav Tile ────────────────────────────────────────────────────────────
-
 class _NavTile extends GetView<LayoutController> {
   final _NavItem item;
   const _NavTile({required this.item});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -218,15 +193,11 @@ class _NavTile extends GetView<LayoutController> {
     });
   }
 }
-
-// ── Icon Button ─────────────────────────────────────────────────────────
-
 class _IconBtn extends StatelessWidget {
   final IconData icon;
   final String tooltip;
   final VoidCallback onTap;
   const _IconBtn({required this.icon, required this.tooltip, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return Tooltip(
@@ -246,9 +217,6 @@ class _IconBtn extends StatelessWidget {
     );
   }
 }
-
-// ── Data class ──────────────────────────────────────────────────────────
-
 class _NavItem {
   final IconData icon;
   final IconData activeIcon;

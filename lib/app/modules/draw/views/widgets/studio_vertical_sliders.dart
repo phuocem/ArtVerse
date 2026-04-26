@@ -2,112 +2,159 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/draw_controller.dart';
 import 'studio_widgets.dart';
-
 class StudioVerticalSliders extends StatelessWidget {
   final DrawController controller;
   const StudioVerticalSliders({super.key, required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 60,
-      decoration: const BoxDecoration(
-        border: Border(left: BorderSide(color: DS.border)),
-        color: DS.surface,
+      width: 52,
+      decoration: BoxDecoration(
+        color: DS.surface.withValues(alpha: 0.95),
+        border: const Border(left: BorderSide(color: DS.border)),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 0),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
       child: Column(
         children: [
-          Expanded(child: _vertControl(
+          _VertSlider(
             icon: Icons.line_weight_rounded,
             label: 'SIZE',
             value: controller.selectedWidth,
-            min: 1.0, max: 200.0,
+            min: 1.0,
+            max: 100.0,
             accent: DS.violet,
             displayFn: (v) => '${v.toInt()}',
-          )),
-          const SizedBox(height: 12),
-          _orbBtn(Icons.undo_rounded, controller.undo, tip: 'Undo', accent: DS.textDim),
+            onChanged: controller.changeWidth,
+          ),
           const SizedBox(height: 8),
-          _orbBtn(Icons.redo_rounded, controller.redo, tip: 'Redo', accent: DS.textDim),
-          const SizedBox(height: 12),
-          Expanded(child: _vertControl(
+          _OrbBtn(Icons.undo_rounded, controller.undo, tip: 'Undo'),
+          const SizedBox(height: 6),
+          _OrbBtn(Icons.redo_rounded, controller.redo, tip: 'Redo'),
+          const SizedBox(height: 8),
+          _VertSlider(
             icon: Icons.opacity_rounded,
             label: 'OPAC',
             value: controller.selectedOpacity,
-            min: 0.0, max: 1.0,
+            min: 0.0,
+            max: 1.0,
             accent: DS.cyan,
             displayFn: (v) => '${(v * 100).toInt()}',
-          )),
+            onChanged: controller.changeOpacity,
+          ),
+          const SizedBox(height: 8),
+          _VertSlider(
+            icon: Icons.lens_blur_rounded,
+            label: 'HARD',
+            value: controller.selectedHardness,
+            min: 0.0,
+            max: 1.0,
+            accent: DS.gold,
+            displayFn: (v) => '${(v * 100).toInt()}',
+            onChanged: (v) => controller.selectedHardness.value = v,
+          ),
         ],
       ),
     );
   }
-
-  Widget _vertControl({
-    required IconData icon,
-    required String label,
-    required RxDouble value,
-    required double min,
-    required double max,
-    required Color accent,
-    required String Function(double) displayFn,
-  }) {
-    return Column(
-      children: [
-        Icon(icon, size: 14, color: accent.withValues(alpha: 0.7)),
-        const SizedBox(height: 4),
-        Expanded(
-          child: RotatedBox(
-            quarterTurns: 3,
-            child: Obx(() => SliderTheme(
-              data: SliderThemeData(
-                trackHeight: 14,
-                activeTrackColor: accent.withValues(alpha: 0.9),
-                inactiveTrackColor: DS.card,
-                thumbColor: Colors.white,
-                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 9, elevation: 6),
-                overlayColor: accent.withValues(alpha: 0.1),
-                overlayShape: const RoundSliderOverlayShape(overlayRadius: 18),
-                trackShape: const RoundedRectSliderTrackShape(),
-              ),
-              child: Slider(
-                value: value.value.clamp(min, max),
-                min: min, max: max,
-                onChanged: (v) => value.value = v,
-              ),
-            )),
+}
+class _VertSlider extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final RxDouble value;
+  final double min;
+  final double max;
+  final Color accent;
+  final String Function(double) displayFn;
+  final ValueChanged<double> onChanged;
+  const _VertSlider({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.min,
+    required this.max,
+    required this.accent,
+    required this.displayFn,
+    required this.onChanged,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, size: 13, color: accent.withValues(alpha: 0.7)),
+          const SizedBox(height: 4),
+          Expanded(
+            child: RotatedBox(
+              quarterTurns: 3,
+              child: Obx(() => SliderTheme(
+                    data: SliderThemeData(
+                      trackHeight: 12,
+                      activeTrackColor: accent.withValues(alpha: 0.85),
+                      inactiveTrackColor: DS.card,
+                      thumbColor: Colors.white,
+                      thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 8, elevation: 4),
+                      overlayColor: accent.withValues(alpha: 0.1),
+                      overlayShape:
+                          const RoundSliderOverlayShape(overlayRadius: 16),
+                      trackShape: const RoundedRectSliderTrackShape(),
+                    ),
+                    child: Slider(
+                      value: value.value.clamp(min, max),
+                      min: min,
+                      max: max,
+                      onChanged: onChanged,
+                    ),
+                  )),
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Obx(() => Container(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-          decoration: BoxDecoration(color: accent.withValues(alpha: 0.1), borderRadius: DS.r8),
-          child: Text(
-            displayFn(value.value),
-            style: TextStyle(color: accent, fontSize: 9, fontWeight: FontWeight.w900, fontFamily: 'monospace'),
-          ),
-        )),
-        const SizedBox(height: 2),
-        Text(label, style: const TextStyle(color: DS.textDim, fontSize: 7, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
-      ],
+          const SizedBox(height: 4),
+          Obx(() => Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.1),
+                    borderRadius: DS.r6),
+                child: Text(displayFn(value.value),
+                    style: TextStyle(
+                        color: accent,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'monospace')),
+              )),
+          const SizedBox(height: 2),
+          Text(label,
+              style: const TextStyle(
+                  color: DS.textDim,
+                  fontSize: 7,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.5)),
+        ],
+      ),
     );
   }
-
-  Widget _orbBtn(IconData icon, VoidCallback onTap, {required String tip, required Color accent}) {
+}
+class _OrbBtn extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final String tip;
+  const _OrbBtn(this.icon, this.onTap, {required this.tip});
+  @override
+  Widget build(BuildContext context) {
     return Tooltip(
       message: tip,
       child: InkWell(
         onTap: onTap,
         borderRadius: DS.r50,
         child: Container(
-          width: 36, height: 36,
+          width: 32,
+          height: 32,
           decoration: BoxDecoration(
             color: DS.card,
             shape: BoxShape.circle,
             border: Border.all(color: DS.border),
           ),
-          child: Icon(icon, size: 16, color: DS.textDim),
+          child: Icon(icon, size: 15, color: DS.textDim),
         ),
       ),
     );

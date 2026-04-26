@@ -5,10 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/global/global_artwork_card.dart';
 import '../controllers/profile_controller.dart';
-
 class ProfileViewTablet extends GetView<ProfileController> {
   const ProfileViewTablet({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +21,6 @@ class ProfileViewTablet extends GetView<ProfileController> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// GUEST VIEW
-// ════════════════════════════════════════════════════════════════════════
-
-// ignore: must_be_immutable
 class _GuestView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -69,31 +61,19 @@ class _GuestView extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// LOGGED IN VIEW
-// ════════════════════════════════════════════════════════════════════════
-
 class _LoggedInView extends StatelessWidget {
   final ProfileController controller;
   const _LoggedInView({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Top bar
         _ProfileTopBar(controller: controller),
-
-        // Content
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Left: profile card + stats
               SizedBox(width: 280, child: _ProfileSidebar(controller: controller)),
-
-              // Right: artwork grid
               Expanded(child: _ArtworkGrid(controller: controller)),
             ],
           ),
@@ -102,13 +82,9 @@ class _LoggedInView extends StatelessWidget {
     );
   }
 }
-
-// ── Top Bar ──────────────────────────────────────────────────────────────
-
 class _ProfileTopBar extends StatelessWidget {
   final ProfileController controller;
   const _ProfileTopBar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -126,8 +102,6 @@ class _ProfileTopBar extends StatelessWidget {
           Obx(() => Text('${controller.post.length} works',
             style: GoogleFonts.ibmPlexMono(color: AppColors.textTertiary, fontSize: 10))),
           const Spacer(),
-
-          // Tab filter
           Obx(() => Row(
             children: controller.tabArt.map((tab) {
               final active = controller.selectedTab.value == tab;
@@ -152,10 +126,7 @@ class _ProfileTopBar extends StatelessWidget {
               );
             }).toList(),
           )),
-
           const SizedBox(width: 12),
-
-          // Edit profile
           GestureDetector(
             onTap: () => Get.toNamed<void>('/profile/edit'),
             child: Container(
@@ -181,13 +152,9 @@ class _ProfileTopBar extends StatelessWidget {
     );
   }
 }
-
-// ── Sidebar ───────────────────────────────────────────────────────────
-
 class _ProfileSidebar extends StatelessWidget {
   final ProfileController controller;
   const _ProfileSidebar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -198,7 +165,6 @@ class _ProfileSidebar extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          // Avatar + name
           Obx(() {
             final user = controller.currentUser.value!;
             return Column(
@@ -259,12 +225,9 @@ class _ProfileSidebar extends StatelessWidget {
               ],
             );
           }),
-
           const SizedBox(height: 20),
           Container(height: 0.5, color: AppColors.border),
           const SizedBox(height: 16),
-
-          // Bio
           Obx(() {
             final bio = controller.currentUser.value?.bio ?? '';
             if (bio.isNotEmpty) {
@@ -276,8 +239,6 @@ class _ProfileSidebar extends StatelessWidget {
             }
             return const SizedBox.shrink();
           }),
-
-          // Stats
           Obx(() {
             final user = controller.currentUser.value!;
             return Row(
@@ -289,12 +250,9 @@ class _ProfileSidebar extends StatelessWidget {
               ],
             );
           }),
-
           const SizedBox(height: 16),
           Container(height: 0.5, color: AppColors.border),
           const SizedBox(height: 16),
-
-          // Location + website
           Obx(() {
             final user = controller.currentUser.value!;
             return Column(
@@ -310,10 +268,7 @@ class _ProfileSidebar extends StatelessWidget {
               ],
             );
           }),
-
           const SizedBox(height: 20),
-
-          // Wallet shortcut
           GestureDetector(
             onTap: () => Get.toNamed<void>('/wallet'),
             child: Container(
@@ -341,12 +296,10 @@ class _ProfileSidebar extends StatelessWidget {
     );
   }
 }
-
 class _StatColumn extends StatelessWidget {
   final String value;
   final String label;
   const _StatColumn(this.value, this.label);
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -359,12 +312,10 @@ class _StatColumn extends StatelessWidget {
     );
   }
 }
-
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String text;
   const _InfoRow({required this.icon, required this.text});
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -380,13 +331,9 @@ class _InfoRow extends StatelessWidget {
     );
   }
 }
-
-// ── Artwork Grid ──────────────────────────────────────────────────────
-
 class _ArtworkGrid extends StatelessWidget {
   final ProfileController controller;
   const _ArtworkGrid({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -417,7 +364,6 @@ class _ArtworkGrid extends StatelessWidget {
           ).animate().fadeIn(duration: 600.ms),
         );
       }
-
       return GridView.builder(
         controller: controller.scrollController,
         padding: const EdgeInsets.all(24),

@@ -7,22 +7,16 @@ import 'widgets/project_card.dart' as app_widgets;
 import '../../layout/controllers/layout_controller.dart';
 import '../../../core/theme/app_colors.dart';
 import 'dialogs/create_project_dialog.dart';
-
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
-
   @override
   Widget build(BuildContext context) {
     final lc = Get.find<LayoutController>();
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
         children: [
-          // Ambient orbs
           _AmbientOrbs(lc: lc),
-
-          // Main content
           Column(
             children: [
               _TopBar(controller: controller, lc: lc),
@@ -30,12 +24,10 @@ class HomeView extends GetView<HomeController> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Main project grid
                     Expanded(
                       flex: 7,
                       child: _ProjectArea(controller: controller, lc: lc),
                     ),
-                    // Right activity panel
                     SizedBox(
                       width: 280,
                       child: _ActivityPanel(controller: controller, lc: lc),
@@ -50,16 +42,10 @@ class HomeView extends GetView<HomeController> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// TOP BAR
-// ════════════════════════════════════════════════════════════════════════
-
 class _TopBar extends StatelessWidget {
   final HomeController controller;
   final LayoutController lc;
   const _TopBar({required this.controller, required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -71,7 +57,6 @@ class _TopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Title
           Text(
             'Studio',
             style: GoogleFonts.lexend(
@@ -96,15 +81,9 @@ class _TopBar extends StatelessWidget {
               ),
             )),
           ),
-
           const Spacer(),
-
-          // Filter chips
-          Obx(() => _FilterRow(controller: controller, lc: lc)),
-
+          _FilterRow(controller: controller, lc: lc),
           const SizedBox(width: 16),
-
-          // New Project button
           GestureDetector(
             onTap: () => Get.dialog<void>(CreateProjectDialog(controller: controller, initialType: 0)),
             child: Container(
@@ -138,24 +117,19 @@ class _TopBar extends StatelessWidget {
     );
   }
 }
-
-// ── Filter Row ───────────────────────────────────────────────────────────
-
 class _FilterRow extends StatelessWidget {
   final HomeController controller;
   final LayoutController lc;
   const _FilterRow({required this.controller, required this.lc});
-
   static const _filters = [
     ('All', 'all'),
     ('Animation', 'anim'),
     ('Artwork', 'art'),
     ('Starred', 'starred'),
   ];
-
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Obx(() => Row(
       children: _filters.map((f) {
         final active = controller.filterType.value == f.$2;
         return GestureDetector(
@@ -183,31 +157,20 @@ class _FilterRow extends StatelessWidget {
           ),
         );
       }).toList(),
-    );
+    ));
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// PROJECT AREA
-// ════════════════════════════════════════════════════════════════════════
-
 class _ProjectArea extends StatelessWidget {
   final HomeController controller;
   final LayoutController lc;
   const _ProjectArea({required this.controller, required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        // Hero banner
         SliverToBoxAdapter(child: _HeroBanner(controller: controller, lc: lc)),
-
-        // Stats row
         SliverToBoxAdapter(child: _StatsRow(controller: controller, lc: lc)),
-
-        // Section header
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
@@ -228,8 +191,6 @@ class _ProjectArea extends StatelessWidget {
             ),
           ),
         ),
-
-        // Project grid
         Obx(() {
           final projects = controller.filteredProjects;
           if (projects.isEmpty) {
@@ -270,14 +231,10 @@ class _ProjectArea extends StatelessWidget {
     );
   }
 }
-
-// ── Hero Banner ──────────────────────────────────────────────────────────
-
 class _HeroBanner extends StatelessWidget {
   final HomeController controller;
   final LayoutController lc;
   const _HeroBanner({required this.controller, required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -291,7 +248,6 @@ class _HeroBanner extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          // Background
           PageView.builder(
             controller: controller.bannerPageController,
             onPageChanged: (i) => controller.bannerIndex.value = i,
@@ -303,8 +259,6 @@ class _HeroBanner extends StatelessWidget {
               colorBlendMode: BlendMode.darken,
             ),
           ),
-
-          // Gradient overlay
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -315,8 +269,6 @@ class _HeroBanner extends StatelessWidget {
               ),
             ),
           ),
-
-          // Content
           Padding(
             padding: const EdgeInsets.all(28),
             child: Column(
@@ -374,8 +326,6 @@ class _HeroBanner extends StatelessWidget {
               ],
             ),
           ),
-
-          // Page dots
           Positioned(
             bottom: 12,
             right: 16,
@@ -400,21 +350,16 @@ class _HeroBanner extends StatelessWidget {
     ).animate().fadeIn(duration: 600.ms);
   }
 }
-
-// ── Stats Row ────────────────────────────────────────────────────────────
-
 class _StatsRow extends StatelessWidget {
   final HomeController controller;
   final LayoutController lc;
   const _StatsRow({required this.controller, required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       final total = controller.filteredProjects.length;
       final anims = controller.filteredProjects.where((p) => p.isAnimation).length;
       final starred = controller.filteredProjects.where((p) => p.isFavorite).length;
-
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Row(
@@ -432,13 +377,11 @@ class _StatsRow extends StatelessWidget {
     });
   }
 }
-
 class _StatCard extends StatelessWidget {
   final String value;
   final String label;
   final Color color;
   const _StatCard({required this.value, required this.label, required this.color});
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -475,16 +418,10 @@ class _StatCard extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// ACTIVITY PANEL (right side)
-// ════════════════════════════════════════════════════════════════════════
-
 class _ActivityPanel extends StatelessWidget {
   final HomeController controller;
   final LayoutController lc;
   const _ActivityPanel({required this.controller, required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -524,11 +461,9 @@ class _ActivityPanel extends StatelessWidget {
                   colorText: AppColors.textPrimary,
                   duration: const Duration(seconds: 3)),
           ),
-
           const SizedBox(height: 28),
           const _SectionLabel('RECENT ACTIVITY'),
           const SizedBox(height: 12),
-
           Obx(() {
             final recent = controller.filteredProjects.take(5).toList();
             if (recent.isEmpty) {
@@ -564,11 +499,9 @@ class _ActivityPanel extends StatelessWidget {
     );
   }
 }
-
 class _SectionLabel extends StatelessWidget {
   final String text;
   const _SectionLabel(this.text);
-
   @override
   Widget build(BuildContext context) {
     return Text(
@@ -582,7 +515,6 @@ class _SectionLabel extends StatelessWidget {
     );
   }
 }
-
 class _QuickAction extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -590,7 +522,6 @@ class _QuickAction extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
   const _QuickAction({required this.icon, required this.label, required this.sub, required this.color, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -636,19 +567,16 @@ class _QuickAction extends StatelessWidget {
     );
   }
 }
-
 class _RecentItem extends StatelessWidget {
   final String name;
   final bool isAnim;
   final DateTime date;
   final VoidCallback onTap;
   const _RecentItem({required this.name, required this.isAnim, required this.date, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     final diff = DateTime.now().difference(date);
     final timeStr = diff.inDays > 0 ? '${diff.inDays}d ago' : diff.inHours > 0 ? '${diff.inHours}h ago' : 'Just now';
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -705,15 +633,9 @@ class _RecentItem extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// AMBIENT ORBS
-// ════════════════════════════════════════════════════════════════════════
-
 class _AmbientOrbs extends StatelessWidget {
   final LayoutController lc;
   const _AmbientOrbs({required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -724,12 +646,10 @@ class _AmbientOrbs extends StatelessWidget {
     ]);
   }
 }
-
 class _Orb extends StatelessWidget {
   final double radius;
   final Color color;
   const _Orb({required this.radius, required this.color});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -742,15 +662,9 @@ class _Orb extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// EMPTY STATE
-// ════════════════════════════════════════════════════════════════════════
-
 class _EmptyState extends StatelessWidget {
   final LayoutController lc;
   const _EmptyState({required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(

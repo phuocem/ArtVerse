@@ -5,17 +5,14 @@ import '../../../core/theme/app_colors.dart';
 import '../../layout/controllers/layout_controller.dart';
 import '../controllers/settings_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
-
 class SettingsView extends GetView<SettingsController> {
   const SettingsView({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: Column(
         children: [
-          // Top bar
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -38,14 +35,10 @@ class SettingsView extends GetView<SettingsController> {
               ],
             ),
           ),
-
-          // Content
           Expanded(
             child: Row(
               children: [
-                // Left nav
                 SizedBox(width: 200, child: _SettingsNav()),
-                // Right content
                 Expanded(child: _SettingsContent(controller: controller)),
               ],
             ),
@@ -55,19 +48,12 @@ class SettingsView extends GetView<SettingsController> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// LEFT NAV
-// ════════════════════════════════════════════════════════════════════════
-
 class _SettingsNav extends StatefulWidget {
   @override
   State<_SettingsNav> createState() => _SettingsNavState();
 }
-
 class _SettingsNavState extends State<_SettingsNav> {
   int _selected = 0;
-
   static const _items = [
     (Icons.person_outline_rounded, 'Account'),
     (Icons.palette_outlined, 'Appearance'),
@@ -76,7 +62,6 @@ class _SettingsNavState extends State<_SettingsNav> {
     (Icons.privacy_tip_outlined, 'Privacy'),
     (Icons.info_outline_rounded, 'About'),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -119,26 +104,18 @@ class _SettingsNavState extends State<_SettingsNav> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// SETTINGS CONTENT
-// ════════════════════════════════════════════════════════════════════════
-
 class _SettingsContent extends StatelessWidget {
   final SettingsController controller;
   const _SettingsContent({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     final lc = Get.find<LayoutController>();
     final pc = Get.find<ProfileController>();
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Account section
           const _SectionHeader('ACCOUNT'),
           const SizedBox(height: 16),
           Obx(() {
@@ -166,17 +143,11 @@ class _SettingsContent extends StatelessWidget {
               ],
             );
           }),
-
           const SizedBox(height: 32),
-
-          // Appearance
           const _SectionHeader('APPEARANCE'),
           const SizedBox(height: 16),
           _ThemeSection(controller: controller, lc: lc),
-
           const SizedBox(height: 32),
-
-          // Notifications
           const _SectionHeader('NOTIFICATIONS'),
           const SizedBox(height: 16),
           Obx(() => Column(
@@ -198,10 +169,7 @@ class _SettingsContent extends StatelessWidget {
               ),
             ],
           )),
-
           const SizedBox(height: 32),
-
-          // Language
           const _SectionHeader('LANGUAGE'),
           const SizedBox(height: 16),
           Obx(() => Row(
@@ -221,10 +189,7 @@ class _SettingsContent extends StatelessWidget {
               ),
             ],
           )),
-
           const SizedBox(height: 32),
-
-          // Privacy
           const _SectionHeader('PRIVACY & DATA'),
           const SizedBox(height: 16),
           _SettingsTile(
@@ -241,10 +206,7 @@ class _SettingsContent extends StatelessWidget {
             titleColor: AppColors.accent,
             onTap: () => controller.requestErasure(),
           ),
-
           const SizedBox(height: 32),
-
-          // About
           const _SectionHeader('ABOUT'),
           const SizedBox(height: 16),
           Container(
@@ -293,13 +255,9 @@ class _SettingsContent extends StatelessWidget {
     );
   }
 }
-
-// ── Helper Widgets ────────────────────────────────────────────────────
-
 class _SectionHeader extends StatelessWidget {
   final String text;
   const _SectionHeader(this.text);
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -312,11 +270,9 @@ class _SectionHeader extends StatelessWidget {
     );
   }
 }
-
 class _ProfileTile extends StatelessWidget {
   final dynamic user;
   const _ProfileTile({required this.user});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -370,12 +326,10 @@ class _ProfileTile extends StatelessWidget {
     );
   }
 }
-
 class _ThemeSection extends StatelessWidget {
   final SettingsController controller;
   final LayoutController lc;
   const _ThemeSection({required this.controller, required this.lc});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -411,7 +365,6 @@ class _ThemeSection extends StatelessWidget {
     );
   }
 }
-
 class _SettingsTile extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -423,7 +376,6 @@ class _SettingsTile extends StatelessWidget {
     required this.icon, required this.title, required this.subtitle,
     this.titleColor = AppColors.textPrimary, this.trailing, this.onTap,
   });
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -457,7 +409,6 @@ class _SettingsTile extends StatelessWidget {
     );
   }
 }
-
 class _ToggleTile extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -466,7 +417,6 @@ class _ToggleTile extends StatelessWidget {
   final ValueChanged<bool> onChanged;
   const _ToggleTile({required this.icon, required this.title, required this.subtitle,
     required this.value, required this.onChanged});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -502,7 +452,6 @@ class _ToggleTile extends StatelessWidget {
     );
   }
 }
-
 class _LangOption extends StatelessWidget {
   final String code;
   final String country;
@@ -512,7 +461,6 @@ class _LangOption extends StatelessWidget {
   final VoidCallback onTap;
   const _LangOption({required this.code, required this.country, required this.label,
     required this.flag, required this.selected, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

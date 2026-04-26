@@ -6,17 +6,14 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../../core/theme/app_colors.dart';
 import '../controllers/marketplace_controller.dart';
 import '../../../data/models/resource_model.dart';
-
 class MarketplaceViewTablet extends GetView<MarketplaceController> {
   const MarketplaceViewTablet({super.key});
-
   static final _categories = [
     ('All', 'all', Icons.apps_rounded),
     ('Palettes', 'palette', Icons.palette_outlined),
     ('Lineart', 'lineart', Icons.gesture_rounded),
     ('Remix', 'remix', Icons.shuffle_rounded),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +24,7 @@ class MarketplaceViewTablet extends GetView<MarketplaceController> {
           Expanded(
             child: Row(
               children: [
-                // Left panel: featured + stats
                 SizedBox(width: 260, child: _MarketLeftPanel(controller: controller)),
-                // Main grid
                 Expanded(child: _MarketGrid(controller: controller)),
               ],
             ),
@@ -39,16 +34,10 @@ class MarketplaceViewTablet extends GetView<MarketplaceController> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// TOP BAR
-// ════════════════════════════════════════════════════════════════════════
-
 class _MarketTopBar extends StatelessWidget {
   final MarketplaceController controller;
   final List<(String, String, IconData)> categories;
   const _MarketTopBar({required this.controller, required this.categories});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,8 +55,6 @@ class _MarketTopBar extends StatelessWidget {
           Obx(() => Text('${controller.filteredResources.length} assets',
             style: GoogleFonts.ibmPlexMono(color: AppColors.textTertiary, fontSize: 10))),
           const SizedBox(width: 24),
-
-          // Category tabs
           Obx(() => Row(
             children: categories.map((cat) {
               final active = controller.selectedCategory.value == cat.$2;
@@ -99,10 +86,7 @@ class _MarketTopBar extends StatelessWidget {
               );
             }).toList(),
           )),
-
           const Spacer(),
-
-          // Upload button
           GestureDetector(
             onTap: () => Get.toNamed<void>('/marketplace/upload'),
             child: Container(
@@ -127,15 +111,9 @@ class _MarketTopBar extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// LEFT PANEL
-// ════════════════════════════════════════════════════════════════════════
-
 class _MarketLeftPanel extends StatelessWidget {
   final MarketplaceController controller;
   const _MarketLeftPanel({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -146,11 +124,8 @@ class _MarketLeftPanel extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Revenue card
           Obx(() => _RevenueCard(revenue: controller.totalRevenue.value)),
           const SizedBox(height: 16),
-
-          // My assets section
           Text('MY ASSETS', style: GoogleFonts.ibmPlexMono(
             color: AppColors.textTertiary, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 2)),
           const SizedBox(height: 10),
@@ -168,7 +143,6 @@ class _MarketLeftPanel extends StatelessWidget {
               children: owned.take(5).map((r) => _OwnedAssetRow(resource: r)).toList(),
             );
           }),
-
           const SizedBox(height: 16),
           Text('QUICK ACTIONS', style: GoogleFonts.ibmPlexMono(
             color: AppColors.textTertiary, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 2)),
@@ -183,11 +157,9 @@ class _MarketLeftPanel extends StatelessWidget {
     );
   }
 }
-
 class _RevenueCard extends StatelessWidget {
   final double revenue;
   const _RevenueCard({required this.revenue});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -212,11 +184,9 @@ class _RevenueCard extends StatelessWidget {
     );
   }
 }
-
 class _OwnedAssetRow extends StatelessWidget {
   final ResourceModel resource;
   const _OwnedAssetRow({required this.resource});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -251,14 +221,12 @@ class _OwnedAssetRow extends StatelessWidget {
     );
   }
 }
-
 class _ActionTile extends StatelessWidget {
   final IconData icon;
   final String label;
   final String sub;
   final VoidCallback onTap;
   const _ActionTile({required this.icon, required this.label, required this.sub, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -289,15 +257,9 @@ class _ActionTile extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// MARKET GRID
-// ════════════════════════════════════════════════════════════════════════
-
 class _MarketGrid extends StatelessWidget {
   final MarketplaceController controller;
   const _MarketGrid({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -338,13 +300,11 @@ class _MarketGrid extends StatelessWidget {
     });
   }
 }
-
 class _AssetCard extends StatelessWidget {
   final ResourceModel resource;
   final bool isOwned;
   final VoidCallback onTap;
   const _AssetCard({required this.resource, required this.isOwned, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -359,7 +319,6 @@ class _AssetCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Thumbnail
             Expanded(
               child: Stack(
                 fit: StackFit.expand,
@@ -377,7 +336,6 @@ class _AssetCard extends StatelessWidget {
                           : null,
                     ),
                   ),
-                  // Type badge
                   Positioned(
                     top: 10, right: 10,
                     child: Container(
@@ -402,8 +360,6 @@ class _AssetCard extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Info
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(

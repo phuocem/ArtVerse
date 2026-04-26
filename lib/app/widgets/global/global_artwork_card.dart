@@ -5,37 +5,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:artverse/app/data/models/post_model.dart';
 import '../../modules/layout/controllers/layout_controller.dart';
-
 class GlobalArtworkCard extends StatefulWidget {
   final PostModel post;
   final VoidCallback onTap;
-
   const GlobalArtworkCard({
     super.key,
     required this.post,
     required this.onTap,
   });
-
   @override
   State<GlobalArtworkCard> createState() => _GlobalArtworkCardState();
 }
-
 class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
   bool _isHovered = false;
-
-  
-  
   double get _aspectRatio {
     if (widget.post.id == null) return 1.0;
     final hash = widget.post.id.hashCode;
-    
     return 0.75 + (hash % 100) / 180.0;
   }
-
   @override
   Widget build(BuildContext context) {
     final lc = Get.find<LayoutController>();
-
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _isHovered = true),
@@ -48,7 +38,6 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
@@ -66,7 +55,6 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
                     aspectRatio: _aspectRatio,
                     child: Stack(
                       children: [
-                        
                         Positioned.fill(
                           child: CachedNetworkImage(
                             imageUrl: widget.post.thumbnail,
@@ -83,8 +71,6 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
                             ),
                           ),
                         ),
-
-                        
                         Positioned.fill(
                           child: AnimatedOpacity(
                             duration: const Duration(milliseconds: 300),
@@ -104,9 +90,6 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
                             ),
                           ),
                         ),
-
-
-                        
                         if (_isHovered) ...[
                           Positioned(
                             bottom: 12, right: 12,
@@ -125,14 +108,11 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
                   ),
                 ),
               ),
-
-              
               Padding(
                 padding: const EdgeInsets.only(top: 16, left: 4, right: 4),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    
                     Container(
                       width: 32, height: 32,
                       decoration: BoxDecoration(
@@ -147,10 +127,7 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
                             : Icon(Icons.person_outline_rounded, size: 16, color: lc.textColor.withValues(alpha: 0.3)),
                       ),
                     ),
-                    
                     const SizedBox(width: 12),
-                    
-                    
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,10 +148,7 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
                         ],
                       ),
                     ),
-
                     const SizedBox(width: 12),
-
-                    
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -198,8 +172,6 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
       ),
     );
   }
-
-  // ignore: unused_element
   Widget _typeBadge(String label, LayoutController lc) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -211,7 +183,6 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
       child: Text(label, style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
     );
   }
-
   String _formatCount(int count) {
     if (count >= 1000000) return '${(count / 1000000).toStringAsFixed(1)}m';
     if (count >= 1000) return '${(count / 1000).toStringAsFixed(1)}k';

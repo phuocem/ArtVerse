@@ -8,10 +8,8 @@ import '../../../data/models/comment_model.dart';
 import '../../../data/models/post_model.dart';
 import '../controllers/watch_controller.dart';
 import '../../profile/controllers/profile_controller.dart';
-
 class WatchViewTablet extends GetView<WatchController> {
   const WatchViewTablet({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +28,6 @@ class WatchViewTablet extends GetView<WatchController> {
       }),
     );
   }
-
   Widget _buildEmpty() {
     return Center(
       child: Column(
@@ -45,33 +42,23 @@ class WatchViewTablet extends GetView<WatchController> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// WATCH BODY
-// ════════════════════════════════════════════════════════════════════════
-
 class _WatchBody extends StatelessWidget {
   final WatchController controller;
   final PostModel post;
   const _WatchBody({required this.controller, required this.post});
-
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // Player area
         Expanded(
           flex: 7,
           child: Column(
             children: [
-              // Video player
               _VideoPlayer(controller: controller),
-              // Info panel
               Expanded(child: _VideoInfo(controller: controller, post: post)),
             ],
           ),
         ),
-        // Right: comments + related
         SizedBox(
           width: 340,
           child: _RightPanel(controller: controller, post: post),
@@ -80,13 +67,9 @@ class _WatchBody extends StatelessWidget {
     );
   }
 }
-
-// ── Video Player ─────────────────────────────────────────────────────────
-
 class _VideoPlayer extends StatelessWidget {
   final WatchController controller;
   const _VideoPlayer({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -114,18 +97,13 @@ class _VideoPlayer extends StatelessWidget {
     );
   }
 }
-
-// ── Video Info ────────────────────────────────────────────────────────────
-
 class _VideoInfo extends StatelessWidget {
   final WatchController controller;
   final PostModel post;
   const _VideoInfo({required this.controller, required this.post});
-
   @override
   Widget build(BuildContext context) {
     final pc = Get.find<ProfileController>();
-
     return Container(
       color: AppColors.bg,
       padding: const EdgeInsets.all(20),
@@ -133,13 +111,10 @@ class _VideoInfo extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
             Text(post.name.isNotEmpty ? post.name : 'Untitled',
               style: GoogleFonts.lexend(
                 color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w800)),
             const SizedBox(height: 8),
-
-            // Meta row
             Row(
               children: [
                 Obx(() => Text(
@@ -147,8 +122,6 @@ class _VideoInfo extends StatelessWidget {
                   style: GoogleFonts.ibmPlexMono(color: AppColors.textTertiary, fontSize: 10),
                 )),
                 const Spacer(),
-
-                // Like button
                 Obx(() => GestureDetector(
                   onTap: () => controller.toggleLike(),
                   child: AnimatedContainer(
@@ -193,8 +166,6 @@ class _VideoInfo extends StatelessWidget {
             const SizedBox(height: 16),
             Container(height: 0.5, color: AppColors.border),
             const SizedBox(height: 14),
-
-            // Author info
             Obx(() {
               final user = controller.user.value;
               if (user == null) return const SizedBox.shrink();
@@ -222,7 +193,6 @@ class _VideoInfo extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  // Follow
                   Obx(() {
                     final isCurrentUser = pc.currentUser.value?.id == user.id;
                     if (isCurrentUser) return const SizedBox.shrink();
@@ -242,30 +212,21 @@ class _VideoInfo extends StatelessWidget {
                 ],
               );
             }),
-
-            // Description
             if (post.description?.isNotEmpty == true) ...[
               const SizedBox(height: 12),
               Text(post.description!, style: GoogleFonts.plusJakartaSans(
                 color: AppColors.textSecondary, fontSize: 12, height: 1.6)),
             ],
-
           ],
         ),
       ),
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// RIGHT PANEL — Comments + Related
-// ════════════════════════════════════════════════════════════════════════
-
 class _RightPanel extends StatelessWidget {
   final WatchController controller;
   final PostModel post;
   const _RightPanel({required this.controller, required this.post});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -277,7 +238,6 @@ class _RightPanel extends StatelessWidget {
         length: 2,
         child: Column(
           children: [
-            // Tab bar
             Container(
               decoration: const BoxDecoration(
                 border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
@@ -295,7 +255,6 @@ class _RightPanel extends StatelessWidget {
                 ],
               ),
             ),
-
             Expanded(
               child: TabBarView(
                 children: [
@@ -310,21 +269,15 @@ class _RightPanel extends StatelessWidget {
     );
   }
 }
-
-// ── Comments Tab ──────────────────────────────────────────────────────────
-
 class _CommentsTab extends StatelessWidget {
   final WatchController controller;
   final String postId;
   const _CommentsTab({required this.controller, required this.postId});
-
   @override
   Widget build(BuildContext context) {
     final textCtrl = TextEditingController();
-
     return Column(
       children: [
-        // Comment input
         Container(
           padding: const EdgeInsets.all(12),
           decoration: const BoxDecoration(
@@ -375,8 +328,6 @@ class _CommentsTab extends StatelessWidget {
             ],
           ),
         ),
-
-        // Comments list
         Expanded(
           child: Obx(() {
             final comments = controller.comments;
@@ -397,12 +348,10 @@ class _CommentsTab extends StatelessWidget {
     );
   }
 }
-
 class _CommentTile extends StatelessWidget {
   final CommentModel comment;
   final int index;
   const _CommentTile({required this.comment, required this.index});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -438,13 +387,9 @@ class _CommentTile extends StatelessWidget {
     ).animate(delay: Duration(milliseconds: 40 * index)).fadeIn(duration: 300.ms);
   }
 }
-
-// ── Related Tab ───────────────────────────────────────────────────────────
-
 class _RelatedTab extends StatelessWidget {
   final WatchController controller;
   const _RelatedTab({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -463,12 +408,10 @@ class _RelatedTab extends StatelessWidget {
     });
   }
 }
-
 class _RelatedCard extends StatelessWidget {
   final PostModel post;
   final int index;
   const _RelatedCard({required this.post, required this.index});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -483,7 +426,6 @@ class _RelatedCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         child: Row(
           children: [
-            // Thumbnail
             Container(
               width: 100, height: 64,
               color: AppColors.bg,

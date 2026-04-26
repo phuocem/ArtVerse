@@ -5,10 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../controllers/dashboard_controller.dart';
 import '../../../data/models/post_model.dart';
-
 class DashboardViewTablet extends GetView<DashboardController> {
   const DashboardViewTablet({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,15 +26,11 @@ class DashboardViewTablet extends GetView<DashboardController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Stats row
                     _StatsGrid(controller: controller),
                     const SizedBox(height: 28),
-
-                    // 2-column layout
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Left: chart + recent projects
                         Expanded(
                           flex: 6,
                           child: Column(
@@ -48,7 +42,6 @@ class DashboardViewTablet extends GetView<DashboardController> {
                           ),
                         ),
                         const SizedBox(width: 20),
-                        // Right: achievements + activity
                         Expanded(
                           flex: 4,
                           child: Column(
@@ -71,15 +64,9 @@ class DashboardViewTablet extends GetView<DashboardController> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// TOP BAR
-// ════════════════════════════════════════════════════════════════════════
-
 class _DashTopBar extends StatelessWidget {
   final DashboardController controller;
   const _DashTopBar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -97,8 +84,6 @@ class _DashTopBar extends StatelessWidget {
           Text('Analytics', style: GoogleFonts.plusJakartaSans(
             color: AppColors.textTertiary, fontSize: 12)),
           const Spacer(),
-
-          // Period selector
           Obx(() => Row(
             children: ['Week', 'Month', 'Year'].map((p) {
               final active = controller.selectedPeriod.value == p;
@@ -125,7 +110,6 @@ class _DashTopBar extends StatelessWidget {
               );
             }).toList(),
           )),
-
           const SizedBox(width: 16),
           GestureDetector(
             onTap: () => controller.fetchDashboardData(),
@@ -144,15 +128,9 @@ class _DashTopBar extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// STATS GRID
-// ════════════════════════════════════════════════════════════════════════
-
 class _StatsGrid extends StatelessWidget {
   final DashboardController controller;
   const _StatsGrid({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() => Row(
@@ -168,14 +146,12 @@ class _StatsGrid extends StatelessWidget {
     ));
   }
 }
-
 class _KpiCard extends StatelessWidget {
   final String value;
   final String label;
   final Color color;
   final IconData icon;
   const _KpiCard({required this.value, required this.label, required this.color, required this.icon});
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -212,15 +188,9 @@ class _KpiCard extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// CHART CARD
-// ════════════════════════════════════════════════════════════════════════
-
 class _ChartCard extends StatelessWidget {
   final DashboardController controller;
   const _ChartCard({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return _Card(
@@ -269,15 +239,9 @@ class _ChartCard extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// RECENT PROJECTS
-// ════════════════════════════════════════════════════════════════════════
-
 class _RecentProjectsCard extends StatelessWidget {
   final DashboardController controller;
   const _RecentProjectsCard({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return _Card(
@@ -300,12 +264,10 @@ class _RecentProjectsCard extends StatelessWidget {
     );
   }
 }
-
 class _PostRow extends StatelessWidget {
   final PostModel post;
   final int index;
   const _PostRow({required this.post, required this.index});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -348,15 +310,9 @@ class _PostRow extends StatelessWidget {
     ).animate(delay: Duration(milliseconds: 60 * index)).fadeIn(duration: 400.ms);
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// STYLE DNA
-// ════════════════════════════════════════════════════════════════════════
-
 class _StyleDNACard extends StatelessWidget {
   final DashboardController controller;
   const _StyleDNACard({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return _Card(
@@ -397,15 +353,9 @@ class _StyleDNACard extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// ACHIEVEMENTS
-// ════════════════════════════════════════════════════════════════════════
-
 class _AchievementsCard extends StatelessWidget {
   final DashboardController controller;
   const _AchievementsCard({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return _Card(
@@ -429,12 +379,10 @@ class _AchievementsCard extends StatelessWidget {
     );
   }
 }
-
 class _AchBadge extends StatelessWidget {
   final String title;
   final bool unlocked;
   const _AchBadge({required this.title, required this.unlocked});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -462,17 +410,11 @@ class _AchBadge extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// SHARED CARD WRAPPER
-// ════════════════════════════════════════════════════════════════════════
-
 class _Card extends StatelessWidget {
   final String title;
   final String subtitle;
   final Widget child;
   const _Card({required this.title, required this.subtitle, required this.child});
-
   @override
   Widget build(BuildContext context) {
     return Container(

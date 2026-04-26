@@ -8,28 +8,20 @@ import '../../../core/theme/app_colors.dart';
 import '../../../widgets/global/global_artwork_card.dart';
 import '../../layout/controllers/layout_controller.dart';
 import '../controllers/community_controller.dart';
-
 class CommunityViewTablet extends GetView<CommunityController> {
   const CommunityViewTablet({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          // Top bar
           _CommunityTopBar(controller: controller),
-
-          // Body
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Left filter rail
                 const _FilterRail(),
-
-                // Main grid
                 Expanded(
                   child: _PostGrid(controller: controller),
                 ),
@@ -41,15 +33,9 @@ class CommunityViewTablet extends GetView<CommunityController> {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// TOP BAR
-// ════════════════════════════════════════════════════════════════════════
-
 class _CommunityTopBar extends StatelessWidget {
   final CommunityController controller;
   const _CommunityTopBar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -69,13 +55,8 @@ class _CommunityTopBar extends StatelessWidget {
             style: GoogleFonts.ibmPlexMono(color: AppColors.textTertiary, fontSize: 10),
           )),
           const Spacer(),
-
-          // Search
           _SearchBar(controller: controller),
-
           const SizedBox(width: 12),
-
-          // Upload
           GestureDetector(
             onTap: () => Get.toNamed<void>('/community/upload'),
             child: Container(
@@ -100,11 +81,9 @@ class _CommunityTopBar extends StatelessWidget {
     );
   }
 }
-
 class _SearchBar extends StatelessWidget {
   final CommunityController controller;
   const _SearchBar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -138,14 +117,8 @@ class _SearchBar extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// FILTER RAIL (left)
-// ════════════════════════════════════════════════════════════════════════
-
 class _FilterRail extends GetView<CommunityController> {
   const _FilterRail();
-
   static const _cats = [
     ('All', 'all', Icons.apps_rounded),
     ('Photos', 'art_photos', Icons.photo_outlined),
@@ -154,7 +127,6 @@ class _FilterRail extends GetView<CommunityController> {
     ('Illustrations', 'illustrations', Icons.brush_outlined),
     ('Animations', 'animations', Icons.animation_rounded),
   ];
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -171,7 +143,6 @@ class _FilterRail extends GetView<CommunityController> {
             child: Text('FILTER', style: GoogleFonts.ibmPlexMono(
               color: AppColors.textTertiary, fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 2)),
           ),
-
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -207,8 +178,6 @@ class _FilterRail extends GetView<CommunityController> {
               })).toList(),
             ),
           ),
-
-          // Community links
           Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
@@ -228,13 +197,11 @@ class _FilterRail extends GetView<CommunityController> {
     );
   }
 }
-
 class _SideLink extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
   const _SideLink({required this.icon, required this.label, required this.onTap});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -253,30 +220,21 @@ class _SideLink extends StatelessWidget {
     );
   }
 }
-
-// ════════════════════════════════════════════════════════════════════════
-// POST GRID
-// ════════════════════════════════════════════════════════════════════════
-
 class _PostGrid extends StatelessWidget {
   final CommunityController controller;
   const _PostGrid({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     final lc = Get.find<LayoutController>();
     return Obx(() {
       final posts = controller.filteredPosts;
       final loading = controller.isLoading.value;
-
       if (loading) {
         return _buildSkeleton(lc);
       }
-
       if (posts.isEmpty) {
         return _buildEmpty();
       }
-
       return CustomScrollView(
         controller: controller.scrollController,
         slivers: [
@@ -307,7 +265,6 @@ class _PostGrid extends StatelessWidget {
       );
     });
   }
-
   Widget _buildSkeleton(LayoutController lc) {
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -333,7 +290,6 @@ class _PostGrid extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildEmpty() {
     return Center(
       child: Column(

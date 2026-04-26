@@ -4,17 +4,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../controllers/wallet_controller.dart';
-
 class WalletView extends GetView<WalletController> {
   const WalletView({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
-          // Top bar
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -42,8 +39,6 @@ class WalletView extends GetView<WalletController> {
               ],
             ),
           ),
-
-          // Content
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -54,7 +49,6 @@ class WalletView extends GetView<WalletController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Balance + membership row
                     Row(
                       children: [
                         Expanded(child: _BalanceCard(controller: controller)),
@@ -63,13 +57,10 @@ class WalletView extends GetView<WalletController> {
                       ],
                     ),
                     const SizedBox(height: 28),
-
-                    // Transactions
                     Text('TRANSACTION HISTORY', style: GoogleFonts.ibmPlexMono(
                       color: AppColors.textTertiary, fontSize: 9,
                       fontWeight: FontWeight.w700, letterSpacing: 2)),
                     const SizedBox(height: 14),
-
                     Obx(() {
                       final txs = controller.transactions;
                       if (txs.isEmpty) {
@@ -110,11 +101,9 @@ class WalletView extends GetView<WalletController> {
     );
   }
 }
-
 class _BalanceCard extends StatelessWidget {
   final WalletController controller;
   const _BalanceCard({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() => Container(
@@ -155,11 +144,9 @@ class _BalanceCard extends StatelessWidget {
     ).animate().fadeIn(duration: 500.ms));
   }
 }
-
 class _MembershipCard extends StatelessWidget {
   final WalletController controller;
   const _MembershipCard({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -229,12 +216,10 @@ class _MembershipCard extends StatelessWidget {
     }).animate().fadeIn(duration: 500.ms);
   }
 }
-
 class _TxRow extends StatelessWidget {
   final Map<String, dynamic> tx;
   final int index;
   const _TxRow({required this.tx, required this.index});
-
   @override
   Widget build(BuildContext context) {
     final type = tx['type'] as String? ?? 'credit';
@@ -242,7 +227,6 @@ class _TxRow extends StatelessWidget {
     final desc = tx['description'] as String? ?? 'Transaction';
     final date = tx['created_at'] as String? ?? '';
     final isCredit = type == 'credit' || amount > 0;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

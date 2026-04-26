@@ -5,10 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
 import '../controllers/challenge_controller.dart';
 import '../../../data/models/challenge_model.dart';
-
 class ChallengeViewTablet extends GetView<ChallengeController> {
   const ChallengeViewTablet({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +33,9 @@ class ChallengeViewTablet extends GetView<ChallengeController> {
     );
   }
 }
-
 class _ChallengeTopBar extends StatelessWidget {
   final ChallengeController controller;
   const _ChallengeTopBar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -82,16 +78,13 @@ class _ChallengeTopBar extends StatelessWidget {
     );
   }
 }
-
 class _ChallengeGrid extends StatelessWidget {
   final ChallengeController controller;
   const _ChallengeGrid({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        // Daily prompt hero
         Obx(() {
           final dp = controller.dailyPrompt.value;
           if (dp == null) return const SliverToBoxAdapter(child: SizedBox.shrink());
@@ -99,8 +92,6 @@ class _ChallengeGrid extends StatelessWidget {
             child: _DailyPromptCard(challenge: dp, controller: controller),
           );
         }),
-
-        // All challenges
         Obx(() {
           final challenges = controller.activeChallenges;
           return SliverPadding(
@@ -127,12 +118,10 @@ class _ChallengeGrid extends StatelessWidget {
     );
   }
 }
-
 class _DailyPromptCard extends StatelessWidget {
   final ChallengeModel challenge;
   final ChallengeController controller;
   const _DailyPromptCard({required this.challenge, required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -198,13 +187,11 @@ class _DailyPromptCard extends StatelessWidget {
     ).animate().fadeIn(duration: 600.ms);
   }
 }
-
 class _ChallengeCard extends StatelessWidget {
   final ChallengeModel challenge;
   final ChallengeController controller;
   final int index;
   const _ChallengeCard({required this.challenge, required this.controller, required this.index});
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -259,11 +246,9 @@ class _ChallengeCard extends StatelessWidget {
     );
   }
 }
-
 class _LeaderSidebar extends StatelessWidget {
   final ChallengeController controller;
   const _LeaderSidebar({required this.controller});
-
   @override
   Widget build(BuildContext context) {
     return Container(

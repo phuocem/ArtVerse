@@ -23,9 +23,10 @@ Future<void> main() async {
       padding: const EdgeInsets.all(24),
       color: const Color(0xFF0F172A),
       child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             const Icon(Icons.warning_amber_rounded, color: Colors.orangeAccent, size: 64),
             const SizedBox(height: 16),
             const Text(
@@ -51,6 +52,7 @@ Future<void> main() async {
             ),
           ],
         ),
+      ),
       ),
     );
     if (isSliverError) return SliverToBoxAdapter(child: errorContent);

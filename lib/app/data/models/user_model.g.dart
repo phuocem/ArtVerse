@@ -1,15 +1,7 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'user_model.dart';
-
-// **************************************************************************
-// TypeAdapterGenerator
-// **************************************************************************
-
 class UserModelAdapter extends TypeAdapter<UserModel> {
   @override
   final int typeId = 0;
-
   @override
   UserModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
@@ -44,7 +36,6 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       gender: fields[22] as String?,
     );
   }
-
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
@@ -96,10 +87,8 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(22)
       ..write(obj.gender);
   }
-
   @override
   int get hashCode => typeId.hashCode;
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

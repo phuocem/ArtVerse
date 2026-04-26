@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
-
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'package:file_picker/file_picker.dart';
@@ -14,7 +13,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../../../data/models/draw/draw_project_model.dart';
 import '../../../data/models/draw/drawn_line_model.dart';
 import '../../../data/models/draw/frame_model.dart';
@@ -25,13 +23,9 @@ import '../../profile/controllers/upload_controller.dart';
 import '../views/widgets/studio_widgets.dart';
 import '../views/widgets/sketcher.dart';
 import 'collab_controller.dart';
-
 enum ToolType { brush, eraser, line, rectangle, circle, bucket, text }
-
 enum GridType { dots, lines, isometric }
-
 enum PerspectiveType { none, onePoint, twoPoint, threePoint }
-
 class DrawController extends GetxController {
   final profileController = Get.find<ProfileController>();
   final repaintKey = GlobalKey();
@@ -42,14 +36,11 @@ class DrawController extends GetxController {
   final recentColors = <Color>[].obs;
   final importedPalettes = <Map<String, dynamic>>[].obs;
   final ownedBrushes = <Map<String, dynamic>>[].obs;
-
   final selectedWidth = 4.0.obs;
   final selectedOpacity = 1.0.obs;
-
   final selectedHardness = 1.0.obs;
   final selectedScatter = 0.0.obs;
   Offset startPoint = Offset.zero;
-
   final isEraser = false.obs;
   final Map<int, GlobalKey> frameItemKeys = {};
   final isReorderMode = false.obs;
@@ -73,11 +64,9 @@ class DrawController extends GetxController {
   final isCollabMode = false.obs;
   final playbackSpeed = 6.obs;
   final isChanged = false.obs;
-
   final aiGeneratedPalette = <Color>[].obs;
   final remoteCursors = <Offset>[].obs;
   Timer? _collabSimulationTimer;
-
   final RxBool isSidebarCollapsed = false.obs;
   final RxBool isToolbarCollapsed = false.obs;
   void toggleSidebar() => isSidebarCollapsed.toggle();
@@ -88,40 +77,28 @@ class DrawController extends GetxController {
   final RxDouble gridSize = 50.0.obs;
   final Rx<Color> canvasBackgroundColor = Colors.white.obs;
   final gridType = GridType.dots.obs;
-
   final RxBool isRecordingTimelapse = false.obs;
   final RxList<Uint8List> timelapseFrames = <Uint8List>[].obs;
-
   final symmetryType = SymmetryType.none.obs;
   final selectedBrushType = BrushType.solid.obs;
   final selectedVFX = 'none'.obs;
   final RxBool isSmoothingEnabled = true.obs;
   final transformationController = TransformationController();
   final cursorPosition = Rx<Offset?>(null);
-
   final RxnString referenceImage = RxnString(null);
   final RxDouble referenceOpacity = 0.5.obs;
-
-  
   final isZenMode = false.obs;
   final gridOpacity = 0.2.obs;
   final smoothingIntensity = 0.5.obs;
   final isMirroredHorizontal = false.obs;
   final isMirroredVertical = false.obs;
   final isCurrentlyDrawing = false.obs;
-  
-  
   Timer? _autoSaveTimer;
-
-  
   final isStabilizerEnabled = false.obs;
   final stabilizerLength = 40.0.obs;
   final Rx<Offset?> lazyPoint = Rx<Offset?>(null);
   final Rx<Offset?> actualPoint = Rx<Offset?>(null);
-  
-  
   final perspectiveType = Rx<PerspectiveType>(PerspectiveType.none);
-  
   final vanishingPoints = <Offset>[
     const Offset(200, 300),
     const Offset(850, 300),
@@ -129,55 +106,37 @@ class DrawController extends GetxController {
   ].obs;
   final isPerspectiveSnapping = false.obs;
   final isIsometricSnapEnabled = false.obs;
-  
   final draggingVpIndex = (-1).obs;
-
-  
   final animationEasing = 'linear'.obs; 
   final frameDurationMs = 100.obs;
-  
-  
   final parentProjectId = Rxn<String>();
   final remixDepth = 0.obs;
-
   final selectedSpacing = 10.0.obs;
   final selectedAngle = 0.0.obs;
-
   void toggleZenMode() => isZenMode.toggle();
   void toggleHorizontalMirror() => isMirroredHorizontal.toggle();
   void toggleVerticalMirror() => isMirroredVertical.toggle();
-
-  
-  
-  
-
   void zoomIn() {
     final currentScale = transformationController.value.getMaxScaleOnAxis();
     final newScale = (currentScale * 1.25).clamp(0.05, 20.0);
     _applyZoom(newScale);
   }
-
   void zoomOut() {
     final currentScale = transformationController.value.getMaxScaleOnAxis();
     final newScale = (currentScale / 1.25).clamp(0.05, 20.0);
     _applyZoom(newScale);
   }
-
   void resetZoom() {
     transformationController.value = Matrix4.identity();
     update();
   }
-
   void _applyZoom(double scale) {
     final current = transformationController.value;
     final currentScale = current.getMaxScaleOnAxis();
     final ratio = scale / currentScale;
-    
-    
     transformationController.value = current.clone()..scale(ratio, ratio);
     update();
   }
-
   Future<void> pickReferenceImage() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.image);
     if (result != null && result.files.single.path != null) {
@@ -185,18 +144,15 @@ class DrawController extends GetxController {
       isChanged.value = true;
     }
   }
-
   void startCollabSimulation() {
     _collabSimulationTimer?.cancel();
     _collabSimulationTimer = Timer.periodic(const Duration(milliseconds: 100), (
       timer,
     ) {
       if (!isCollabMode.value) return;
-
       if (remoteCursors.isEmpty) {
         remoteCursors.addAll([const Offset(300, 300), const Offset(600, 400)]);
       }
-
       for (int i = 0; i < remoteCursors.length; i++) {
         final randX = (math.Random().nextDouble() * 10) - 5;
         final randY = (math.Random().nextDouble() * 10) - 5;
@@ -207,7 +163,6 @@ class DrawController extends GetxController {
       }
     });
   }
-
   void generatePaletteFromAI(String prompt) {
     final p = prompt.toLowerCase();
     if (p.contains("cyan") || p.contains("ocean") || p.contains("biển") || p.contains("nước")) {
@@ -263,19 +218,15 @@ class DrawController extends GetxController {
       selectedColor.value = aiGeneratedPalette[0];
     }
   }
-
   void clearReferenceImage() => referenceImage.value = null;
-
   void resetCamera() {
     transformationController.value = Matrix4.identity();
   }
-
   @override
   void onInit() {
     super.onInit();
     Get.put<UploadController>(UploadController(), permanent: true);
     initDrawing();
-
     addFrame();
     selectFrame(0);
     isChanged.value = false;
@@ -283,19 +234,16 @@ class DrawController extends GetxController {
     _loadOwnedBrushes();
     _startAutoSaveTimer();
   }
-
   void _loadImportedPalettes() {
     final db = Get.find<DatabaseService>();
     final palettes = db.settingsBox.get('custom_palettes', defaultValue: <dynamic>[]);
     importedPalettes.assignAll(palettes.cast<Map<String, dynamic>>());
   }
-
   void _loadOwnedBrushes() {
     final db = Get.find<DatabaseService>();
     final brushes = db.settingsBox.get('owned_brushes', defaultValue: <dynamic>[]);
     ownedBrushes.assignAll(brushes.cast<Map<String, dynamic>>());
   }
-
   Future<void> initDrawing() async {
     final tempDir = await getTemporaryDirectory();
     final framesDir = Directory(p.join(tempDir.path, "upload_frames"));
@@ -303,7 +251,6 @@ class DrawController extends GetxController {
       await framesDir.delete(recursive: true);
     }
   }
-
   @override
   void onClose() {
     scrollController.dispose();
@@ -313,7 +260,6 @@ class DrawController extends GetxController {
     _autoSaveTimer?.cancel();
     super.onClose();
   }
-
   void _startAutoSaveTimer() {
     _autoSaveTimer?.cancel();
     _autoSaveTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
@@ -322,18 +268,12 @@ class DrawController extends GetxController {
       }
     });
   }
-
   late final _box = Get.find<DatabaseService>().drawProjectBox;
-
   final Rx<ui.Picture?> currentBackgroundPicture = Rx<ui.Picture?>(null);
-  
-  
   final Map<int, ui.Picture> _layerCache = {};
-  
   void _invalidateLayerCache(int index) {
     _layerCache.remove(index);
   }
-
   Future<void> saveProjectToHive(String projectId, String name) async {
     final project = DrawProjectModel(
       id: projectId,
@@ -344,7 +284,6 @@ class DrawController extends GetxController {
     );
     await _box.put(projectId, project);
   }
-
   void loadProject(String id) {
     final project = _box.get(id);
     if (project != null) {
@@ -357,7 +296,6 @@ class DrawController extends GetxController {
       updateBackgroundPicture();
     }
   }
-
   List<MapEntry<List<DrawnLine>, double>> getPreviousFramesLines() {
     final index = currentFrameIndex.value;
     final result = <MapEntry<List<DrawnLine>, double>>[];
@@ -374,14 +312,12 @@ class DrawController extends GetxController {
     }
     return result;
   }
-
   List<DrawnLine>? getPreviousFrameLines() {
     final index = currentFrameIndex.value;
     if (index <= 0 || index >= frames.length) return null;
     final prevFrame = frames[index - 1];
     return prevFrame.layers.expand((layer) => layer.lines).toList();
   }
-
   List<MapEntry<List<DrawnLine>, double>> getMultiOnionLines() {
     final index = currentFrameIndex.value;
     final List<MapEntry<List<DrawnLine>, double>> onionLayers = [];
@@ -395,7 +331,6 @@ class DrawController extends GetxController {
     }
     return onionLayers;
   }
-
   List<MapEntry<List<DrawnLine>, double>> getOnionSkinLines() {
     final index = currentFrameIndex.value;
     final List<MapEntry<List<DrawnLine>, double>> onionLayers = [];
@@ -409,9 +344,7 @@ class DrawController extends GetxController {
     }
     return onionLayers;
   }
-
   Widget buildLayoutSelector() => const LayoutSelector();
-
   final Map<String, Uint8List> thumbnailCache = {};
   Timer? _playbackTimer;
   int _currentIndex = 0;
@@ -421,18 +354,15 @@ class DrawController extends GetxController {
   set currentLines(List<DrawnLine> newLines) =>
       frames[currentFrameIndex.value].layers[currentLayerIndex.value].lines =
           newLines;
-
   List<LayerModel> get layers => frames[currentFrameIndex.value].layers;
-
   void addLayer() {
     for (var frame in frames) {
       frame.layers.add(LayerModel(name: 'Lớp ${frame.layers.length + 1}'));
     }
     numberOfLayers.value++;
     _clearThumbnailCache();
-    update();
+    frames.refresh();
   }
-
   void reorderLayer(int oldIdx, int newIdx) {
     for (var frame in frames) {
       if (oldIdx < frame.layers.length && newIdx < frame.layers.length) {
@@ -441,10 +371,8 @@ class DrawController extends GetxController {
       }
     }
     _clearThumbnailCache();
-    update();
+    frames.refresh();
   }
-
-
   List<List<DrawnLine>>? copiedFrame;
   static const Size canvasSize = Size(1050, 590.625);
   final IconData brushIcon = MdiIcons.brushVariant;
@@ -454,7 +382,6 @@ class DrawController extends GetxController {
   final IconData circleIcon = MdiIcons.circleOutline;
   final IconData bucketIcon = MdiIcons.formatColorFill;
   final IconData textIcon = MdiIcons.formatText;
-
   final String brushTooltip = 'Brush';
   final String eraserTooltip = 'Eraser';
   final String lineTooltip = 'Line';
@@ -462,10 +389,8 @@ class DrawController extends GetxController {
   final String circleTooltip = 'Circle';
   final String bucketTooltip = 'Fill';
   final String textTooltip = 'Text';
-
   final Rx<ToolType> selectedTool = ToolType.brush.obs;
   final selectedBlendModeIndex = 3.obs;
-
   IconData get currentToolIcon {
     switch (selectedTool.value) {
       case ToolType.brush:
@@ -484,7 +409,6 @@ class DrawController extends GetxController {
         return textIcon;
     }
   }
-
   String get currentToolTooltip {
     switch (selectedTool.value) {
       case ToolType.brush:
@@ -503,13 +427,10 @@ class DrawController extends GetxController {
         return textTooltip;
     }
   }
-
   void selectTool(ToolType type) => selectedTool.value = type;
   void selectBrush() => selectedTool.value = ToolType.brush;
   void selectEraser() => selectedTool.value = ToolType.eraser;
-
   bool get isEraserActive => selectedTool.value == ToolType.eraser;
-
   void setBrushPreset({
     required BrushType type,
     double scatter = 0.0,
@@ -520,12 +441,10 @@ class DrawController extends GetxController {
     selectedScatter.value = scatter;
     selectedHardness.value = hardness;
     if (width != null) selectedWidth.value = width;
-
     if (selectedTool.value != ToolType.brush) {
       selectedTool.value = ToolType.brush;
     }
   }
-
   void startStroke(Offset point) {
     if (selectedTool.value == ToolType.bucket) {
       _applyFloodFill(point);
@@ -535,7 +454,6 @@ class DrawController extends GetxController {
       _showTextInputDialog(point);
       return;
     }
-
     startPoint = point;
     undoStack.add(
       frames[currentFrameIndex.value].layers
@@ -543,21 +461,17 @@ class DrawController extends GetxController {
           .toList(),
     );
     redoStack.clear();
-
     final color =
         selectedTool.value == ToolType.eraser
             ? Colors.white
             : selectedColor.value;
-
     final int colorValue = color.toARGB32();
     final double opacity = selectedOpacity.value;
     final int blendModeIndex = selectedBlendModeIndex.value;
-
     if (selectedTool.value == ToolType.brush ||
         selectedTool.value == ToolType.eraser) {
       actualPoint.value = point;
       lazyPoint.value = point;
-      
       currentTempLine.value = DrawnLine(
         points: [point],
         colorValue: colorValue,
@@ -585,16 +499,12 @@ class DrawController extends GetxController {
       );
     }
   }
-
   final Map<int, RxInt> frameVersions = {};
   final currentTempLine = Rx<DrawnLine?>(null);
-
   void addPoint(Offset point) {
     if (currentTempLine.value != null) {
       actualPoint.value = point;
       Offset processedPoint = point;
-
-      
       if (isStabilizerEnabled.value && lazyPoint.value != null) {
         final dist = (point - lazyPoint.value!).distance;
         if (dist > stabilizerLength.value) {
@@ -608,20 +518,15 @@ class DrawController extends GetxController {
       } else {
         lazyPoint.value = point;
       }
-
-      
       if (isPerspectiveSnapping.value &&
           perspectiveType.value != PerspectiveType.none &&
           currentTempLine.value!.points.isNotEmpty) {
         processedPoint = snapToPerspectiveLine(processedPoint);
       }
-
-      
       if (isIsometricSnapEnabled.value &&
           currentTempLine.value!.points.isNotEmpty) {
         processedPoint = snapToIsometricGrid(processedPoint);
       }
-
       if (selectedTool.value == ToolType.brush ||
           selectedTool.value == ToolType.eraser) {
         currentTempLine.value!.addPoint(processedPoint);
@@ -655,65 +560,42 @@ class DrawController extends GetxController {
       Get.find<CollabController>().updateLocalCursor(point);
     }
   }
-
-  
-  
-  
   Offset snapToIsometricGrid(Offset point) {
     if (currentTempLine.value == null ||
         currentTempLine.value!.points.isEmpty) {
       return point;
     }
-
     final prev = currentTempLine.value!.points.last;
     final delta = point - prev;
     if (delta.distance < 1) return point;
-
-    
     const axes = [
-      
       Offset(1.0, 0.0),
-      
       Offset(0.5, -0.8660254), 
-      
       Offset(-0.5, -0.8660254), 
     ];
-
-    
     double bestDot = double.negativeInfinity;
     Offset bestAxis = axes[0];
     for (final axis in axes) {
-      
       final dot = (delta.dx * axis.dx + delta.dy * axis.dy).abs();
       if (dot > bestDot) {
         bestDot = dot;
-        
         final d = delta.dx * axis.dx + delta.dy * axis.dy;
         bestAxis = d >= 0 ? axis : Offset(-axis.dx, -axis.dy);
       }
     }
-
-    
     final STUDIOjLength = delta.dx * bestAxis.dx + delta.dy * bestAxis.dy;
     return Offset(
       prev.dx + bestAxis.dx * STUDIOjLength,
       prev.dy + bestAxis.dy * STUDIOjLength,
     );
   }
-
-  
-  
-  
   Offset snapToPerspectiveLine(Offset point) {
     if (currentTempLine.value == null ||
         currentTempLine.value!.points.isEmpty) {
       return point;
     }
-
     final prev = currentTempLine.value!.points.first; 
     if ((point - prev).distance < 1) return point;
-
-    
     final List<Offset> activeVPs = [];
     switch (perspectiveType.value) {
       case PerspectiveType.onePoint:
@@ -728,20 +610,13 @@ class DrawController extends GetxController {
       case PerspectiveType.none:
         return point;
     }
-
-    
-    
     Offset bestSnap = point;
     double bestDist = double.infinity;
-
     for (final vp in activeVPs) {
-      
       Offset dir = prev - vp;
       final len = dir.distance;
       if (len < 1) continue;
       dir = dir / len;
-
-      
       final t = (point.dx - vp.dx) * dir.dx + (point.dy - vp.dy) * dir.dy;
       final projected = Offset(vp.dx + dir.dx * t, vp.dy + dir.dy * t);
       final dist = (projected - point).distance;
@@ -752,23 +627,18 @@ class DrawController extends GetxController {
     }
     return bestSnap;
   }
-
-  
   void startVpDrag(int index) {
     draggingVpIndex.value = index;
   }
-
   void updateVpDrag(Offset position) {
     final idx = draggingVpIndex.value;
     if (idx < 0 || idx >= vanishingPoints.length) return;
     vanishingPoints[idx] = position;
     vanishingPoints.refresh();
   }
-
   void endVpDrag() {
     draggingVpIndex.value = -1;
   }
-
   bool isNearVanishingPoint(Offset position, {double threshold = 20}) {
     if (perspectiveType.value == PerspectiveType.none) return false;
     for (final vp in vanishingPoints) {
@@ -776,7 +646,6 @@ class DrawController extends GetxController {
     }
     return false;
   }
-
   int? vpIndexAtPosition(Offset position, {double threshold = 20}) {
     if (perspectiveType.value == PerspectiveType.none) return null;
     for (int i = 0; i < vanishingPoints.length; i++) {
@@ -784,21 +653,17 @@ class DrawController extends GetxController {
     }
     return null;
   }
-
   void endStroke() {
     if (currentTempLine.value != null) {
       if (currentTempLine.value!.points.isNotEmpty) {
         redoStack.clear();
         final finishedLine = currentTempLine.value!;
-
         if (isSmoothingEnabled.value && finishedLine.points.length > 3 && selectedTool.value == ToolType.brush) {
           finishedLine.replacePoints(_smoothPoints(finishedLine.points));
           finishedLine.isSmoothed = true;
         }
-
         currentLines.add(finishedLine);
         Get.find<CollabController>().uploadStroke(finishedLine);
-
         if (symmetryType.value != SymmetryType.none) {
           _handleSymmetry(finishedLine);
         }
@@ -806,25 +671,20 @@ class DrawController extends GetxController {
       currentTempLine.value = null;
       lazyPoint.value = null;
       actualPoint.value = null;
-
       _clearThumbnailCache(frameIndex: currentFrameIndex.value);
       _clearThumbnailCache(
         frameIndex: currentFrameIndex.value,
         layerIndex: currentLayerIndex.value,
       );
-
       _invalidateLayerCache(currentLayerIndex.value);
       updateBackgroundPicture();
-      
       frames.refresh();
       saveCurrentFrame();
       isChanged.value = true;
     }
   }
-
   void _handleSymmetry(DrawnLine finishedLine) {
     final center = Offset(canvasSize.width / 2, canvasSize.height / 2);
-
     if (symmetryType.value == SymmetryType.vertical || symmetryType.value == SymmetryType.both) {
       final mirrored = _mirrorLine(finishedLine, center.dx, true);
       currentLines.add(mirrored);
@@ -846,7 +706,6 @@ class DrawController extends GetxController {
       }
     }
   }
-
   DrawnLine _rotateLine(DrawnLine line, Offset center, double angle) {
     final rotatedPoints = line.points.map((p) {
       final dx = p.dx - center.dx;
@@ -858,28 +717,21 @@ class DrawController extends GetxController {
     }).toList();
     return line.copy()..replacePoints(rotatedPoints);
   }
-
   List<Offset> _smoothPoints(List<Offset> points) {
     if (points.length < 3) return points;
     final List<Offset> smoothed = [];
-    
-    
-    
     smoothed.add(points.first);
     for (int i = 0; i < points.length - 1; i++) {
       final p0 = i > 0 ? points[i - 1] : points[i];
       final p1 = points[i];
       final p2 = points[i + 1];
       final p3 = i + 2 < points.length ? points[i + 2] : p2;
-
-      
       for (double t = 0.2; t <= 1.0; t += 0.2) {
         smoothed.add(_calculateCatmullRomPoint(p0, p1, p2, p3, t));
       }
     }
     return smoothed;
   }
-
   Offset _calculateCatmullRomPoint(Offset p0, Offset p1, Offset p2, Offset p3, double t) {
     final t2 = t * t;
     final t3 = t2 * t;
@@ -888,7 +740,6 @@ class DrawController extends GetxController {
       0.5 * ( (2 * p1.dy) + (p2.dy - p0.dy) * t + (2 * p0.dy - 5 * p1.dy + 4 * p2.dy - p3.dy) * t2 + (3 * p1.dy - p0.dy - 3 * p2.dy + p3.dy) * t3 )
     );
   }
-
   DrawnLine _mirrorLine(DrawnLine line, double axisValue, bool isVerticalAxis) {
     _invalidateLayerCache(currentLayerIndex.value);
     final mirroredPoints =
@@ -899,7 +750,6 @@ class DrawController extends GetxController {
             return Offset(p.dx, axisValue * 2 - p.dy);
           }
         }).toList();
-
     return DrawnLine(
       points: mirroredPoints,
       colorValue: line.colorValue,
@@ -913,11 +763,7 @@ class DrawController extends GetxController {
       isFill: line.isFill,
     );
   }
-
   Future<void> _applyFloodFill(Offset point) async {
-    
-    
-    
     final fillLine = DrawnLine(
       points: [point],
       colorValue: selectedColor.value.toARGB32(),
@@ -930,7 +776,6 @@ class DrawController extends GetxController {
     isChanged.value = true;
     saveCurrentFrame();
   }
-
   void _showTextInputDialog(Offset point) {
     final textController = TextEditingController();
     Get.dialog(
@@ -966,63 +811,44 @@ class DrawController extends GetxController {
       ),
     );
   }
-
   void updateBackgroundPicture() {
     final frameIndex = currentFrameIndex.value;
     final frame = frames[frameIndex];
-
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(
       recorder,
       Rect.fromLTWH(0, 0, canvasSize.width, canvasSize.height),
     );
-
-    
     canvas.drawColor(canvasBackgroundColor.value, BlendMode.src);
-
     if (showGrid.value) {
       _drawGrid(canvas, canvasSize);
     }
-
-    
-    
     for (int i = 0; i < frame.layers.length; i++) {
         final layer = frame.layers[i];
         if (!layer.isVisible) continue;
-
         if (!_layerCache.containsKey(i)) {
-           
            final layerRecorder = ui.PictureRecorder();
            final layerCanvas = Canvas(layerRecorder, Rect.fromLTWH(0, 0, canvasSize.width, canvasSize.height));
-           
            SketcherFull(
              mainLines: layer.lines,
              opacity: 1.0, 
            ).paint(layerCanvas, canvasSize);
-           
            _layerCache[i] = layerRecorder.endRecording();
         }
-
-        
-        // ignore: unused_local_variable
         final paint = Paint()
           ..color = Colors.white.withValues(alpha: layer.opacity)
           ..blendMode = BlendMode.values[layer.blendModeIndex];
-        
         canvas.drawPicture(_layerCache[i]!);
     }
-
     currentBackgroundPicture.value = recorder.endRecording();
     currentBackgroundPicture.refresh();
   }
-
   void _drawGrid(Canvas canvas, Size size) {
     final paint =
         Paint()
           ..color = Colors.grey.withValues(alpha: 0.2)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1.0;
-
     final double step = gridSize.value;
     for (double i = 0; i <= size.width; i += step) {
       canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
@@ -1031,7 +857,6 @@ class DrawController extends GetxController {
       canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
     }
   }
-
   void updateLayerOpacity(int index, double opacity) {
     if (index < 0 || index >= frames[currentFrameIndex.value].layers.length) {
       return;
@@ -1047,7 +872,6 @@ class DrawController extends GetxController {
     updateBackgroundPicture();
     frames.refresh();
   }
-
   void updateLayerBlendMode(int index, int blendModeIndex) {
     if (index < 0 || index >= frames[currentFrameIndex.value].layers.length) {
       return;
@@ -1061,7 +885,6 @@ class DrawController extends GetxController {
     updateBackgroundPicture();
     frames.refresh();
   }
-
   void toggleLayerVisibility(int index) {
     if (index < 0 || index >= frames[currentFrameIndex.value].layers.length) {
       return;
@@ -1071,7 +894,6 @@ class DrawController extends GetxController {
     updateBackgroundPicture();
     frames.refresh();
   }
-
   void renameLayer(int index, String newName) {
     if (index < 0 || index >= frames[currentFrameIndex.value].layers.length) {
       return;
@@ -1079,7 +901,6 @@ class DrawController extends GetxController {
     frames[currentFrameIndex.value].layers[index].name = newName;
     frames.refresh();
   }
-
   void duplicateFrame(int index) {
     if (index < 0 || index >= frames.length) return;
     final originalFrame = frames[index];
@@ -1091,28 +912,23 @@ class DrawController extends GetxController {
     isChanged.value = true;
     frames.refresh();
   }
-
   void toggleGrid() {
     showGrid.toggle();
     updateBackgroundPicture();
   }
-
   void changeBackgroundColor(Color color) {
     canvasBackgroundColor.value = color;
     updateBackgroundPicture();
   }
-
   void updateNumberOfLayers(int count) {
     if (count < 1 || count > 10) return;
     numberOfLayers.value = count;
     for (final frame in frames) {
       if (frame.layers.length < count) {
-
         while (frame.layers.length < count) {
           frame.layers.add(LayerModel());
         }
       } else if (frame.layers.length > count) {
-
         while (frame.layers.length > count) {
           frame.layers.removeLast();
         }
@@ -1124,7 +940,6 @@ class DrawController extends GetxController {
     updateBackgroundPicture();
     frames.refresh();
   }
-
   void undo() {
     if (undoStack.isNotEmpty) {
       redoStack.add(
@@ -1142,7 +957,6 @@ class DrawController extends GetxController {
       saveCurrentFrame();
     }
   }
-
   void redo() {
     if (redoStack.isNotEmpty) {
       undoStack.add(
@@ -1160,7 +974,6 @@ class DrawController extends GetxController {
       saveCurrentFrame();
     }
   }
-
   void removeThumbnailCacheForFrame(int frameIndex) {
     final keysToRemove =
         thumbnailCache.keys
@@ -1170,7 +983,6 @@ class DrawController extends GetxController {
       thumbnailCache.remove(key);
     }
   }
-
   void clearCanvas() {
     undoStack.add(
       frames[currentFrameIndex.value].layers
@@ -1181,10 +993,10 @@ class DrawController extends GetxController {
       frames[currentFrameIndex.value].layers[i].lines.clear();
     }
     _layerCache.clear();
+    updateBackgroundPicture();
     frames.refresh();
     saveCurrentFrame();
   }
-
   void toggleEraser() => selectTool(
     selectedTool.value == ToolType.eraser ? ToolType.brush : ToolType.eraser,
   );
@@ -1204,14 +1016,12 @@ class DrawController extends GetxController {
     isChanged.value = true;
     _clearThumbnailCache();
   }
-
   void resetLayerIndex() {
     if (currentLayerIndex.value == 0) {
       currentLayerIndex.value = -1;
     }
     currentLayerIndex.value = 0;
   }
-
   void selectFrame(int index) {
     if (index == currentFrameIndex.value) return;
     currentFrameIndex.value = index;
@@ -1222,17 +1032,13 @@ class DrawController extends GetxController {
     _layerCache.clear();
     updateBackgroundPicture();
   }
-
   void switchLayer(int layerIndex) {
     currentLayerIndex.value = layerIndex;
     updateBackgroundPicture();
   }
-
   Timer? _thumbnailDebounceTimer;
-
   void saveCurrentFrame() {
     _thumbnailDebounceTimer?.cancel();
-
     _thumbnailDebounceTimer = Timer(
       const Duration(milliseconds: 200),
       () async {
@@ -1245,7 +1051,6 @@ class DrawController extends GetxController {
       },
     );
   }
-
   void copyFrame(int index) {
     if (index >= 0 && index < frames.length) {
       copiedFrame =
@@ -1254,27 +1059,22 @@ class DrawController extends GetxController {
               .toList();
     }
   }
-
   void copyFrameCurrent() {
     final index = currentFrameIndex.value;
     copyFrame(index);
   }
-
   void pasteCopiedFrame() {
     if (copiedFrame == null) return;
-
     final newFrame = FrameModel(numberOfLayers: copiedFrame!.length);
     for (int i = 0; i < newFrame.layers.length; i++) {
       newFrame.layers[i].lines =
           copiedFrame![i].map((line) => line.copy()).toList();
     }
-
     final insertIndex = currentFrameIndex.value + 1;
     frames.insert(insertIndex, newFrame);
     selectFrame(insertIndex);
     isChanged.value = true;
   }
-
   Future<void> save() async {
     if (currentProjectId != null && currentProjectName != null) {
       await saveProjectToHive(currentProjectId!, currentProjectName!);
@@ -1289,7 +1089,6 @@ class DrawController extends GetxController {
       Get.snackbar("Error", "No project selected to save.");
     }
   }
-
   Future<void> leaveSaving() async {
     if (isChanged.value) {
       showDialog(
@@ -1329,16 +1128,12 @@ class DrawController extends GetxController {
       await safeBack();
     }
   }
-
   void reorderFrame(int oldIndex, int newIndex) {
     if (newIndex > oldIndex) newIndex--;
-
     final item = frames.removeAt(oldIndex);
     frames.insert(newIndex, item);
-
     _clearThumbnailCache();
     frames.refresh();
-
     if (currentFrameIndex.value == oldIndex) {
       currentFrameIndex.value = newIndex;
     } else if (currentFrameIndex.value == newIndex) {
@@ -1351,16 +1146,13 @@ class DrawController extends GetxController {
       currentFrameIndex.value += 1;
     }
   }
-
   RxSet<int> hiddenFrames = <int>{}.obs;
-
   bool isFrameHidden(int index) => hiddenFrames.contains(index);
   bool isLayerHidden(int index) {
     final frame = frames[currentFrameIndex.value];
     if (index < 0 || index >= frame.layers.length) return false;
     return !frame.layers[index].isVisible;
   }
-
   void toggleFrameVisibility(int index) {
     if (hiddenFrames.contains(index)) {
       hiddenFrames.remove(index);
@@ -1368,37 +1160,29 @@ class DrawController extends GetxController {
       hiddenFrames.add(index);
     }
   }
-
   void removeFrame(int index) {
     frames.removeAt(index);
     frames[currentFrameIndex.value] = frames[currentFrameIndex.value].copy();
     _clearThumbnailCache();
     isChanged.value = true;
   }
-
   Future<void> deleteCurrentFrame() async {
     if (frames.length <= 1) return;
-
     final index = currentFrameIndex.value;
     removeFrame(index);
-
     if (index >= frames.length) {
       currentFrameIndex.value = frames.length - 1;
     }
-
     await renderThumbnail(currentFrameIndex.value);
   }
-
   void togglePlayback() {
     isPlaying.toggle();
     _playbackTimer?.cancel();
-
     if (isPlaying.value) {
       _currentIndex = frames.length - 1;
       _playbackTimer = Timer.periodic(Duration(milliseconds: 1000 ~/ fps), (_) {
         if (frames.isEmpty) return;
-
-        currentFrameIndex.value = _currentIndex;
+        selectFrame(_currentIndex);
         _currentIndex = (_currentIndex - 1) % frames.length;
         if (_currentIndex < 0) {
           _currentIndex = frames.length - 1;
@@ -1406,24 +1190,20 @@ class DrawController extends GetxController {
       });
     }
   }
-
   void setFps(int value) {
     fps = value;
     playbackSpeed.value = value;
-
     if (isPlaying.value) {
       togglePlayback();
       togglePlayback();
     }
   }
-
   Future<Uint8List?> captureImageSmooth() async {
     try {
       await Future.delayed(
         const Duration(milliseconds: 50),
       );
       await WidgetsBinding.instance.endOfFrame;
-
       final boundary =
           repaintKey.currentContext?.findRenderObject()
               as RenderRepaintBoundary?;
@@ -1436,7 +1216,6 @@ class DrawController extends GetxController {
     }
     return null;
   }
-
   Future<Uint8List> renderThumbnail(
     int frameIndex, [
     int? layerIndex,
@@ -1445,28 +1224,22 @@ class DrawController extends GetxController {
     if (frameIndex < 0 || frameIndex >= frames.length) {
       throw ArgumentError('Invalid frameIndex: $frameIndex');
     }
-
     final cacheKey =
         layerIndex == null ? '$frameIndex' : '$frameIndex-$layerIndex';
     if (!forceUpdate && thumbnailCache.containsKey(cacheKey)) {
       return thumbnailCache[cacheKey]!;
     }
-
     const double thumbWidth = 1050;
     const double thumbHeight = 590.625;
-
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(
       recorder,
       const Rect.fromLTWH(0, 0, thumbWidth, thumbHeight),
     );
-
     final scaleX = thumbWidth / canvasSize.width;
     final scaleY = thumbHeight / canvasSize.height;
     canvas.scale(scaleX, scaleY);
-
     canvas.drawColor(Colors.white, BlendMode.src);
-
     try {
       if (layerIndex == null) {
         for (int i = 0; i < frames[frameIndex].layers.length; i++) {
@@ -1487,7 +1260,6 @@ class DrawController extends GetxController {
           onionSkinLines: null,
         ).paint(canvas, canvasSize);
       }
-
       final picture = recorder.endRecording();
       final image = await picture.toImage(
         thumbWidth.toInt(),
@@ -1498,44 +1270,37 @@ class DrawController extends GetxController {
         throw Exception("Failed to encode image to byteData");
       }
       final bytes = byteData.buffer.asUint8List();
-
       thumbnailCache[cacheKey] = bytes;
       return bytes;
     } catch (e) {
       return Uint8List(0);
     }
   }
-
   Future<void> exportFrameAsImage(int frameIndex) async {
     if (frameIndex < 0 || frameIndex >= frames.length) {
       Get.snackbar("Error", "Frame index invalid.");
       return;
     }
-
     final bool granted = await ensureStoragePermission();
     if (!granted) {
       Get.snackbar("Error", "Storage permission not granted.");
       return;
     }
-
     final dir = await FilePicker.platform.getDirectoryPath();
     if (dir == null) {
       Get.snackbar("Cancelled", "You not choose folder yet.");
       return;
     }
-
     final bytes = await renderThumbnail(frameIndex);
     final filePath = "$dir/frame_${frameIndex.toString().padLeft(3, '0')}.png";
     final file = File(filePath);
     await file.writeAsBytes(bytes);
-
     Get.snackbar(
       "Export Successful",
       "The exported image has been saved as PNG.",
       snackPosition: SnackPosition.BOTTOM,
     );
   }
-
   bool isInsideCanvas(Offset point) {
     final box = repaintKey.currentContext?.findRenderObject() as RenderBox?;
     if (box == null) return false;
@@ -1545,14 +1310,12 @@ class DrawController extends GetxController {
         point.dx <= size.width &&
         point.dy <= size.height;
   }
-
   Future<void> renderAllFramesToImages() async {
     final dir = await getApplicationDocumentsDirectory();
     final outputDir = Directory("${dir.path}/frames");
     if (!outputDir.existsSync()) {
       await outputDir.create(recursive: true);
     }
-
     for (int i = 0; i < frames.length; i++) {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(
@@ -1560,7 +1323,6 @@ class DrawController extends GetxController {
         Rect.fromLTWH(0, 0, canvasSize.width, canvasSize.height),
       );
       canvas.drawColor(Colors.white, BlendMode.src);
-
       for (int l = 0; l < frames[i].layers.length; l++) {
         final layer = frames[i].layers[l];
         if (layer.isVisible) {
@@ -1570,7 +1332,6 @@ class DrawController extends GetxController {
           ).paint(canvas, canvasSize);
         }
       }
-
       final picture = recorder.endRecording();
       final image = await picture.toImage(
         canvasSize.width.toInt(),
@@ -1578,13 +1339,11 @@ class DrawController extends GetxController {
       );
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final bytes = byteData!.buffer.asUint8List();
-
       final filePath =
           "${outputDir.path}/frame_${i.toString().padLeft(3, '0')}.png";
       await File(filePath).writeAsBytes(bytes);
     }
   }
-
   Future<bool> ensureStoragePermission() async {
     if (Platform.isAndroid) {
       if (await Permission.manageExternalStorage.isGranted) {
@@ -1594,7 +1353,6 @@ class DrawController extends GetxController {
         return status.isGranted;
       }
     } else {
-
       final status = await Permission.storage.status;
       if (!status.isGranted) {
         final result = await Permission.storage.request();
@@ -1603,30 +1361,23 @@ class DrawController extends GetxController {
       return true;
     }
   }
-
   Future<void> exportToGif() async {
     final String? projectName = await _getprojectNameFromUser();
     if (projectName == null || projectName.isEmpty) return;
-
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory == null) return;
-
     final tempDir = await getTemporaryDirectory();
     final framesDir = Directory(p.join(tempDir.path, "export_frames"));
     if (framesDir.existsSync()) await framesDir.delete(recursive: true);
     await framesDir.create(recursive: true);
-
     final fps = playbackSpeed.value;
-
     for (int i = 0; i < frames.length; i++) {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(
         recorder,
         Rect.fromLTWH(0, 0, canvasSize.width, canvasSize.height),
       );
-
       canvas.drawColor(canvasBackgroundColor.value, BlendMode.src);
-
       for (final layer in frames[i].layers) {
         if (layer.isVisible) {
           SketcherFull(
@@ -1636,7 +1387,6 @@ class DrawController extends GetxController {
           ).paint(canvas, canvasSize);
         }
       }
-
       final picture = recorder.endRecording();
       final image = await picture.toImage(
         canvasSize.width.toInt(),
@@ -1644,24 +1394,19 @@ class DrawController extends GetxController {
       );
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final bytes = byteData!.buffer.asUint8List();
-
       final filePath = p.join(
         framesDir.path,
         'frame_${i.toString().padLeft(3, '0')}.png',
       );
       await File(filePath).writeAsBytes(bytes);
     }
-
     final outputPath = p.join(selectedDirectory, '$projectName.gif');
-
     final cmd =
         "-y -framerate $fps -i ${framesDir.path}/frame_%03d.png "
         "-vf \"scale=trunc(iw/2)*2:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" "
         "$outputPath";
-
     final session = await FFmpegKit.execute(cmd);
     final returnCode = await session.getReturnCode();
-
     if (ReturnCode.isSuccess(returnCode)) {
       Get.snackbar(
         "Success",
@@ -1677,21 +1422,16 @@ class DrawController extends GetxController {
       );
     }
   }
-
   Future<void> exportToMp4() async {
     final String? projectName = await _getprojectNameFromUser();
     if (projectName == null || projectName.isEmpty) return;
-
     final selectedDirectory = await FilePicker.platform.getDirectoryPath();
     if (selectedDirectory == null) return;
-
     final tempDir = await getTemporaryDirectory();
     final framesDir = Directory(p.join(tempDir.path, "export_frames"));
     if (framesDir.existsSync()) await framesDir.delete(recursive: true);
     await framesDir.create(recursive: true);
-
     final fps = playbackSpeed.value;
-
     for (int i = 0; i < frames.length; i++) {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(
@@ -1699,7 +1439,6 @@ class DrawController extends GetxController {
         Rect.fromLTWH(0, 0, canvasSize.width, canvasSize.height),
       );
       canvas.drawColor(canvasBackgroundColor.value, BlendMode.src);
-
       for (final layer in frames[i].layers) {
         if (layer.isVisible) {
           SketcherFull(
@@ -1709,7 +1448,6 @@ class DrawController extends GetxController {
           ).paint(canvas, canvasSize);
         }
       }
-
       final picture = recorder.endRecording();
       final image = await picture.toImage(
         canvasSize.width.toInt(),
@@ -1717,20 +1455,17 @@ class DrawController extends GetxController {
       );
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final bytes = byteData!.buffer.asUint8List();
-
       final filePath = p.join(
         framesDir.path,
         'frame_${i.toString().padLeft(3, '0')}.png',
       );
       await File(filePath).writeAsBytes(bytes);
     }
-
     final outputPath = p.join(selectedDirectory, '$projectName.mp4');
     final cmd =
         "-y -framerate $fps -i ${framesDir.path}/frame_%03d.png "
         "-vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" "
         "-c:v libx264 -pix_fmt yuv420p $outputPath";
-
     final session = await FFmpegKit.execute(cmd);
     if (ReturnCode.isSuccess(await session.getReturnCode())) {
       Get.snackbar(
@@ -1747,7 +1482,6 @@ class DrawController extends GetxController {
       );
     }
   }
-
   Future<void> uploadImageToprofile(
     String userId, {
     int? selectedFrameIndex,
@@ -1755,18 +1489,15 @@ class DrawController extends GetxController {
     final tempDir = await getTemporaryDirectory();
     final frameIndex = selectedFrameIndex ?? currentFrameIndex.value;
     final thumbPath = p.join(tempDir.path, 'upload_image.png');
-
     final imageFile = await renderThumbnailToFile(frameIndex, thumbPath);
     if (imageFile == null) {
       Get.snackbar("Error", "Failed to render image for upload.");
       return;
     }
-
     final uploadController = Get.find<UploadController>();
     uploadController.nameController.text = currentProjectName ?? 'New Artwork';
     uploadController.descriptionController.text =
         'Created using Calliope drawing app';
-
     uploadController.allowRemix.value = true;
     uploadController.currentProjectToUpload = DrawProjectModel(
       id: currentProjectId ?? "remix_${DateTime.now().millisecondsSinceEpoch}",
@@ -1774,13 +1505,10 @@ class DrawController extends GetxController {
       updatedAt: DateTime.now(),
       frames: frames.map((f) => f.copy()).toList(),
     );
-
     final confirmed = await _showPostCustomizationDialog(uploadController);
     if (!confirmed) return;
-
     await uploadController.uploadImage(userId, imageFile);
   }
-
   Future<void> showCommunityShareDialog() async {
     final userId = profileController.currentUser.value?.id;
     if (userId == null || !profileController.isLogined.value) {
@@ -1790,7 +1518,6 @@ class DrawController extends GetxController {
       );
       return;
     }
-
     await Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -1850,7 +1577,6 @@ class DrawController extends GetxController {
       ),
     );
   }
-
   Widget _shareOptionCard({
     required IconData icon,
     required String title,
@@ -1888,13 +1614,11 @@ class DrawController extends GetxController {
       ),
     );
   }
-
   Future<void> _showFrameSelectionDialog(
     String userId, {
     required bool isVideo,
   }) async {
     int selectedIndex = currentFrameIndex.value;
-
     await Get.dialog(
       StatefulBuilder(
         builder:
@@ -1968,22 +1692,18 @@ class DrawController extends GetxController {
                   onPressed: () async {
                     final uploadController = Get.find<UploadController>();
                     if (uploadController.isUploading.value) return;
-
                     await safeBack();
                     if (isVideo) {
-
                     } else {
                       final bytes = await renderThumbnail(selectedIndex);
                       final tempDir = await getTemporaryDirectory();
                       final file = await File(
                         p.join(tempDir.path, 'upload_image.png'),
                       ).writeAsBytes(bytes);
-
                       uploadController.nameController.text =
                           currentProjectName ?? 'New Artwork';
                       uploadController.descriptionController.text =
                           'Created using Calliope drawing app';
-
                       uploadController.allowRemix.value = true;
                       uploadController.currentProjectToUpload = DrawProjectModel(
                         id:
@@ -1995,12 +1715,10 @@ class DrawController extends GetxController {
                         updatedAt: DateTime.now(),
                         frames: frames.map((f) => f.copy()).toList(),
                       );
-
                       final confirmed = await _showPostCustomizationDialog(
                         uploadController,
                       );
                       if (!confirmed) return;
-
                       uploadController.uploadImage(userId, file);
                     }
                   },
@@ -2011,7 +1729,6 @@ class DrawController extends GetxController {
       ),
     );
   }
-
   Future<void> uploadVideoToprofile(
     int fps,
     String userId, {
@@ -2021,11 +1738,9 @@ class DrawController extends GetxController {
   }) async {
     final tempDir = await getTemporaryDirectory();
     final framesDir = Directory(p.join(tempDir.path, "upload_frames"));
-
     if (!framesDir.existsSync()) {
       await framesDir.create(recursive: true);
     }
-
     for (int i = frames.length - 1; i >= 0; i--) {
       final recorder = ui.PictureRecorder();
       final canvas = Canvas(
@@ -2033,7 +1748,6 @@ class DrawController extends GetxController {
         Rect.fromLTWH(0, 0, canvasSize.width, canvasSize.height),
       );
       canvas.drawColor(Colors.white, BlendMode.src);
-
       for (int l = 0; l < frames[i].layers.length; l++) {
         final layer = frames[i].layers[l];
         if (layer.isVisible) {
@@ -2044,7 +1758,6 @@ class DrawController extends GetxController {
           ).paint(canvas, canvasSize);
         }
       }
-
       final picture = recorder.endRecording();
       final image = await picture.toImage(
         canvasSize.width.toInt(),
@@ -2052,43 +1765,35 @@ class DrawController extends GetxController {
       );
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final bytes = byteData!.buffer.asUint8List();
-
       final framePath = p.join(
         framesDir.path,
         'frame_${(frames.length - 1 - i).toString().padLeft(3, '0')}.png',
       );
       await File(framePath).writeAsBytes(bytes);
     }
-
     final outputVideoPath = p.join(tempDir.path, 'upload_video.mp4');
     final ffmpegCommand =
         "-y -framerate $fps -start_number 0 -i ${framesDir.path}/frame_%03d.png "
         "-vf scale='trunc(iw/2)*2:trunc(ih/2)*2' "
         "-c:v libx264 -pix_fmt yuv420p $outputVideoPath";
-
     final session = await FFmpegKit.execute(ffmpegCommand);
     final returnCode = await session.getReturnCode();
-
     if (!ReturnCode.isSuccess(returnCode)) {
       safeSnackbar("Error", "Failed to generate video for upload.");
       return;
     }
-
     final uploadController = Get.find<UploadController>();
     uploadController.videoFile.value = File(outputVideoPath);
-
     final frameIndex = selectedFrameIndex ?? 0;
     final thumbPath = p.join(tempDir.path, 'thumbnail.png');
     final thumb = await renderThumbnailToFile(frameIndex, thumbPath);
     if (thumb != null) {
       uploadController.backgroundFile.value = thumb;
     }
-
     uploadController.nameController.text =
         customName ?? currentProjectName ?? 'New Video';
     uploadController.descriptionController.text =
         customDescription ?? 'Created using Calliope drawing app';
-
     uploadController.allowRemix.value = true;
     uploadController.currentProjectToUpload = DrawProjectModel(
       id: currentProjectId ?? "remix_${DateTime.now().millisecondsSinceEpoch}",
@@ -2096,16 +1801,13 @@ class DrawController extends GetxController {
       updatedAt: DateTime.now(),
       frames: frames.map((f) => f.copy()).toList(),
     );
-
     final confirmed = await _showPostCustomizationDialog(uploadController);
     if (!confirmed) {
       safeSnackbar("Cancelled", "Upload cancelled by user.");
       return;
     }
-
     await Future.delayed(const Duration(milliseconds: 200));
     await uploadController.uploadVideo(userId);
-
     if (framesDir.existsSync()) {
       try {
         await framesDir.delete(recursive: true);
@@ -2117,7 +1819,6 @@ class DrawController extends GetxController {
       }
     }
   }
-
   Future<void> generateTween(int fromIndex, int toIndex, int steps) async {
     if (fromIndex < 0 ||
         toIndex >= frames.length ||
@@ -2126,19 +1827,15 @@ class DrawController extends GetxController {
       safeSnackbar("Error", "Invalid parameter");
       return;
     }
-
     final layerIndex = currentLayerIndex.value;
     final fromLines = frames[fromIndex].layers[layerIndex].lines;
     final toLines = frames[toIndex].layers[layerIndex].lines;
-
     final maxLines =
         fromLines.length > toLines.length ? fromLines.length : toLines.length;
     final generatedFrames = <FrameModel>[];
-
     for (int s = 1; s <= steps; s++) {
       final t = s / (steps + 1);
       final tweenLines = <DrawnLine>[];
-
       for (int i = 0; i < maxLines; i++) {
         final a =
             i < fromLines.length
@@ -2156,24 +1853,20 @@ class DrawController extends GetxController {
                   colorValue: Colors.black.toARGB32(),
                   width: 1,
                 );
-
         final minLen =
             a.points.length < b.points.length
                 ? a.points.length
                 : b.points.length;
         final points = <Offset>[];
-
         for (int j = 0; j < minLen; j++) {
           final p = Offset.lerp(a.points[j], b.points[j], t);
           points.add(p ?? a.points[j]);
         }
-
         if (a.points.length > b.points.length) {
           points.addAll(a.points.sublist(minLen));
         } else if (b.points.length > a.points.length) {
           points.addAll(b.points.sublist(minLen));
         }
-
         tweenLines.add(
           DrawnLine(
             points: points,
@@ -2188,12 +1881,10 @@ class DrawController extends GetxController {
           ),
         );
       }
-
       final tweenFrame = FrameModel();
       tweenFrame.layers[layerIndex].lines = tweenLines;
       generatedFrames.add(tweenFrame);
     }
-
     frames.insertAll(fromIndex + 1, generatedFrames);
     _clearThumbnailCache();
     frames.refresh();
@@ -2202,7 +1893,6 @@ class DrawController extends GetxController {
       "Inserted $steps as child frame of $fromIndex and $toIndex",
     );
   }
-
   Future<File?> renderThumbnailToFile(int frameIndex, String path) async {
     try {
       final bytes = await renderThumbnail(frameIndex);
@@ -2213,12 +1903,9 @@ class DrawController extends GetxController {
       return null;
     }
   }
-
   Future<void> showUploadDialogWithInfo(int fps, String userId) async {
     final nameController = TextEditingController();
-
     int? selectedFrameIndex;
-
     await Get.dialog(
       AlertDialog(
         title: const Text("Upload Video"),
@@ -2283,7 +1970,6 @@ class DrawController extends GetxController {
                       type: FileType.image,
                     );
                     if (result != null && result.files.single.path != null) {
-
                       safeSnackbar(
                         "Image selected",
                         "The chosen image will be used as the thumbnail",
@@ -2311,7 +1997,6 @@ class DrawController extends GetxController {
                       ? null
                       : () async {
                         await safeBack();
-
                         await uploadVideoToprofile(
                           fps,
                           userId,
@@ -2333,18 +2018,14 @@ class DrawController extends GetxController {
       ),
     );
   }
-
   Future<List<Uint8List>> getAllFrameThumbnails() async {
     final List<Uint8List> framesData = [];
-
     for (int i = frames.length - 1; i >= 0; i--) {
       final bytes = await renderThumbnail(i);
       framesData.add(bytes);
     }
-
     return framesData;
   }
-
   void _clearThumbnailCache({int? frameIndex, int? layerIndex}) {
     if (frameIndex == null) {
       thumbnailCache.clear();
@@ -2354,7 +2035,6 @@ class DrawController extends GetxController {
       thumbnailCache.remove(key);
     }
   }
-
   void scrollToTop() {
     Future.delayed(const Duration(milliseconds: 50), () {
       if (scrollController.hasClients) {
@@ -2366,14 +2046,10 @@ class DrawController extends GetxController {
       }
     });
   }
-
   Future<void> safeBack({dynamic result}) async {
     try {
-
       await Future.delayed(const Duration(milliseconds: 50));
-
       if (Get.context != null) {
-
         Navigator.of(Get.context!).pop(result);
       } else {
         Get.back(result: result);
@@ -2384,9 +2060,7 @@ class DrawController extends GetxController {
       } catch (_) {}
     }
   }
-
   void safeSnackbar(String title, String message) {
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
         if (Get.context != null) {
@@ -2407,10 +2081,8 @@ class DrawController extends GetxController {
     });
   }
 }
-
 Future<String?> _getprojectNameFromUser() async {
   final TextEditingController controller = TextEditingController();
-
   return await Get.dialog<String>(
     AlertDialog(
       title: const Text("Enter project Name"),
@@ -2436,7 +2108,6 @@ Future<String?> _getprojectNameFromUser() async {
     ),
   );
 }
-
 Future<bool> _showPostCustomizationDialog(UploadController controller) async {
   return await Get.dialog<bool>(
         Dialog(
@@ -2459,7 +2130,6 @@ Future<bool> _showPostCustomizationDialog(UploadController controller) async {
                       ),
                     ),
                     const SizedBox(height: 20),
-
                     TextField(
                       controller: controller.nameController,
                       decoration: const InputDecoration(
@@ -2469,7 +2139,6 @@ Future<bool> _showPostCustomizationDialog(UploadController controller) async {
                       ),
                     ),
                     const SizedBox(height: 15),
-
                     TextField(
                       controller: controller.descriptionController,
                       decoration: const InputDecoration(
@@ -2480,7 +2149,6 @@ Future<bool> _showPostCustomizationDialog(UploadController controller) async {
                       maxLines: 3,
                     ),
                     const SizedBox(height: 15),
-
                     Obx(() {
                       final uploadController = Get.find<UploadController>();
                       return Container(
@@ -2512,9 +2180,7 @@ Future<bool> _showPostCustomizationDialog(UploadController controller) async {
                         ),
                       );
                     }),
-
                     const SizedBox(height: 25),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -2570,22 +2236,18 @@ Future<bool> _showPostCustomizationDialog(UploadController controller) async {
       ) ??
       false;
 }
-
 class OptimizedSketcher extends CustomPainter {
   final ui.Picture? backgroundPicture;
   final DrawnLine? currentLine;
-
   OptimizedSketcher({
     required this.backgroundPicture,
     required this.currentLine,
   });
-
   @override
   void paint(Canvas canvas, Size size) {
     if (backgroundPicture != null) {
       canvas.drawPicture(backgroundPicture!);
     }
-
     if (currentLine != null && currentLine!.points.length > 1) {
       final paint =
           Paint()
@@ -2593,7 +2255,6 @@ class OptimizedSketcher extends CustomPainter {
             ..strokeWidth = currentLine!.width
             ..strokeCap = StrokeCap.round
             ..style = PaintingStyle.stroke;
-
       final path =
           Path()..moveTo(currentLine!.points[0].dx, currentLine!.points[0].dy);
       for (int i = 1; i < currentLine!.points.length; i++) {
@@ -2602,10 +2263,8 @@ class OptimizedSketcher extends CustomPainter {
       canvas.drawPath(path, paint);
     }
   }
-
   @override
   bool shouldRepaint(covariant OptimizedSketcher oldDelegate) {
-
     return backgroundPicture != oldDelegate.backgroundPicture ||
         currentLine != oldDelegate.currentLine;
   }
