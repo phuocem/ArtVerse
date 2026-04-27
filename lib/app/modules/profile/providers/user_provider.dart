@@ -122,4 +122,15 @@ class UserProvider {
     );
     return _supabase.storage.from('avatars').getPublicUrl(path);
   }
+
+  Future<String> uploadCover(String userId, File file) async {
+    final fileName = "cover_${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg";
+    final path = '$userId/$fileName';
+    await _supabase.storage.from('avatars').upload(
+      path,
+      file,
+      fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
+    );
+    return _supabase.storage.from('avatars').getPublicUrl(path);
+  }
 }

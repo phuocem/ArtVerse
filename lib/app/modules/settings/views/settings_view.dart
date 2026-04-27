@@ -222,14 +222,14 @@ class _SettingsContent extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Container(
-                      width: 48, height: 48,
-                      decoration: BoxDecoration(
-                        gradient: AppColors.violetPink,
-                        borderRadius: BorderRadius.circular(12),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        'assets/images/branding/app_icon.png',
+                        width: 48,
+                        height: 48,
+                        fit: BoxFit.cover,
                       ),
-                      child: Center(child: Text('A', style: GoogleFonts.lexend(
-                        color: Colors.white, fontSize: 24, fontWeight: FontWeight.w900))),
                     ),
                     const SizedBox(width: 14),
                     Column(

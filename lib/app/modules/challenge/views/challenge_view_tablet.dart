@@ -375,9 +375,9 @@ class _LeaderSidebar extends StatelessWidget {
               final isTop3 = rank <= 3;
               
               Color rankColor = AppColors.textTertiary;
-              if (rank == 1) rankColor = const Color(0xFFFFD700); // Gold
-              else if (rank == 2) rankColor = const Color(0xFFC0C0C0); // Silver
-              else if (rank == 3) rankColor = const Color(0xFFCD7F32); // Bronze
+              if (rank == 1) rankColor = const Color(0xFFFFD700); 
+              else if (rank == 2) rankColor = const Color(0xFFC0C0C0); 
+              else if (rank == 3) rankColor = const Color(0xFFCD7F32); 
 
               return Container(
                 margin: const EdgeInsets.only(bottom: 12),

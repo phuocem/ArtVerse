@@ -20,7 +20,7 @@ class UploadProvider {
       if (!_securityService.isValidImageFile(filename, fileSize)) {
         throw Exception('Invalid image file: size exceeds 10MB or unsupported format');
       }
-    } else if (contentType.startsWith('video/')) {
+    } else if (contentType.startsWith('video/') || contentType == 'application/vnd.apple.mpegurl') {
       if (!_securityService.isValidVideoFile(filename, fileSize)) {
         throw Exception('Invalid video file: size exceeds 100MB or unsupported format');
       }

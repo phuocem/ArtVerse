@@ -28,10 +28,21 @@ class HomeView extends GetView<HomeController> {
                       flex: 7,
                       child: _ProjectArea(controller: controller, lc: lc),
                     ),
-                    SizedBox(
-                      width: 280,
-                      child: _ActivityPanel(controller: controller, lc: lc),
-                    ),
+                    Obx(() => AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOutCubic,
+                      width: controller.isSidebarOpen.value ? 280 : 0,
+                      child: ClipRect(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          physics: const NeverScrollableScrollPhysics(),
+                          child: SizedBox(
+                            width: 280,
+                            child: _ActivityPanel(controller: controller, lc: lc),
+                          ),
+                        ),
+                      ),
+                    )),
                   ],
                 ),
               ),
@@ -111,6 +122,17 @@ class _TopBar extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+          const SizedBox(width: 16),
+          Container(width: 1, height: 24, color: AppColors.border),
+          const SizedBox(width: 16),
+          GestureDetector(
+            onTap: controller.toggleSidebar,
+            child: Obx(() => Icon(
+              controller.isSidebarOpen.value ? Icons.last_page_rounded : Icons.first_page_rounded,
+              color: AppColors.textSecondary,
+              size: 24,
+            )),
           ),
         ],
       ),

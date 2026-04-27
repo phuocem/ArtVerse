@@ -6,8 +6,8 @@ class SecurityService extends GetxService {
   static const int maxImageSize = 10 * 1024 * 1024;
   static const int maxVideoSize = 100 * 1024 * 1024;
   static const int maxProjectSize = 50 * 1024 * 1024;
-  static const List<String> allowedImageExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
-  static const List<String> allowedVideoExtensions = ['.mp4', '.mov', '.avi'];
+  static const List<String> allowedImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+  static const List<String> allowedVideoExtensions = ['.mp4', '.mov', '.avi', '.ts', '.m3u8'];
   static const List<String> allowedProjectExtensions = ['.json'];
   static final RegExp emailPattern = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
   static final RegExp urlPattern = RegExp(r'^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&/=%]*)$');

@@ -29,6 +29,7 @@ class UserModel extends HiveObject {
   @HiveField(24) int level;
   @HiveField(25) List<String>? badges;
   @HiveField(26) String? coverUrl;
+  bool get isPro => false; 
   UserModel({this.id, required this.createdAt, required this.editedAt, required this.name, required this.bio, required this.email, this.avatarUrl, this.followersCount = 0, this.followingCount = 0, this.location, this.website, this.instagramUrl, this.twitterUrl, this.isStudio = false, this.balance = 0.0, this.likesCount = 0, this.viewsCount = 0, this.isVerified = false, this.specialties, this.tools, this.handle, this.selectedFrame, this.gender, this.xp = 0, this.level = 1, this.badges, this.coverUrl});
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(

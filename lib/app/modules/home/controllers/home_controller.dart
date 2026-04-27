@@ -29,6 +29,11 @@ class HomeController extends GetxController {
   final isCloudView = false.obs;
   final isLoadingCloud = false.obs;
   final canvasBackgroundColor = Colors.white.obs;
+  final isSidebarOpen = true.obs;
+
+  void toggleSidebar() {
+    isSidebarOpen.value = !isSidebarOpen.value;
+  }
 
   final bannerIndex = 0.obs;
   late final PageController bannerPageController;

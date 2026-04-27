@@ -101,22 +101,13 @@ class _LeftSidebar extends GetView<LayoutController> {
     });
   }
   Widget _buildLogo() {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        gradient: AppColors.violetPink,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Center(
-        child: Text(
-          'A',
-          style: GoogleFonts.lexend(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Image.asset(
+        'assets/images/branding/app_icon.png',
+        width: 40,
+        height: 40,
+        fit: BoxFit.cover,
       ),
     );
   }

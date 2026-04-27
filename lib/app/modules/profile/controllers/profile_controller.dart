@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:external_path/external_path.dart';
@@ -37,6 +39,7 @@ class ProfileController extends GetxController
   final Map<String, UserModel> _userCache = {};
   var post = <PostModel>[].obs;
   final isLoadingMore = false.obs;
+  bool _isPickingFile = false;
   final selectedTab = 'All'.obs;
   final List<String> tabArt = ['All', '2D Art'];
   final ScrollController scrollController = ScrollController();
@@ -710,120 +713,162 @@ class ProfileController extends GetxController
     final instagramController = TextEditingController(text: currentUser.value?.instagramUrl ?? '');
     final twitterController = TextEditingController(text: currentUser.value?.twitterUrl ?? '');
     final Rx<File?> selectedAvatar = Rx<File?>(null);
+    final Rx<File?> selectedCover = Rx<File?>(null);
     final isUpdating = false.obs;
     final activeTab = 0.obs;
-    final gender = (currentUser.value?.gender ?? "").obs;
+    final gender = (currentUser.value?.gender ?? '').obs;
+    final specialties = RxList<String>(List<String>.from(currentUser.value?.specialties ?? []));
+    final specialtyInput = TextEditingController();
     Get.generalDialog(
       barrierDismissible: true,
       barrierLabel: 'Edit Profile',
-      barrierColor: Colors.black.withValues(alpha: 0.85),
+      barrierColor: Colors.black.withValues(alpha: 0.88),
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (context, anim1, anim2) {
         return Center(
           child: Material(
             color: Colors.transparent,
             child: Container(
-              width: 640,
-              height: 520,
+              width: 680,
+              height: 600,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(36),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    lc.cardColor,
-                    lc.backgroundColor,
-                  ],
-                ),
-                border: Border.all(color: lc.primaryColor.withValues(alpha: 0.3), width: 1),
+                borderRadius: BorderRadius.circular(28),
+                color: lc.cardColor,
+                border: Border.all(color: lc.primaryColor.withValues(alpha: 0.25), width: 1),
                 boxShadow: [
-                  BoxShadow(color: lc.primaryColor.withValues(alpha: 0.15), blurRadius: 40, spreadRadius: 2),
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.6), blurRadius: 80),
+                  BoxShadow(color: lc.primaryColor.withValues(alpha: 0.12), blurRadius: 60, spreadRadius: 0),
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.7), blurRadius: 80),
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(36),
-                child: Row(
+                borderRadius: BorderRadius.circular(28),
+                child: Column(
                   children: [
-                    _buildFluidSidebar(activeTab, lc),
-                    Expanded(
+                    
+                    SizedBox(
+                      height: 160,
                       child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.topCenter,
                         children: [
-                          Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(top: 24, bottom: 8),
-                                child: Column(
-                                  children: [
-                                    _buildCelestialAvatar(selectedAvatar, avatarUrl, lc),
-                                    const SizedBox(height: 8),
-                                    TextField(
-                                      controller: nameController,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: lc.textColor,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w900,
-                                        letterSpacing: -0.5,
-                                      ),
-                                      decoration: InputDecoration(
-                                        hintText: "Tên của bạn",
-                                        hintStyle: TextStyle(color: lc.subtextColor),
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                    Obx(() => Text(
-                                      "@${handleText.value.isEmpty ? "handle" : handleText.value}",
-                                      style: TextStyle(
-                                        color: lc.primaryColor,
-                                        fontWeight: FontWeight.w900,
-                                        letterSpacing: 2,
-                                        fontSize: 11,
-                                      ),
-                                    )),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                                  child: Obx(() => AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 300),
-                                    transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
-                                    child: KeyedSubtree(
-                                      key: ValueKey(activeTab.value),
-                                      child: SingleChildScrollView(
-                                        physics: const BouncingScrollPhysics(),
-                                        child: _buildCurrentFluidTab(activeTab.value, handleController, bioController, locationController, websiteController, instagramController, twitterController, gender, lc),
-                                      ),
-                                    ),
-                                  )),
-                                ),
-                              ),
-                              const SizedBox(height: 80),
-                            ],
-                          ),
-                          Positioned(
-                            bottom: 20, left: 0, right: 0,
-                            child: Center(child: _buildFloatingActionHub(id, isUpdating, nameController, bioController, locationController, websiteController, instagramController, twitterController, handleController, selectedAvatar, avatarUrl, gender, onUpdated, lc)),
-                          ),
-                          Positioned(
-                            top: 16, right: 20,
-                            child: GestureDetector(
-                              onTap: () => Get.back(),
-                              child: Container(
-                                width: 32, height: 32,
-                                decoration: BoxDecoration(
-                                  color: lc.glassColor,
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: lc.glassBorderColor),
-                                ),
-                                child: Icon(Icons.close_rounded, color: lc.textColor.withValues(alpha: 0.6), size: 15),
+                          
+                          Container(
+                            height: 110,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  lc.primaryColor.withValues(alpha: 0.6),
+                                  lc.primaryColor.withValues(alpha: 0.2),
+                                  lc.backgroundColor.withValues(alpha: 0.4),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
                             ),
+                            child: Stack(
+                              children: [
+                                
+                                Positioned(
+                                  top: 14, right: 16,
+                                  child: GestureDetector(
+                                    onTap: () => Get.back(),
+                                    child: Container(
+                                      width: 30, height: 30,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.3),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(Icons.close_rounded, color: Colors.white, size: 14),
+                                    ),
+                                  ),
+                                ),
+                                
+                                Positioned(
+                                  top: 18, left: 20,
+                                  child: Text('EDIT PROFILE', style: GoogleFonts.ibmPlexMono(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
+                          Positioned(
+                            top: 65, 
+                            child: _buildCelestialAvatar(selectedAvatar, avatarUrl, lc),
                           ),
                         ],
                       ),
+                    ),
+                    const SizedBox(height: 5),
+                    
+                    SizedBox(
+                      width: 280,
+                      child: TextField(
+                        controller: nameController,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: lc.textColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: 'Tên của bạn',
+                          hintStyle: TextStyle(color: lc.subtextColor),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ),
+                    Obx(() => Text(
+                      '@${handleText.value.isEmpty ? "handle" : handleText.value}',
+                      style: TextStyle(color: lc.primaryColor, fontWeight: FontWeight.w700, fontSize: 12, letterSpacing: 1),
+                    )),
+                    const SizedBox(height: 16),
+                    
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Obx(() => Row(
+                        children: [
+                          _buildProfileTab(0, Icons.face_retouching_natural_rounded, 'Identity', activeTab, lc),
+                          const SizedBox(width: 8),
+                          _buildProfileTab(1, Icons.link_rounded, 'Links', activeTab, lc),
+                        ],
+                      )),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Obx(() => AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          transitionBuilder: (child, anim) => FadeTransition(opacity: anim, child: child),
+                          child: KeyedSubtree(
+                            key: ValueKey(activeTab.value),
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: _buildCurrentFluidTab(
+                                activeTab.value,
+                                handleController, bioController,
+                                locationController, websiteController,
+                                instagramController, twitterController,
+                                gender, lc,
+                                specialties: specialties,
+                                specialtyInput: specialtyInput,
+                                selectedCover: selectedCover,
+                                currentCoverUrl: currentUser.value?.coverUrl,
+                              ),
+                            ),
+                          ),
+                        )),
+                      ),
+                    ),
+                    
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 8, 32, 20),
+                      child: _buildFloatingActionHub(id, isUpdating, nameController, bioController, locationController, websiteController, instagramController, twitterController, handleController, selectedAvatar, avatarUrl, selectedCover, currentUser.value?.coverUrl, specialties, gender, onUpdated, lc),
                     ),
                   ],
                 ),
@@ -835,75 +880,87 @@ class ProfileController extends GetxController
       transitionBuilder: (context, anim1, anim2, child) => FadeTransition(opacity: anim1, child: child),
     );
   }
-  Widget _buildFluidSidebar(RxInt activeTab, LayoutController lc) {
-    final icons = [Icons.face_retouching_natural_rounded, Icons.hub_rounded];
-    return Container(
-      width: 54,
-      decoration: BoxDecoration(
-        color: lc.glassColor,
-        border: Border(right: BorderSide(color: lc.glassBorderColor, width: 1)),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 40),
-      child: Column(
-        children: List.generate(icons.length, (i) => Obx(() {
-          final active = activeTab.value == i;
-          return GestureDetector(
-            onTap: () => activeTab.value = i,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.only(bottom: 16),
-              width: 32, height: 32,
-              decoration: BoxDecoration(
-                color: active ? lc.primaryColor : Colors.transparent,
-                shape: BoxShape.circle,
-                boxShadow: active ? [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.4), blurRadius: 12)] : []
-              ),
-              child: Icon(icons[i], color: active ? lc.onPrimaryColor : lc.textColor.withValues(alpha: 0.4), size: 16),
+  Widget _buildProfileTab(int index, IconData icon, String label, RxInt activeTab, LayoutController lc) {
+    final active = activeTab.value == index;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => activeTab.value = index,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: active ? lc.primaryColor.withValues(alpha: 0.12) : lc.glassColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: active ? lc.primaryColor.withValues(alpha: 0.4) : lc.glassBorderColor,
+              width: active ? 1.5 : 1,
             ),
-          );
-        })),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 14, color: active ? lc.primaryColor : lc.textColor.withValues(alpha: 0.4)),
+              const SizedBox(width: 6),
+              Text(label.toUpperCase(), style: TextStyle(
+                color: active ? lc.primaryColor : lc.textColor.withValues(alpha: 0.4),
+                fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5,
+              )),
+            ],
+          ),
+        ),
       ),
     );
   }
   Widget _buildCelestialAvatar(Rx<File?> selected, String? current, LayoutController lc) {
+    Future<void> pick() async {
+      if (_isPickingFile) return;
+      _isPickingFile = true;
+      try {
+        final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 90);
+        if (picked != null) selected.value = File(picked.path);
+      } catch (_) {} finally {
+        _isPickingFile = false;
+      }
+    }
+
     return Obx(() => SizedBox(
-      width: 80, height: 80,
+      width: 90, height: 90,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Container(
-            width: 70, height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: lc.primaryColor.withValues(alpha: 0.4), width: 2),
-              boxShadow: [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.2), blurRadius: 16)],
-            ),
-            child: ClipOval(
-              child: selected.value != null
-                ? Image.file(selected.value!, fit: BoxFit.cover)
-                : (current != null
-                    ? CachedNetworkImage(imageUrl: current, fit: BoxFit.cover)
-                    : Container(
-                        color: lc.glassColor,
-                        child: Icon(Icons.person_rounded, color: lc.primaryColor.withValues(alpha: 0.4), size: 32),
-                      )),
+          GestureDetector(
+            onTap: pick,
+            child: Container(
+              width: 84, height: 84,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: lc.cardColor, width: 3),
+                boxShadow: [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.3), blurRadius: 20)],
+              ),
+              child: ClipOval(
+                child: selected.value != null
+                  ? Image.file(selected.value!, fit: BoxFit.cover)
+                  : (current != null
+                      ? CachedNetworkImage(imageUrl: current, fit: BoxFit.cover)
+                      : Container(
+                          color: lc.glassColor,
+                          child: Icon(Icons.person_rounded, color: lc.primaryColor.withValues(alpha: 0.5), size: 36),
+                        )),
+              ),
             ),
           ),
           Positioned(
             bottom: 2, right: 2,
             child: GestureDetector(
-              onTap: () async {
-                final result = await FilePicker.platform.pickFiles(type: FileType.image);
-                if (result?.files.single.path != null) selected.value = File(result!.files.single.path!);
-              },
+              onTap: pick,
               child: Container(
-                padding: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: lc.primaryColor,
                   shape: BoxShape.circle,
-                  border: Border.all(color: lc.backgroundColor, width: 2),
+                  border: Border.all(color: lc.cardColor, width: 2),
                 ),
-                child: Icon(Icons.camera_alt_rounded, size: 10, color: lc.onPrimaryColor),
+                child: const Icon(Icons.add_a_photo_rounded, color: Colors.white, size: 12),
               ),
             ),
           ),
@@ -911,18 +968,129 @@ class ProfileController extends GetxController
       ),
     ));
   }
-  Widget _buildCurrentFluidTab(int tab, TextEditingController h, TextEditingController b, TextEditingController l, TextEditingController w, TextEditingController i, TextEditingController t, RxString gender, LayoutController lc) {
+  Widget _buildCurrentFluidTab(int tab, TextEditingController h, TextEditingController b, TextEditingController l, TextEditingController w, TextEditingController i, TextEditingController t, RxString gender, LayoutController lc, {RxList<String>? specialties, TextEditingController? specialtyInput, Rx<File?>? selectedCover, String? currentCoverUrl}) {
     switch(tab) {
-      case 0: return Column(children: [
-        _buildWhisperField(Icons.alternate_email_rounded, "Handle (@)", h, lc),
-        _buildWhisperField(Icons.notes_rounded, "Bio", b, lc, maxLines: 3),
-        _buildGenderSelector(gender, lc),
-      ]);
+      case 0: return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildWhisperField(Icons.alternate_email_rounded, 'Handle (@)', h, lc),
+          _buildWhisperField(Icons.notes_rounded, 'Bio', b, lc, maxLines: 3),
+          _buildGenderSelector(gender, lc),
+          
+          if (specialties != null && specialtyInput != null) ...[  
+            Container(
+              margin: const EdgeInsets.only(bottom: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('SPECIALTIES', style: TextStyle(color: lc.subtextColor, fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                  const SizedBox(height: 8),
+                  Obx(() => Wrap(
+                    spacing: 6, runSpacing: 6,
+                    children: [
+                      ...specialties.map((s) => GestureDetector(
+                        onTap: () => specialties.remove(s),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: lc.primaryColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: lc.primaryColor.withValues(alpha: 0.3)),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(s, style: TextStyle(color: lc.primaryColor, fontSize: 10, fontWeight: FontWeight.w600)),
+                              const SizedBox(width: 4),
+                              Icon(Icons.close_rounded, size: 10, color: lc.primaryColor),
+                            ],
+                          ),
+                        ),
+                      )),
+                    ],
+                  )),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: specialtyInput,
+                    style: TextStyle(color: lc.textColor, fontSize: 12),
+                    decoration: InputDecoration(
+                      hintText: 'Add specialty (press Enter)...',
+                      hintStyle: TextStyle(color: lc.subtextColor, fontSize: 12),
+                      filled: true,
+                      fillColor: lc.glassColor,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: lc.glassBorderColor)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: lc.primaryColor, width: 1.5)),
+                    ),
+                    onSubmitted: (val) {
+                      final trimmed = val.trim();
+                      if (trimmed.isNotEmpty && !specialties.contains(trimmed)) {
+                        specialties.add(trimmed);
+                      }
+                      specialtyInput.clear();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+          
+          if (selectedCover != null) ...[  
+            Container(
+              margin: const EdgeInsets.only(bottom: 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('COVER PHOTO', style: TextStyle(color: lc.subtextColor, fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () async {
+                      if (_isPickingFile) return;
+                      _isPickingFile = true;
+                      try {
+                        final picked = await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 85);
+                        if (picked != null) selectedCover.value = File(picked.path);
+                      } catch (_) {} finally {
+                        _isPickingFile = false;
+                      }
+                    },
+                    child: Obx(() => Container(
+                      height: 60,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: lc.glassBorderColor),
+                        color: lc.glassColor,
+                        image: selectedCover.value != null
+                            ? DecorationImage(image: FileImage(selectedCover.value!), fit: BoxFit.cover)
+                            : (currentCoverUrl != null && currentCoverUrl.isNotEmpty
+                                ? DecorationImage(image: NetworkImage(currentCoverUrl), fit: BoxFit.cover)
+                                : null),
+                      ),
+                      child: selectedCover.value == null && (currentCoverUrl == null || currentCoverUrl.isEmpty)
+                          ? Center(child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.add_photo_alternate_outlined, color: lc.subtextColor, size: 20),
+                                const SizedBox(height: 4),
+                                Text('Tap to choose cover', style: TextStyle(color: lc.subtextColor, fontSize: 10)),
+                              ],
+                            ))
+                          : null,
+                    )),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      );
       case 1: return Column(children: [
-        _buildWhisperField(Icons.place_rounded, "Địa điểm", l, lc),
-        _buildWhisperField(Icons.public_rounded, "Website", w, lc),
-        _buildWhisperField(Icons.camera_rounded, "Instagram", i, lc),
-        _buildWhisperField(Icons.chat_bubble_rounded, "X / Twitter", t, lc),
+        _buildWhisperField(Icons.place_rounded, 'Địa điểm', l, lc),
+        _buildWhisperField(Icons.public_rounded, 'Website', w, lc),
+        _buildWhisperField(Icons.camera_rounded, 'Instagram', i, lc),
+        _buildWhisperField(Icons.chat_bubble_rounded, 'X / Twitter', t, lc),
       ]);
       default: return const SizedBox();
     }
@@ -987,18 +1155,22 @@ class ProfileController extends GetxController
     );
   }
 
-  Widget _buildFloatingActionHub(String id, RxBool isUpdating, TextEditingController name, TextEditingController bio, TextEditingController loc, TextEditingController web, TextEditingController insta, TextEditingController twit, TextEditingController handle, Rx<File?> selectedAvatar, String? currentAvatar, RxString gender, void Function() onUpdated, LayoutController lc) {
+  Widget _buildFloatingActionHub(String id, RxBool isUpdating, TextEditingController name, TextEditingController bio, TextEditingController loc, TextEditingController web, TextEditingController insta, TextEditingController twit, TextEditingController handle, Rx<File?> selectedAvatar, String? currentAvatar, Rx<File?> selectedCover, String? currentCoverUrl, RxList<String> specialties, RxString gender, void Function() onUpdated, LayoutController lc) {
     return Obx(() => GestureDetector(
       onTap: isUpdating.value ? null : () async {
         isUpdating.value = true;
         try {
           String? newAvatarUrl = currentAvatar;
           if (selectedAvatar.value != null) newAvatarUrl = await repository.uploadAvatar(id, selectedAvatar.value!);
+          String? newCoverUrl = currentCoverUrl;
+          if (selectedCover.value != null) newCoverUrl = await repository.uploadAvatar(id, selectedCover.value!); 
           final updatedData = {
             'name': name.text.trim(), 'bio': bio.text.trim(), 'location': loc.text.trim(),
             'website': web.text.trim(), 'instagram_url': insta.text.trim(), 'twitter_url': twit.text.trim(),
             'handle': handle.text.trim(), 'avatar_url': newAvatarUrl,
             'gender': gender.value,
+            'cover_url': newCoverUrl,
+            'specialties': specialties.toList(),
           };
           await repository.updateUserData(id, updatedData);
           final newUser = UserModel.fromJson({...updatedData, 'id': id, 'email': currentUser.value?.email ?? ''});
@@ -1015,16 +1187,30 @@ class ProfileController extends GetxController
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 14),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          gradient: isUpdating.value ? null : LinearGradient(colors: [lc.primaryColor, lc.primaryColor.withValues(alpha: 0.7)]),
+          gradient: isUpdating.value ? null : LinearGradient(
+            colors: [lc.primaryColor, lc.primaryColor.withValues(alpha: 0.75)],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
           color: isUpdating.value ? lc.glassColor : null,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: isUpdating.value ? [] : [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.3), blurRadius: 16, offset: const Offset(0, 6))],
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: isUpdating.value ? [] : [BoxShadow(color: lc.primaryColor.withValues(alpha: 0.35), blurRadius: 16, offset: const Offset(0, 4))],
         ),
-        child: isUpdating.value
-          ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: lc.primaryColor, strokeWidth: 2))
-          : Text("LƯU HỒ SƠ", style: TextStyle(color: lc.onPrimaryColor, fontWeight: FontWeight.w900, fontSize: 12, letterSpacing: 1.5)),
+        child: Center(
+          child: isUpdating.value
+            ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(color: lc.primaryColor, strokeWidth: 2))
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.check_rounded, color: lc.onPrimaryColor, size: 16),
+                  const SizedBox(width: 8),
+                  Text('LƯU HỒ SƠ', style: TextStyle(color: lc.onPrimaryColor, fontWeight: FontWeight.w900, fontSize: 12, letterSpacing: 1.5)),
+                ],
+              ),
+        ),
       ),
     ));
   }

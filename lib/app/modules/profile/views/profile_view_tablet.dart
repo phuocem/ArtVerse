@@ -174,140 +174,252 @@ class _ProfileSidebar extends StatelessWidget {
         color: AppColors.surface,
         border: Border(right: BorderSide(color: AppColors.border, width: 0.5)),
       ),
-      child: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Obx(() {
-            final user = controller.currentUser.value!;
-            return Column(
+      child: Obx(() {
+        final user = controller.currentUser.value!;
+        return ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            
+            Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.bottomCenter,
               children: [
-                Stack(
-                  children: [
-                    Container(
-                      width: 80, height: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: AppColors.violetPink,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: ClipOval(
-                          child: Container(
-                            color: AppColors.surface2,
-                            child: user.avatarUrl?.isNotEmpty == true
-                                ? Image.network(user.avatarUrl!, fit: BoxFit.cover)
-                                : Center(child: Text(
-                                    user.name.isNotEmpty ? user.name[0] : '?',
-                                    style: GoogleFonts.lexend(color: AppColors.violet, fontSize: 28, fontWeight: FontWeight.w900))),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (user.isVerified)
-                      Positioned(bottom: 0, right: 0,
-                        child: Container(
-                          width: 22, height: 22,
-                          decoration: BoxDecoration(
-                            color: AppColors.teal,
-                            shape: BoxShape.circle,
-                            border: Border.all(color: AppColors.surface, width: 2),
-                          ),
-                          child: const Icon(Icons.verified_rounded, size: 12, color: Colors.white),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(user.name, style: GoogleFonts.lexend(
-                  color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w900)),
-                if (user.handle != null)
-                  Text('@${user.handle}', style: GoogleFonts.ibmPlexMono(
-                    color: AppColors.textTertiary, fontSize: 11)),
-                if (user.isStudio)
-                  Container(
-                    margin: const EdgeInsets.only(top: 6),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.goldGrad,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text('STUDIO', style: GoogleFonts.ibmPlexMono(
-                      color: Colors.white, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                Container(
+                  height: 90,
+                  width: double.infinity,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      
+                      if (user.coverUrl?.isNotEmpty == true)
+                        Image.network(user.coverUrl!, fit: BoxFit.cover)
+                      else
+                        Image.asset('assets/images/branding/background_studio.png', fit: BoxFit.cover),
+                      
+                      Container(color: Colors.black.withValues(alpha: 0.25)),
+                    ],
                   ),
+                ),
+                Positioned(
+                  bottom: -36,
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 72, height: 72,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.surface, width: 3),
+                          gradient: AppColors.violetPink,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: ClipOval(
+                            child: Container(
+                              color: AppColors.surface2,
+                              child: user.avatarUrl?.isNotEmpty == true
+                                  ? Image.network(user.avatarUrl!, fit: BoxFit.cover)
+                                  : Center(child: Text(
+                                      user.name.isNotEmpty ? user.name[0] : '?',
+                                      style: GoogleFonts.lexend(color: AppColors.violet, fontSize: 26, fontWeight: FontWeight.w900))),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (user.isVerified)
+                        Positioned(bottom: 2, right: 2,
+                          child: Container(
+                            width: 20, height: 20,
+                            decoration: BoxDecoration(
+                              color: AppColors.teal,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: AppColors.surface, width: 2),
+                            ),
+                            child: const Icon(Icons.verified_rounded, size: 10, color: Colors.white),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ],
-            );
-          }),
-          const SizedBox(height: 20),
-          Container(height: 0.5, color: AppColors.border),
-          const SizedBox(height: 16),
-          Obx(() {
-            final bio = controller.currentUser.value?.bio ?? '';
-            if (bio.isNotEmpty) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Text(bio, style: GoogleFonts.plusJakartaSans(
-                  color: AppColors.textSecondary, fontSize: 12, height: 1.5)),
-              );
-            }
-            return const SizedBox.shrink();
-          }),
-          Obx(() {
-            final user = controller.currentUser.value!;
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _StatColumn('${user.followersCount}', 'FOLLOWERS'),
-                _StatColumn('${user.followingCount}', 'FOLLOWING'),
-                _StatColumn('${controller.post.length}', 'WORKS'),
-              ],
-            );
-          }),
-          const SizedBox(height: 16),
-          Container(height: 0.5, color: AppColors.border),
-          const SizedBox(height: 16),
-          Obx(() {
-            final user = controller.currentUser.value!;
-            return Column(
-              children: [
-                if (user.location?.isNotEmpty == true)
-                  _InfoRow(icon: Icons.location_on_outlined, text: user.location!),
-                if (user.website?.isNotEmpty == true)
-                  _InfoRow(icon: Icons.link_rounded, text: user.website!, url: user.website!),
-                if (user.instagramUrl?.isNotEmpty == true)
-                  _InfoRow(icon: Icons.camera_alt_outlined, text: user.instagramUrl!, url: user.instagramUrl!, baseUrl: 'https://instagram.com/'),
-                if (user.twitterUrl?.isNotEmpty == true)
-                  _InfoRow(icon: Icons.alternate_email_rounded, text: user.twitterUrl!, url: user.twitterUrl!, baseUrl: 'https://x.com/'),
-              ],
-            );
-          }),
-          const SizedBox(height: 20),
-          GestureDetector(
-            onTap: () => Get.toNamed<void>('/wallet'),
-            child: Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: AppColors.surface2,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: AppColors.border, width: 0.5),
-              ),
-              child: Row(
+            ),
+            const SizedBox(height: 44),
+            
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
                 children: [
-                  Icon(Icons.account_balance_wallet_outlined, size: 16, color: AppColors.amber),
-                  const SizedBox(width: 10),
-                  Obx(() => Text('\$${controller.currentUser.value?.balance.toStringAsFixed(2) ?? '0.00'}',
-                    style: GoogleFonts.lexend(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w900))),
-                  const Spacer(),
-                  Text('WALLET', style: GoogleFonts.ibmPlexMono(
-                    color: AppColors.textTertiary, fontSize: 8, fontWeight: FontWeight.w700, letterSpacing: 1)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(user.name, style: GoogleFonts.lexend(
+                        color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w900)),
+                      if (user.isPro) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            gradient: AppColors.goldGrad,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text('PRO', style: GoogleFonts.ibmPlexMono(
+                            color: Colors.white, fontSize: 7, fontWeight: FontWeight.w900, letterSpacing: 1)),
+                        ),
+                      ],
+                      if (user.isStudio) ...[
+                        const SizedBox(width: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [const Color(0xFFFFAA00), const Color(0xFFFF6600)]),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text('STUDIO', style: GoogleFonts.ibmPlexMono(
+                            color: Colors.white, fontSize: 7, fontWeight: FontWeight.w900, letterSpacing: 1)),
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (user.handle != null && user.handle!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Text('@${user.handle}', style: GoogleFonts.ibmPlexMono(
+                        color: AppColors.textTertiary, fontSize: 10)),
+                    ),
+                  
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface2,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.border, width: 0.5),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: AppColors.violet.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text('LVL ${user.level}', style: GoogleFonts.ibmPlexMono(
+                                color: AppColors.violet, fontSize: 9, fontWeight: FontWeight.w900)),
+                            ),
+                            const Spacer(),
+                            Text('${user.xp} XP', style: GoogleFonts.ibmPlexMono(
+                              color: AppColors.textTertiary, fontSize: 9)),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: ((user.xp % 1000) / 1000).clamp(0.0, 1.0),
+                            backgroundColor: AppColors.border,
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.violet),
+                            minHeight: 4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
+            const SizedBox(height: 14),
+            Container(height: 0.5, color: AppColors.border, margin: const EdgeInsets.symmetric(horizontal: 16)),
+            const SizedBox(height: 12),
+            
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (user.bio.isNotEmpty) ...[
+                    Text(user.bio, style: GoogleFonts.plusJakartaSans(
+                      color: AppColors.textSecondary, fontSize: 12, height: 1.5)),
+                    const SizedBox(height: 12),
+                  ],
+                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _StatColumn('${user.followersCount}', 'FOLLOWERS'),
+                      _StatColumn('${user.followingCount}', 'FOLLOWING'),
+                      _StatColumn('${controller.post.length}', 'WORKS'),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Container(height: 0.5, color: AppColors.border),
+                  const SizedBox(height: 12),
+                  
+                  if (user.specialties?.isNotEmpty == true) ...[
+                    Text('SPECIALTIES', style: GoogleFonts.ibmPlexMono(
+                      color: AppColors.textTertiary, fontSize: 8, fontWeight: FontWeight.w700, letterSpacing: 1.5)),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 6, runSpacing: 6,
+                      children: user.specialties!.map((s) => Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.violet.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: AppColors.violet.withValues(alpha: 0.2)),
+                        ),
+                        child: Text(s, style: GoogleFonts.plusJakartaSans(
+                          color: AppColors.violet, fontSize: 10, fontWeight: FontWeight.w600)),
+                      )).toList(),
+                    ),
+                    const SizedBox(height: 12),
+                    Container(height: 0.5, color: AppColors.border),
+                    const SizedBox(height: 12),
+                  ],
+                  
+                  if (user.location?.isNotEmpty == true)
+                    _InfoRow(icon: Icons.location_on_outlined, text: user.location!),
+                  if (user.website?.isNotEmpty == true)
+                    _InfoRow(icon: Icons.link_rounded, text: user.website!, url: user.website!),
+                  if (user.instagramUrl?.isNotEmpty == true)
+                    _InfoRow(icon: Icons.camera_alt_outlined, text: user.instagramUrl!, url: user.instagramUrl!, baseUrl: 'https://instagram.com/'),
+                  if (user.twitterUrl?.isNotEmpty == true)
+                    _InfoRow(icon: Icons.alternate_email_rounded, text: user.twitterUrl!, url: user.twitterUrl!, baseUrl: 'https://x.com/'),
+                  const SizedBox(height: 12),
+                  
+                  GestureDetector(
+                    onTap: () => Get.toNamed<void>('/wallet'),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface2,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.border, width: 0.5),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.account_balance_wallet_outlined, size: 16, color: AppColors.amber),
+                          const SizedBox(width: 10),
+                          Text('\$${user.balance.toStringAsFixed(2)}',
+                            style: GoogleFonts.lexend(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w900)),
+                          const Spacer(),
+                          Text('WALLET', style: GoogleFonts.ibmPlexMono(
+                            color: AppColors.textTertiary, fontSize: 8, fontWeight: FontWeight.w700, letterSpacing: 1)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }
+
 class _StatColumn extends StatelessWidget {
   final String value;
   final String label;
