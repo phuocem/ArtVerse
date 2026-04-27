@@ -31,6 +31,7 @@ import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/wallet/bindings/wallet_binding.dart';
 import '../modules/wallet/views/wallet_view.dart';
+import '../modules/settings/views/guide_view.dart';
 import '../modules/profile/views/login_view.dart';
 import '../modules/profile/views/splash_view.dart';
 import '../modules/watch/bindings/watch_binding.dart';
@@ -148,6 +149,11 @@ class AppPages {
       name: _Paths.visionaryHall,
       page: () => const LeaderboardView(),
       binding: LeaderboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.guide,
+      page: () => const GuideView(),
+      transition: Transition.rightToLeftWithFade,
     ),
   ];
 }

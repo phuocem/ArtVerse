@@ -208,6 +208,15 @@ class _SettingsContent extends StatelessWidget {
             onTap: () => controller.requestErasure(),
           ),
           const SizedBox(height: 32),
+          const _SectionHeader('HELP & SUPPORT'),
+          const SizedBox(height: 16),
+          _SettingsTile(
+            icon: Icons.help_outline_rounded,
+            title: 'User Guide',
+            subtitle: 'Learn how to use ArtVerse features',
+            onTap: () => Get.toNamed<void>('/guide'),
+          ),
+          const SizedBox(height: 32),
           const _SectionHeader('ABOUT'),
           const SizedBox(height: 16),
           Container(

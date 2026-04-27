@@ -61,12 +61,12 @@ class LayoutView extends GetView<LayoutController> {
 class _LeftSidebar extends GetView<LayoutController> {
   const _LeftSidebar();
   static final _items = [
-    _NavItem(icon: MdiIcons.viewDashboardOutline, activeIcon: MdiIcons.viewDashboard, label: 'Studio', index: 0),
-    _NavItem(icon: MdiIcons.compassOutline, activeIcon: MdiIcons.compass, label: 'Discover', index: 1),
-    _NavItem(icon: MdiIcons.shoppingOutline, activeIcon: MdiIcons.shopping, label: 'Market', index: 2),
-    _NavItem(icon: MdiIcons.swordCross, activeIcon: MdiIcons.swordCross, label: 'Arena', index: 3),
-    _NavItem(icon: MdiIcons.chartLineVariant, activeIcon: MdiIcons.chartLine, label: 'Pulse', index: 4),
-    _NavItem(icon: MdiIcons.accountOutline, activeIcon: MdiIcons.account, label: 'Profile', index: 5),
+    _NavItem(icon: MdiIcons.paletteOutline, activeIcon: MdiIcons.palette, label: 'Studio', index: 0),
+    _NavItem(icon: MdiIcons.compassRose, activeIcon: MdiIcons.compass, label: 'Discover', index: 1),
+    _NavItem(icon: MdiIcons.storefrontOutline, activeIcon: MdiIcons.storefront, label: 'Market', index: 2),
+    _NavItem(icon: MdiIcons.tournament, activeIcon: MdiIcons.tournament, label: 'Arena', index: 3),
+    _NavItem(icon: MdiIcons.lightningBoltOutline, activeIcon: MdiIcons.lightningBolt, label: 'Pulse', index: 4),
+    _NavItem(icon: MdiIcons.accountCircleOutline, activeIcon: MdiIcons.accountCircle, label: 'Profile', index: 5),
   ];
   @override
   Widget build(BuildContext context) {
@@ -116,7 +116,7 @@ class _LeftSidebar extends GetView<LayoutController> {
       children: [
         Container(height: 0.5, color: AppColors.border, margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8)),
         _IconBtn(
-          icon: isDark ? MdiIcons.weatherSunny : MdiIcons.weatherNight,
+          icon: isDark ? MdiIcons.brightness7 : MdiIcons.brightness4,
           tooltip: isDark ? 'Light Mode' : 'Dark Mode',
           onTap: () {
                 controller.isDark.toggle();
@@ -125,7 +125,13 @@ class _LeftSidebar extends GetView<LayoutController> {
         ),
         const SizedBox(height: 4),
         _IconBtn(
-          icon: MdiIcons.cog,
+          icon: MdiIcons.helpCircleOutline,
+          tooltip: 'Guide',
+          onTap: () => Get.toNamed<void>('/guide'),
+        ),
+        const SizedBox(height: 4),
+        _IconBtn(
+          icon: MdiIcons.autoFix,
           tooltip: 'Settings',
           onTap: () => Get.toNamed<void>('/settings'),
         ),

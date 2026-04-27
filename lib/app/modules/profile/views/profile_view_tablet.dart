@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -519,15 +520,12 @@ class _ArtworkGrid extends StatelessWidget {
           ).animate().fadeIn(duration: 600.ms),
         );
       }
-      return GridView.builder(
+      return MasonryGridView.count(
         controller: controller.scrollController,
         padding: const EdgeInsets.all(24),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          childAspectRatio: 0.85,
-        ),
+        crossAxisCount: 3,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 16,
         itemCount: posts.length + (controller.isLoadingMore.value ? 1 : 0),
         itemBuilder: (ctx, i) {
           if (i == posts.length) {

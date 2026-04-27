@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/app_colors.dart';
@@ -235,11 +236,11 @@ class _PortfolioGrid extends StatelessWidget {
           ).animate().fadeIn(duration: 500.ms),
         );
       }
-      return GridView.builder(
+      return MasonryGridView.extent(
         padding: const EdgeInsets.all(24),
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 260, mainAxisSpacing: 16, crossAxisSpacing: 16, childAspectRatio: 0.82,
-        ),
+        maxCrossAxisExtent: 260,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 16,
         itemCount: filtered.length,
         itemBuilder: (ctx, i) => GlobalArtworkCard(
           post: filtered[i],

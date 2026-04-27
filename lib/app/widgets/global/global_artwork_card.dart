@@ -18,11 +18,7 @@ class GlobalArtworkCard extends StatefulWidget {
 }
 class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
   bool _isHovered = false;
-  double get _aspectRatio {
-    if (widget.post.id == null) return 1.0;
-    final hash = widget.post.id.hashCode;
-    return 0.75 + (hash % 100) / 180.0;
-  }
+  double get _aspectRatio => 1.1;
   @override
   Widget build(BuildContext context) {
     final lc = Get.find<LayoutController>();
@@ -36,6 +32,7 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
           duration: const Duration(milliseconds: 300),
           transform: Matrix4.translationValues(0.0, _isHovered ? -4.0 : 0.0, 0.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
@@ -109,7 +106,7 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 16, left: 4, right: 4),
+                padding: const EdgeInsets.only(top: 12, left: 4, right: 4),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [

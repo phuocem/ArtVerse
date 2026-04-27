@@ -23,6 +23,7 @@ abstract class Routes {
   static const notifications = _Paths.notifications;
   static const wallet = _Paths.wallet;
   static const visionaryHall = _Paths.visionaryHall;
+  static const guide = _Paths.guide;
 }
 
 abstract class _Paths {
@@ -48,4 +49,5 @@ abstract class _Paths {
   static const notifications = '/notifications';
   static const wallet = '/wallet';
   static const visionaryHall = '/visionary-hall';
+  static const guide = '/guide';
 }
