@@ -52,8 +52,8 @@ class _TopBar extends StatelessWidget {
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
-        color: AppColors.surface.withValues(alpha: 0.8),
-        border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+        color: lc.surfaceColor.withValues(alpha: 0.8),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
@@ -425,8 +425,8 @@ class _ActivityPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: lc.surfaceColor,
         border: Border(left: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: ListView(
@@ -560,7 +560,7 @@ class _QuickAction extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 10),
+            Icon(Icons.arrow_forward_ios_rounded, color: AppColors.textTertiary, size: 10),
           ],
         ),
       ),
@@ -583,7 +583,7 @@ class _RecentItem extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.surface2,
+          color: Get.find<LayoutController>().cardColor,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: AppColors.border, width: 0.5),
         ),

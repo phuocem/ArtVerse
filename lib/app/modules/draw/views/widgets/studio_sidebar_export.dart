@@ -27,20 +27,20 @@ class StudioSidebarExport extends StatelessWidget {
             DS.violet,
             controller.renderAllFramesToImages,
           ),
-          const SizedBox(height: 20),
-          sectionLabel('TIMELAPSE', accent: DS.gold),
+          sectionLabel('VIDEO & ANIMATION', accent: DS.gold),
           _exportCard(
-            Icons.videocam_rounded,
-            'Video Timelapse',
-            'Ghi lại quá trình vẽ dưới dạng video',
+            Icons.movie_rounded,
+            'Xuất Video (MP4)',
+            'Xuất toàn bộ frame thành video MP4',
             DS.gold,
-            () {
-              Get.snackbar('Timelapse',
-                  'Bắt đầu ghi timelapse – Hãy vẽ!',
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: DS.card,
-                  colorText: DS.text);
-            },
+            controller.exportToMp4,
+          ),
+          _exportCard(
+            Icons.gif_box_rounded,
+            'Xuất Ảnh động (GIF)',
+            'Xuất toàn bộ frame thành ảnh động GIF',
+            DS.gold,
+            controller.exportToGif,
           ),
           const SizedBox(height: 20),
           sectionLabel('CHIA SẺ', accent: DS.rose),
@@ -49,11 +49,7 @@ class StudioSidebarExport extends StatelessWidget {
             'Chia sẻ tác phẩm',
             'Đăng lên Portfolio ArtVerse',
             DS.rose,
-            () => Get.snackbar('Chia sẻ',
-                'Tính năng đang phát triển',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: DS.card,
-                colorText: DS.text),
+            controller.showCommunityShareDialog,
           ),
           const SizedBox(height: 20),
           sectionLabel('THÔNG TIN', accent: DS.textDim),
@@ -98,13 +94,13 @@ class StudioSidebarExport extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: DS.text,
                           fontSize: 12,
                           fontWeight: FontWeight.w700)),
                   const SizedBox(height: 2),
                   Text(subtitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: DS.textDim, fontSize: 10)),
                 ],
               ),
@@ -129,7 +125,7 @@ class StudioSidebarExport extends StatelessWidget {
         children: [
           Text(label,
               style:
-                  const TextStyle(color: DS.textDim, fontSize: 11)),
+                  TextStyle(color: DS.textDim, fontSize: 11)),
           Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 8, vertical: 2),

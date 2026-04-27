@@ -12,114 +12,100 @@ class StudioLeftSidebar extends StatefulWidget {
   @override
   State<StudioLeftSidebar> createState() => _StudioLeftSidebarState();
 }
-class _StudioLeftSidebarState extends State<StudioLeftSidebar>
-    with SingleTickerProviderStateMixin {
+class _StudioLeftSidebarState extends State<StudioLeftSidebar> {
   bool _collapsed = false;
-  late final AnimationController _anim;
-  late final Animation<double> _widthAnim;
-  @override
-  void initState() {
-    super.initState();
-    _anim = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 250));
-    _widthAnim =
-        CurvedAnimation(parent: _anim, curve: Curves.easeInOutCubic);
-  }
-  @override
-  void dispose() {
-    _anim.dispose();
-    super.dispose();
-  }
+
   void _toggle() {
     setState(() => _collapsed = !_collapsed);
-    _collapsed ? _anim.forward() : _anim.reverse();
   }
+
   @override
   Widget build(BuildContext context) {
     final c = widget.controller;
-    return AnimatedBuilder(
-      animation: _widthAnim,
-      builder: (_, __) {
-        final w = 64.0 * (1 - _widthAnim.value);
-        return SizedBox(
-          width: w.clamp(0, 64),
-          child: OverflowBox(
-            alignment: Alignment.centerLeft,
-            maxWidth: 64,
-            child: Container(
-              width: 64,
-              decoration: const BoxDecoration(
-                color: DS.surface,
-                border: Border(right: BorderSide(color: DS.border)),
-              ),
-              child: Column(
-                children: [
-                  _CollapseBtn(collapsed: _collapsed, onTap: _toggle),
-                  const Divider(color: DS.border, height: 1, thickness: 1),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Column(
-                        children: [
-                          _grp('VẼ', DS.violet),
-                          _brushTool(c, 'Chì', Icons.edit_rounded, BrushType.pencil, DS.violet),
-                          _brushTool(c, 'Cọ', Icons.brush_rounded, BrushType.brush, DS.violet),
-                          _brushTool(c, 'Phun', Icons.blur_on_rounded, BrushType.airbrush, DS.violet),
-                          _brushTool(c, 'Mực', Icons.history_edu_rounded, BrushType.pen, DS.violet),
-                          const SizedBox(height: 4),
-                          _sep(),
-                          _grp('HÌNH', DS.gold),
-                          _shapeTool(c, 'Rect', Icons.rectangle_outlined, ToolType.rectangle, DS.gold),
-                          _shapeTool(c, 'Elip', Icons.circle_outlined, ToolType.circle, DS.gold),
-                          _shapeTool(c, 'Line', Icons.show_chart_rounded, ToolType.line, DS.gold),
-                          _sep(),
-                          _grp('KHÁC', DS.cyan),
-                          _shapeTool(c, 'Fill', Icons.format_color_fill_rounded, ToolType.bucket, DS.cyan),
-                          _shapeTool(c, 'Text', Icons.text_fields_rounded, ToolType.text, DS.cyan),
-                          _eraserTool(c),
-                          _sep(),
-                          _grp('EXTRA', DS.rose),
-                          _toggleTool(c, 'Lazy', Icons.gesture_rounded, DS.rose,
-                              c.isStabilizerEnabled,
-                              () => c.isStabilizerEnabled.toggle()),
-                          _toggleTool(c, 'ISO', Icons.grid_3x3_rounded, DS.mint,
-                              c.isIsometricSnapEnabled,
-                              () => c.isIsometricSnapEnabled.toggle()),
-                          _actionTool(c, 'Persp', Icons.grid_4x4, DS.gold, () {
-                            Get.bottomSheet(
-                                StudioPerspectiveSheet(controller: c),
-                                isScrollControlled: true);
-                          }),
-                          _actionTool(c, 'AI', Icons.auto_awesome_rounded, DS.rose,
-                              () => Get.dialog(const StudioAiDialog())),
-                          const SizedBox(height: 8),
-                          _sep(),
-                          _grp('SYM', DS.violet),
-                          _symTool(c, 'H-Sym', Icons.swap_horiz_rounded, SymmetryType.horizontal, DS.violet),
-                          _symTool(c, 'V-Sym', Icons.swap_vert_rounded, SymmetryType.vertical, DS.violet),
-                          _symTool(c, 'R4', Icons.rotate_90_degrees_ccw_rounded, SymmetryType.radial4, DS.cyan),
-                          _symTool(c, 'R8', Icons.filter_8_rounded, SymmetryType.radial8, DS.cyan),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Divider(color: DS.border, height: 1, thickness: 1),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      children: [
-                        _ColorSwatch(controller: c),
-                        const SizedBox(height: 6),
-                        _recentColors(context, c),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeInOutCubic,
+      width: _collapsed ? 32 : 64,
+      decoration: BoxDecoration(
+        color: DS.surface,
+        border: Border(right: BorderSide(color: DS.border)),
+      ),
+      child: _collapsed ? _collapsedBar() : _expandedPanel(c),
+    );
+  }
+
+  Widget _collapsedBar() {
+    return Column(
+      children: [
+        _CollapseBtn(collapsed: true, onTap: _toggle),
+      ],
+    );
+  }
+
+  Widget _expandedPanel(DrawController c) {
+    return Column(
+      children: [
+        _CollapseBtn(collapsed: false, onTap: _toggle),
+        Divider(color: DS.border, height: 1, thickness: 1),
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Column(
+              children: [
+                _grp('VẼ', DS.violet),
+                _brushTool(c, 'Chì', Icons.edit_rounded, BrushType.pencil, DS.violet),
+                _brushTool(c, 'Cọ', Icons.brush_rounded, BrushType.brush, DS.violet),
+                _brushTool(c, 'Phun', Icons.blur_on_rounded, BrushType.airbrush, DS.violet),
+                _brushTool(c, 'Mực', Icons.history_edu_rounded, BrushType.pen, DS.violet),
+                const SizedBox(height: 4),
+                _sep(),
+                _grp('HÌNH', DS.gold),
+                _shapeTool(c, 'Rect', Icons.rectangle_outlined, ToolType.rectangle, DS.gold),
+                _shapeTool(c, 'Elip', Icons.circle_outlined, ToolType.circle, DS.gold),
+                _shapeTool(c, 'Line', Icons.show_chart_rounded, ToolType.line, DS.gold),
+                _sep(),
+                _grp('KHÁC', DS.cyan),
+                _shapeTool(c, 'Fill', Icons.format_color_fill_rounded, ToolType.bucket, DS.cyan),
+                _shapeTool(c, 'Text', Icons.text_fields_rounded, ToolType.text, DS.cyan),
+                _eraserTool(c),
+                _sep(),
+                _grp('EXTRA', DS.rose),
+                _toggleTool(c, 'Lazy', Icons.gesture_rounded, DS.rose,
+                    c.isStabilizerEnabled,
+                    () => c.isStabilizerEnabled.toggle()),
+                _toggleTool(c, 'ISO', Icons.grid_3x3_rounded, DS.mint,
+                    c.isIsometricSnapEnabled,
+                    () => c.isIsometricSnapEnabled.toggle()),
+                _actionTool(c, 'Persp', Icons.grid_4x4, DS.gold, () {
+                  Get.bottomSheet(
+                      StudioPerspectiveSheet(controller: c),
+                      isScrollControlled: true);
+                }),
+                _actionTool(c, 'AI', Icons.auto_awesome_rounded, DS.rose,
+                    () => Get.dialog(const StudioAiDialog())),
+                const SizedBox(height: 8),
+                _sep(),
+                _grp('SYM', DS.violet),
+                _symTool(c, 'H-Sym', Icons.swap_horiz_rounded, SymmetryType.horizontal, DS.violet),
+                _symTool(c, 'V-Sym', Icons.swap_vert_rounded, SymmetryType.vertical, DS.violet),
+                _symTool(c, 'R4', Icons.rotate_90_degrees_ccw_rounded, SymmetryType.radial4, DS.cyan),
+                _symTool(c, 'R8', Icons.filter_8_rounded, SymmetryType.radial8, DS.cyan),
+              ],
             ),
           ),
-        );
-      },
+        ),
+        Divider(color: DS.border, height: 1, thickness: 1),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              _ColorSwatch(controller: c),
+              const SizedBox(height: 6),
+              _recentColors(context, c),
+            ],
+          ),
+        ),
+      ],
     );
   }
   Widget _grp(String label, Color accent) => Padding(
@@ -183,7 +169,7 @@ class _StudioLeftSidebarState extends State<StudioLeftSidebar>
           color: DS.card,
           borderRadius: DS.r8,
           border: Border.all(color: DS.border)),
-      textStyle: const TextStyle(color: DS.text, fontSize: 11),
+      textStyle: TextStyle(color: DS.text, fontSize: 11),
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(

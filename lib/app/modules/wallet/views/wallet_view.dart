@@ -17,7 +17,7 @@ class WalletView extends GetView<WalletController> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
               color: AppColors.surface.withValues(alpha: 0.9),
-              border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+              border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
             ),
             child: Row(
               children: [
@@ -42,7 +42,7 @@ class WalletView extends GetView<WalletController> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
+                return Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
               }
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
@@ -75,7 +75,7 @@ class WalletView extends GetView<WalletController> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.receipt_long_outlined,
+                                Icon(Icons.receipt_long_outlined,
                                     size: 36, color: AppColors.textTertiary),
                                 const SizedBox(height: 8),
                                 Text('No transactions yet', style: GoogleFonts.plusJakartaSans(
@@ -186,7 +186,7 @@ class _MembershipCard extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: (days / 30).clamp(0.0, 1.0),
                   backgroundColor: AppColors.border,
-                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.amber),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.amber),
                   minHeight: 4,
                 ),
               ),

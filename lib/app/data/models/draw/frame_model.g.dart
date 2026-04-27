@@ -1,10 +1,10 @@
-
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'frame_model.dart';
 
-
-
-
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class FrameModelAdapter extends TypeAdapter<FrameModel> {
   @override

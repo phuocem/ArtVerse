@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
-import '../../../../core/theme/app_colors.dart';
 import '../../../layout/controllers/layout_controller.dart';
 
 class ProjectCard extends StatefulWidget {
@@ -58,7 +57,7 @@ class _ProjectCardState extends State<ProjectCard> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
+                  color: lc.surfaceColor,
                   borderRadius: BorderRadius.circular(2), 
                   border: Border.all(color: Colors.white.withValues(alpha: 0.05), width: 0.5),
                 ),

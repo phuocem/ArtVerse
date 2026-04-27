@@ -37,7 +37,7 @@ class CanvasPreviewWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const Center(
+            Center(
               child: Icon(
                 Icons.brush_rounded,
                 size: 80,

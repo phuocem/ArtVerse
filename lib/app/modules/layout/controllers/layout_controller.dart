@@ -67,6 +67,7 @@ class LayoutController extends GetxController
     box.delete('custom_text');
     Get.changeTheme(theme.toThemeData());
     Get.changeThemeMode(theme.isDark ? ThemeMode.dark : ThemeMode.light);
+    Get.forceAppUpdate();
   }
 
   void updateCustomColor(String type, Color? color) {
@@ -93,6 +94,7 @@ class LayoutController extends GetxController
         box.delete('custom_text');
       }
     }
+    Get.forceAppUpdate();
   }
 
   Color get layoutColor => currentTheme.value.layoutColor;
@@ -187,7 +189,82 @@ class LayoutController extends GetxController
   }
 
   void showThemeDialog(BuildContext context) {
-    Get.toNamed(Routes.settings);
+    Get.bottomSheet(
+      Container(
+        height: Get.height * 0.7,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: surfaceColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Choose Theme', style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: onSurfaceColor)),
+            const SizedBox(height: 16),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 3,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                itemCount: AppThemes.themes.length,
+                itemBuilder: (context, index) {
+                  final theme = AppThemes.themes[index];
+                  return Obx(() {
+                    final isSelected = currentTheme.value.id == theme.id;
+                    return GestureDetector(
+                      onTap: () {
+                        changeAppTheme(theme.id);
+                        Get.back<void>();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: theme.surfaceColor,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected ? theme.primaryColor : theme.onSurfaceColor.withValues(alpha: 0.1),
+                            width: isSelected ? 2 : 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              decoration: BoxDecoration(
+                                gradient: theme.accentGradient,
+                                borderRadius: const BorderRadius.horizontal(left: Radius.circular(10)),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                theme.name,
+                                style: TextStyle(
+                                  color: theme.onSurfaceColor,
+                                  fontSize: 12,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+    );
   }
 
   Future<void> showProfileMenu(BuildContext context) async {

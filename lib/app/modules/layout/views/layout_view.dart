@@ -17,7 +17,7 @@ class LayoutView extends GetView<LayoutController> {
   Widget build(BuildContext context) {
     return Obx(() {
       Widget body = Scaffold(
-        backgroundColor: AppColors.bg,
+        backgroundColor: controller.backgroundColor,
         body: Row(
           children: [
             const _LeftSidebar(),
@@ -74,8 +74,8 @@ class _LeftSidebar extends GetView<LayoutController> {
       final isDark = controller.isDark.value;
       return Container(
         width: 72,
-        decoration: const BoxDecoration(
-          color: AppColors.surface,
+        decoration: BoxDecoration(
+          color: controller.surfaceColor,
           border: Border(
             right: BorderSide(color: AppColors.border, width: 0.5),
           ),

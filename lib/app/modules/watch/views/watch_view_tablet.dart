@@ -16,7 +16,7 @@ class WatchViewTablet extends GetView<WatchController> {
       backgroundColor: Colors.black,
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2),
           );
         }
@@ -33,7 +33,7 @@ class WatchViewTablet extends GetView<WatchController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.video_library_outlined, size: 56, color: AppColors.textTertiary),
+          Icon(Icons.video_library_outlined, size: 56, color: AppColors.textTertiary),
           const SizedBox(height: 16),
           Text('Video not available', style: GoogleFonts.plusJakartaSans(
             color: AppColors.textTertiary, fontSize: 14)),
@@ -230,7 +230,7 @@ class _RightPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(left: BorderSide(color: AppColors.border, width: 0.5)),
       ),
@@ -239,7 +239,7 @@ class _RightPanel extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
               ),
               child: TabBar(
@@ -280,7 +280,7 @@ class _CommentsTab extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.all(12),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
           ),
           child: Row(
@@ -297,11 +297,11 @@ class _CommentsTab extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppColors.border, width: 0.5),
+                      borderSide: BorderSide(color: AppColors.border, width: 0.5),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppColors.border, width: 0.5),
+                      borderSide: BorderSide(color: AppColors.border, width: 0.5),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -434,7 +434,7 @@ class _RelatedCard extends StatelessWidget {
                       fit: StackFit.expand,
                       children: [
                         Image.network(post.url, fit: BoxFit.cover, errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.play_circle_outline_rounded, color: AppColors.textTertiary)),
+                          Icon(Icons.play_circle_outline_rounded, color: AppColors.textTertiary)),
                         Center(
                           child: Container(
                             width: 28, height: 28,
@@ -445,7 +445,7 @@ class _RelatedCard extends StatelessWidget {
                         ),
                       ],
                     )
-                  : const Center(child: Icon(Icons.play_circle_outline_rounded, color: AppColors.textTertiary)),
+                  : Center(child: Icon(Icons.play_circle_outline_rounded, color: AppColors.textTertiary)),
             ),
             Expanded(
               child: Padding(

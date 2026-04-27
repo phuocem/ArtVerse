@@ -10,7 +10,7 @@ class StudioPerspectiveSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 36),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: DS.card,
         borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
         border: Border(top: BorderSide(color: DS.border)),
@@ -23,7 +23,7 @@ class StudioPerspectiveSheet extends StatelessWidget {
                 child: Container(
                   width: 40,
                   height: 4,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                       color: DS.border, borderRadius: DS.r4),
                 ),
               ),
@@ -177,7 +177,7 @@ class StudioPerspectiveSheet extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w700)),
                   Text(subtitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: DS.textDim, fontSize: 9)),
                 ],
               ),

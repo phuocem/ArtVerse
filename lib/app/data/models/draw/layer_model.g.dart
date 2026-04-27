@@ -1,10 +1,10 @@
-
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'layer_model.dart';
 
-
-
-
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class LayerModelAdapter extends TypeAdapter<LayerModel> {
   @override

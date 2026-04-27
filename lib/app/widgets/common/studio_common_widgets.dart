@@ -135,7 +135,7 @@ class SectionHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
@@ -148,14 +148,14 @@ class SectionHeader extends StatelessWidget {
               children: [
                 Text(
                   actionLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.violet2,
                   ),
                 ),
                 const SizedBox(width: 4),
-                const Icon(
+                Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 12,
                   color: AppColors.violet2,

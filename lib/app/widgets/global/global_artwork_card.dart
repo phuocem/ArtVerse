@@ -172,17 +172,7 @@ class _GlobalArtworkCardState extends State<GlobalArtworkCard> {
       ),
     );
   }
-  Widget _typeBadge(String label, LayoutController lc) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 0.5),
-      ),
-      child: Text(label, style: GoogleFonts.plusJakartaSans(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
-    );
-  }
+
   String _formatCount(int count) {
     if (count >= 1000000) return '${(count / 1000000).toStringAsFixed(1)}m';
     if (count >= 1000) return '${(count / 1000).toStringAsFixed(1)}k';

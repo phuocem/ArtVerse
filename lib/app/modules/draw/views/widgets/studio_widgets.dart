@@ -7,25 +7,25 @@ import '../../controllers/draw_controller.dart';
 import '../../../../core/theme/app_colors.dart';
 class DS {
   DS._();
-  static const bg        = AppColors.bg;
-  static const surface   = AppColors.surface;
-  static const card      = AppColors.surface2;
-  static const cardHi    = AppColors.surface2;
-  static const border    = AppColors.border;
-  static const borderHi  = AppColors.border;
-  static const crimson   = AppColors.pink;
-  static const gold      = AppColors.amber;
-  static const cyan      = AppColors.teal;
-  static const violet    = AppColors.violet;
-  static const mint      = AppColors.teal;
-  static const rose      = AppColors.pink;
-  static const text      = AppColors.textPrimary;
-  static const textDim   = AppColors.textTertiary;
-  static const textFaint = AppColors.textSecondary;
-  static const crimsonGrad  = AppColors.violetPink;
-  static const goldGrad     = AppColors.goldGrad;
-  static const violetGrad   = AppColors.violetPink;
-  static const noirGrad     = AppColors.noirGrad;
+  static Color get bg        => AppColors.bg;
+  static Color get surface   => AppColors.surface;
+  static Color get card      => AppColors.surface2;
+  static Color get cardHi    => AppColors.surface2;
+  static Color get border    => AppColors.border;
+  static Color get borderHi  => AppColors.border;
+  static Color get crimson   => AppColors.pink;
+  static Color get gold      => AppColors.amber;
+  static Color get cyan      => AppColors.teal;
+  static Color get violet    => AppColors.violet;
+  static Color get mint      => AppColors.teal;
+  static Color get rose      => AppColors.pink;
+  static Color get text      => AppColors.textPrimary;
+  static Color get textDim   => AppColors.textTertiary;
+  static Color get textFaint => AppColors.textSecondary;
+  static LinearGradient get crimsonGrad  => AppColors.violetPink;
+  static LinearGradient get goldGrad     => AppColors.goldGrad;
+  static LinearGradient get violetGrad   => AppColors.violetPink;
+  static LinearGradient get noirGrad     => AppColors.noirGrad;
   static const r4  = BorderRadius.all(Radius.circular(4));
   static const r6  = BorderRadius.all(Radius.circular(6));
   static const r8  = BorderRadius.all(Radius.circular(8));
@@ -132,7 +132,7 @@ Widget iconButton(IconData icon, VoidCallback onTap,
             color: DS.cardHi,
             borderRadius: DS.r8,
             border: Border.all(color: DS.border)),
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
             color: DS.text, fontSize: 11, fontWeight: FontWeight.w500),
         child: child);
   }
@@ -193,7 +193,7 @@ class StudioSlider extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(label,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: DS.textFaint,
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -202,7 +202,7 @@ class StudioSlider extends StatelessWidget {
                     isPercent
                         ? '${(value.value * 100).toInt()}%'
                         : '${value.value.toInt()}$suffix',
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: DS.text,
                         fontSize: 11,
                         fontWeight: FontWeight.w800,
@@ -283,7 +283,7 @@ Widget roundedControl({
             constraints: const BoxConstraints(minWidth: 36),
             alignment: Alignment.center,
             child: Text(label,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
                     color: DS.text,
@@ -362,7 +362,7 @@ class ThumbnailItem extends StatelessWidget {
                     }
                     return Container(
                         color: DS.surface,
-                        child: const Center(
+                        child: Center(
                             child: SizedBox(
                                 width: 16,
                                 height: 16,
@@ -516,7 +516,7 @@ class LayoutSelector extends StatelessWidget {
                 Container(
                     width: 6,
                     height: 6,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                         color: DS.violet, shape: BoxShape.circle)),
             ],
           ),

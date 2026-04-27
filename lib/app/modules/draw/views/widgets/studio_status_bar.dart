@@ -9,16 +9,16 @@ class StudioStatusBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 26,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: DS.bg,
         border: Border(top: BorderSide(color: DS.border)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: [
-          const PulsingDot(color: DS.mint, size: 6),
+          PulsingDot(color: DS.mint, size: 6),
           const SizedBox(width: 6),
-          const Text('STUDIO',
+          Text('STUDIO',
               style: TextStyle(
                   color: DS.mint,
                   fontSize: 8,
@@ -69,7 +69,7 @@ class StudioStatusBar extends StatelessWidget {
                 width: 44,
                 alignment: Alignment.center,
                 child: Text('$scale%',
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: DS.text,
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -102,7 +102,7 @@ class StudioStatusBar extends StatelessWidget {
         color: DS.border,
       );
   Widget _mono(String text) => Text(text,
-      style: const TextStyle(
+      style: TextStyle(
           color: DS.textDim,
           fontSize: 9.5,
           fontFamily: 'monospace',

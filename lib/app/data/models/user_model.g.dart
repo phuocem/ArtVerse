@@ -1,7 +1,15 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
 part of 'user_model.dart';
+
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
+
 class UserModelAdapter extends TypeAdapter<UserModel> {
   @override
   final int typeId = 0;
+
   @override
   UserModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
@@ -22,7 +30,7 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       website: fields[10] as String?,
       instagramUrl: fields[11] as String?,
       twitterUrl: fields[12] as String?,
-      isStudio: fields[13] == null ? false : fields[13] as bool,
+      isStudio: fields[13] as bool,
       balance: fields[14] as double,
       likesCount: fields[15] as int,
       viewsCount: fields[16] as int,
@@ -30,16 +38,21 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       specialties: (fields[18] as List?)?.cast<String>(),
       tools: (fields[19] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          .toList(),
+          ?.toList(),
       handle: fields[20] as String?,
       selectedFrame: fields[21] as String?,
       gender: fields[22] as String?,
+      xp: fields[23] as int,
+      level: fields[24] as int,
+      badges: (fields[25] as List?)?.cast<String>(),
+      coverUrl: fields[26] as String?,
     );
   }
+
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(27)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -85,10 +98,20 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(21)
       ..write(obj.selectedFrame)
       ..writeByte(22)
-      ..write(obj.gender);
+      ..write(obj.gender)
+      ..writeByte(23)
+      ..write(obj.xp)
+      ..writeByte(24)
+      ..write(obj.level)
+      ..writeByte(25)
+      ..write(obj.badges)
+      ..writeByte(26)
+      ..write(obj.coverUrl);
   }
+
   @override
   int get hashCode => typeId.hashCode;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

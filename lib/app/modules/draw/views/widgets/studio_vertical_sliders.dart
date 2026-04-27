@@ -11,7 +11,7 @@ class StudioVerticalSliders extends StatelessWidget {
       width: 52,
       decoration: BoxDecoration(
         color: DS.surface.withValues(alpha: 0.95),
-        border: const Border(left: BorderSide(color: DS.border)),
+        border: Border(left: BorderSide(color: DS.border)),
       ),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
       child: Column(
@@ -124,7 +124,7 @@ class _VertSlider extends StatelessWidget {
               )),
           const SizedBox(height: 2),
           Text(label,
-              style: const TextStyle(
+              style: TextStyle(
                   color: DS.textDim,
                   fontSize: 7,
                   fontWeight: FontWeight.w700,

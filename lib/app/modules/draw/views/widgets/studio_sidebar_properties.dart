@@ -145,21 +145,21 @@ class StudioSidebarProperties extends StatelessWidget {
                   children: [
                     Text(
                       hex,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: DS.text,
                         fontSize: 13,
                         fontFamily: 'monospace',
                         fontWeight: FontWeight.w900,
                       ),
                     ),
-                    const Text(
+                    Text(
                       'Nhấn để chọn màu',
                       style: TextStyle(color: DS.textDim, fontSize: 10),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.colorize_rounded, color: DS.textDim, size: 16),
+              Icon(Icons.colorize_rounded, color: DS.textDim, size: 16),
             ],
           ),
         );
@@ -218,7 +218,7 @@ class StudioSidebarProperties extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'GẦN ĐÂY',
             style: TextStyle(
               color: DS.textDim,

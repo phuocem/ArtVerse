@@ -29,7 +29,7 @@ class LeaderboardView extends GetView<LeaderboardController> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
               color: AppColors.surface.withValues(alpha: 0.9),
-              border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+              border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
             ),
             child: Row(
               children: [
@@ -75,7 +75,7 @@ class LeaderboardView extends GetView<LeaderboardController> {
                     child: DropdownButton<String>(
                       value: controller.selectedTimeframe.value,
                       dropdownColor: AppColors.surface2,
-                      icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: AppColors.textTertiary),
+                      icon: Icon(Icons.keyboard_arrow_down_rounded, size: 14, color: AppColors.textTertiary),
                       style: GoogleFonts.plusJakartaSans(color: AppColors.textPrimary, fontSize: 11),
                       onChanged: (v) {
                         if (v != null) {
@@ -96,7 +96,7 @@ class LeaderboardView extends GetView<LeaderboardController> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
+                return Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
               }
               final users = controller.activeList;
               if (users.isEmpty) {
@@ -104,7 +104,7 @@ class LeaderboardView extends GetView<LeaderboardController> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.leaderboard_outlined, size: 48, color: AppColors.textTertiary),
+                      Icon(Icons.leaderboard_outlined, size: 48, color: AppColors.textTertiary),
                       const SizedBox(height: 12),
                       Text('No data yet', style: GoogleFonts.plusJakartaSans(
                         color: AppColors.textTertiary, fontSize: 14)),
@@ -132,7 +132,7 @@ class _Podium extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(right: BorderSide(color: AppColors.border, width: 0.5)),
       ),

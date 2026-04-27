@@ -43,7 +43,7 @@ class ProTopBar extends GetView<LayoutController> {
       children: [
         Icon(Icons.bubble_chart_rounded, color: AppColors.violet2.withValues(alpha: 0.8), size: 32),
         const SizedBox(width: 16),
-        const Text(
+        Text(
           "ArtVerse",
           style: TextStyle(
             color: AppColors.textPrimary, 
@@ -130,7 +130,7 @@ class ProTopBar extends GetView<LayoutController> {
               top: 12, right: 12,
               child: Container(
                 width: 6, height: 6,
-                decoration: const BoxDecoration(color: AppColors.pink, shape: BoxShape.circle),
+                decoration: BoxDecoration(color: AppColors.pink, shape: BoxShape.circle),
               ),
             ),
         ],

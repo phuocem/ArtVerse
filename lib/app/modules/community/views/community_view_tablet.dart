@@ -43,7 +43,7 @@ class _CommunityTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface.withValues(alpha: 0.9),
-        border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
@@ -96,17 +96,17 @@ class _SearchBar extends StatelessWidget {
         decoration: InputDecoration(
           hintText: 'Search artworks…',
           hintStyle: GoogleFonts.plusJakartaSans(color: AppColors.textTertiary, fontSize: 12),
-          prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textTertiary, size: 16),
+          prefixIcon: Icon(Icons.search_rounded, color: AppColors.textTertiary, size: 16),
           filled: true,
           fillColor: AppColors.surface2,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.border, width: 0.5),
+            borderSide: BorderSide(color: AppColors.border, width: 0.5),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.border, width: 0.5),
+            borderSide: BorderSide(color: AppColors.border, width: 0.5),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
@@ -131,7 +131,7 @@ class _FilterRail extends GetView<CommunityController> {
   Widget build(BuildContext context) {
     return Container(
       width: 160,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(right: BorderSide(color: AppColors.border, width: 0.5)),
       ),
@@ -254,7 +254,7 @@ class _PostGrid extends StatelessWidget {
             ),
           ),
           if (controller.isLoadingMore.value)
-            const SliverToBoxAdapter(
+            SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.all(24),
                 child: Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2)),
@@ -297,11 +297,12 @@ class _PostGrid extends StatelessWidget {
         children: [
           Container(
             width: 72, height: 72,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: AppColors.violet.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Icon(Icons.explore_outlined, size: 32, color: AppColors.textTertiary),
+            child: const Text('🌸', style: TextStyle(fontSize: 32)),
           ),
           const SizedBox(height: 16),
           Text('No artworks yet', style: GoogleFonts.plusJakartaSans(

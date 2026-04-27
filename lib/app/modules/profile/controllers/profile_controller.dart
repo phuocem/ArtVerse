@@ -21,7 +21,6 @@ import '../../../data/models/draw/frame_model.dart';
 import '../../../data/models/draw/layer_model.dart';
 import '../../../data/models/draw/draw_project_model.dart';
 import '../repositories/profile_repository.dart';
-import '../../../core/theme/app_colors.dart';
 import '../../layout/controllers/layout_controller.dart';
 class ProfileController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -713,9 +712,7 @@ class ProfileController extends GetxController
     final Rx<File?> selectedAvatar = Rx<File?>(null);
     final isUpdating = false.obs;
     final activeTab = 0.obs;
-    final specialties = (currentUser.value?.specialties ?? <String>[]).obs;
-    final selectedFrame = (currentUser.value?.selectedFrame ?? "").obs;
-    final specialtyController = TextEditingController();
+    final gender = (currentUser.value?.gender ?? "").obs;
     Get.generalDialog(
       barrierDismissible: true,
       barrierLabel: 'Edit Profile',
@@ -758,7 +755,7 @@ class ProfileController extends GetxController
                                 padding: const EdgeInsets.only(top: 24, bottom: 8),
                                 child: Column(
                                   children: [
-                                    _buildCelestialAvatar(selectedAvatar, avatarUrl, selectedFrame, lc),
+                                    _buildCelestialAvatar(selectedAvatar, avatarUrl, lc),
                                     const SizedBox(height: 8),
                                     TextField(
                                       controller: nameController,
@@ -797,7 +794,7 @@ class ProfileController extends GetxController
                                       key: ValueKey(activeTab.value),
                                       child: SingleChildScrollView(
                                         physics: const BouncingScrollPhysics(),
-                                        child: _buildCurrentFluidTab(activeTab.value, handleController, bioController, locationController, websiteController, instagramController, twitterController, specialties, specialtyController, selectedFrame, lc),
+                                        child: _buildCurrentFluidTab(activeTab.value, handleController, bioController, locationController, websiteController, instagramController, twitterController, gender, lc),
                                       ),
                                     ),
                                   )),
@@ -808,7 +805,7 @@ class ProfileController extends GetxController
                           ),
                           Positioned(
                             bottom: 20, left: 0, right: 0,
-                            child: Center(child: _buildFloatingActionHub(id, isUpdating, nameController, bioController, locationController, websiteController, instagramController, twitterController, handleController, selectedAvatar, avatarUrl, specialties, onUpdated, selectedFrame, lc)),
+                            child: Center(child: _buildFloatingActionHub(id, isUpdating, nameController, bioController, locationController, websiteController, instagramController, twitterController, handleController, selectedAvatar, avatarUrl, gender, onUpdated, lc)),
                           ),
                           Positioned(
                             top: 16, right: 20,
@@ -839,7 +836,7 @@ class ProfileController extends GetxController
     );
   }
   Widget _buildFluidSidebar(RxInt activeTab, LayoutController lc) {
-    final icons = [Icons.face_retouching_natural_rounded, Icons.hub_rounded, Icons.auto_awesome_rounded];
+    final icons = [Icons.face_retouching_natural_rounded, Icons.hub_rounded];
     return Container(
       width: 54,
       decoration: BoxDecoration(
@@ -868,7 +865,7 @@ class ProfileController extends GetxController
       ),
     );
   }
-  Widget _buildCelestialAvatar(Rx<File?> selected, String? current, RxString frame, LayoutController lc) {
+  Widget _buildCelestialAvatar(Rx<File?> selected, String? current, LayoutController lc) {
     return Obx(() => SizedBox(
       width: 80, height: 80,
       child: Stack(
@@ -914,11 +911,12 @@ class ProfileController extends GetxController
       ),
     ));
   }
-  Widget _buildCurrentFluidTab(int tab, TextEditingController h, TextEditingController b, TextEditingController l, TextEditingController w, TextEditingController i, TextEditingController t, RxList<String> specs, TextEditingController sub, RxString frame, LayoutController lc) {
+  Widget _buildCurrentFluidTab(int tab, TextEditingController h, TextEditingController b, TextEditingController l, TextEditingController w, TextEditingController i, TextEditingController t, RxString gender, LayoutController lc) {
     switch(tab) {
       case 0: return Column(children: [
         _buildWhisperField(Icons.alternate_email_rounded, "Handle (@)", h, lc),
         _buildWhisperField(Icons.notes_rounded, "Bio", b, lc, maxLines: 3),
+        _buildGenderSelector(gender, lc),
       ]);
       case 1: return Column(children: [
         _buildWhisperField(Icons.place_rounded, "Địa điểm", l, lc),
@@ -926,60 +924,10 @@ class ProfileController extends GetxController
         _buildWhisperField(Icons.camera_rounded, "Instagram", i, lc),
         _buildWhisperField(Icons.chat_bubble_rounded, "X / Twitter", t, lc),
       ]);
-      case 2: return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text("KỸ NĂNG & CHUYÊN MÔN", style: TextStyle(color: lc.primaryColor, fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 2)),
-        const SizedBox(height: 12),
-        _buildSpecialtyCanvas(specs, sub, lc),
-      ]);
       default: return const SizedBox();
     }
   }
-  Widget _buildFrameSelector(RxString currentFrame) {
-    final frames = [
-      {'id': 'frame_gold', 'name': 'IMPERIAL GOLD'},
-      {'id': 'frame_cyan', 'name': 'CELESTIAL CYAN'},
-      {'id': 'frame_jade', 'name': 'EMERALD JADE'},
-      {'id': 'frame_ruby', 'name': 'RUBY FIRE'},
-    ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text("IDENTITY FRAMES", style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 2)),
-        const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, crossAxisSpacing: 12, mainAxisSpacing: 12, childAspectRatio: 1.5),
-          itemCount: frames.length,
-          itemBuilder: (context, i) {
-            final f = frames[i];
-            return Obx(() {
-              final active = currentFrame.value == f['id'];
-              return GestureDetector(
-                onTap: () => currentFrame.value = active ? "" : f['id']!,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF0F0F14).withValues(alpha: 0.8),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: active ? AppColors.teal : Colors.white.withValues(alpha: 0.1), width: active ? 2 : 1),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(width: 40, height: 40, child: Image.asset('assets/images/profile/${f['id']}.png')),
-                      const SizedBox(height: 8),
-                      Text(f['name']!, style: TextStyle(color: active ? Colors.white : Colors.white38, fontSize: 7, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ),
-              );
-            });
-          },
-        ),
-      ],
-    );
-  }
+
   Widget _buildWhisperField(IconData icon, String hint, TextEditingController ctrl, LayoutController lc, {int maxLines = 1}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -1006,46 +954,40 @@ class ProfileController extends GetxController
       ),
     );
   }
-  Widget _buildSpecialtyCanvas(RxList<String> specialties, TextEditingController sub, LayoutController lc) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Obx(() => Wrap(
-          spacing: 8, runSpacing: 8,
-          children: specialties.map((s) => Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: lc.primaryColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: lc.primaryColor.withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(s, style: TextStyle(color: lc.primaryColor, fontSize: 10, fontWeight: FontWeight.w700)),
-                const SizedBox(width: 6),
-                GestureDetector(onTap: () => specialties.remove(s), child: Icon(Icons.close, size: 11, color: lc.primaryColor.withValues(alpha: 0.7))),
-              ],
-            ),
-          )).toList(),
-        )),
-        const SizedBox(height: 16),
-        TextField(
-          controller: sub,
-          style: TextStyle(color: lc.textColor, fontSize: 12),
-          onSubmitted: (v) { if (v.trim().isNotEmpty) { specialties.add(v.trim()); sub.clear(); } },
-          decoration: InputDecoration(
-            hintText: "+ Thêm kỹ năng...",
-            hintStyle: TextStyle(color: lc.subtextColor, fontSize: 11),
-            focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: lc.primaryColor, width: 2)),
-            enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: lc.glassBorderColor)),
-          ),
-        ),
-      ],
+  Widget _buildGenderSelector(RxString gender, LayoutController lc) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("GIỚI TÍNH", style: TextStyle(color: lc.subtextColor, fontSize: 8, fontWeight: FontWeight.w900, letterSpacing: 1.5)),
+          const SizedBox(height: 6),
+          Obx(() => Row(
+            children: ['Nam', 'Nữ', 'Khác'].map((g) {
+              final active = gender.value == g;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () => gender.value = g,
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: active ? lc.primaryColor.withValues(alpha: 0.1) : lc.glassColor,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: active ? lc.primaryColor : lc.glassBorderColor),
+                    ),
+                    child: Center(child: Text(g, style: TextStyle(color: active ? lc.primaryColor : lc.textColor, fontSize: 12, fontWeight: FontWeight.w700))),
+                  ),
+                ),
+              );
+            }).toList(),
+          )),
+        ],
+      ),
     );
   }
-  Widget _buildBreathingGlow() => Container(width: 150, height: 150, decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: [BoxShadow(color: AppColors.teal.withValues(alpha: 0.03), blurRadius: 100, spreadRadius: 40)]));
-  Widget _buildFloatingActionHub(String id, RxBool isUpdating, TextEditingController name, TextEditingController bio, TextEditingController loc, TextEditingController web, TextEditingController insta, TextEditingController twit, TextEditingController handle, Rx<File?> selectedAvatar, String? currentAvatar, RxList<String> specialties, void Function() onUpdated, RxString frame, LayoutController lc) {
+
+  Widget _buildFloatingActionHub(String id, RxBool isUpdating, TextEditingController name, TextEditingController bio, TextEditingController loc, TextEditingController web, TextEditingController insta, TextEditingController twit, TextEditingController handle, Rx<File?> selectedAvatar, String? currentAvatar, RxString gender, void Function() onUpdated, LayoutController lc) {
     return Obx(() => GestureDetector(
       onTap: isUpdating.value ? null : () async {
         isUpdating.value = true;
@@ -1055,8 +997,8 @@ class ProfileController extends GetxController
           final updatedData = {
             'name': name.text.trim(), 'bio': bio.text.trim(), 'location': loc.text.trim(),
             'website': web.text.trim(), 'instagram_url': insta.text.trim(), 'twitter_url': twit.text.trim(),
-            'handle': handle.text.trim(), 'specialties': specialties.toList(), 'avatar_url': newAvatarUrl,
-            'selected_frame': frame.value,
+            'handle': handle.text.trim(), 'avatar_url': newAvatarUrl,
+            'gender': gender.value,
           };
           await repository.updateUserData(id, updatedData);
           final newUser = UserModel.fromJson({...updatedData, 'id': id, 'email': currentUser.value?.email ?? ''});

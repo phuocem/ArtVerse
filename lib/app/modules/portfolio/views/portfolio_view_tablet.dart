@@ -17,7 +17,7 @@ class PortfolioViewTablet extends GetView<PortfolioController> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
+                return Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
               }
               return Row(
                 children: [
@@ -42,13 +42,13 @@ class _PortfolioTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface.withValues(alpha: 0.9),
-        border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
           GestureDetector(
             onTap: () => Get.back<void>(),
-            child: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary, size: 20),
+            child: Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary, size: 20),
           ),
           const SizedBox(width: 12),
           Text('Portfolio', style: GoogleFonts.lexend(
@@ -109,7 +109,7 @@ class _PortfolioSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(right: BorderSide(color: AppColors.border, width: 0.5)),
       ),
@@ -196,7 +196,7 @@ class _PortfolioSidebar extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.folder_outlined, size: 14, color: AppColors.textTertiary),
+                    Icon(Icons.folder_outlined, size: 14, color: AppColors.textTertiary),
                     const SizedBox(width: 8),
                     Expanded(child: Text(c['name'] ?? 'Collection', style: GoogleFonts.plusJakartaSans(
                       color: AppColors.textPrimary, fontSize: 11, fontWeight: FontWeight.w600))),
@@ -227,7 +227,7 @@ class _PortfolioGrid extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.collections_outlined, size: 48, color: AppColors.textTertiary),
+              Icon(Icons.collections_outlined, size: 48, color: AppColors.textTertiary),
               const SizedBox(height: 12),
               Text('No works here', style: GoogleFonts.plusJakartaSans(
                 color: AppColors.textTertiary, fontSize: 14)),

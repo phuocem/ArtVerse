@@ -23,15 +23,15 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: DS.border))),
       child: Column(
         children: [
           Row(
             children: [
-              const Icon(Icons.movie_rounded, size: 13, color: DS.gold),
+              Icon(Icons.movie_rounded, size: 13, color: DS.gold),
               const SizedBox(width: 6),
-              const Text('TIMELINE',
+              Text('TIMELINE',
                   style: TextStyle(
                       color: DS.gold,
                       fontSize: 9,
@@ -39,7 +39,7 @@ class _Header extends StatelessWidget {
                       letterSpacing: 2)),
               const Spacer(),
               Obx(() => Text('${controller.frames.length} frames',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: DS.textDim, fontSize: 10))),
             ],
           ),
@@ -145,17 +145,17 @@ class _FpsSelector extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.speed_rounded, size: 11, color: DS.textDim),
+            Icon(Icons.speed_rounded, size: 11, color: DS.textDim),
             const SizedBox(width: 4),
             Obx(() => Text(
                   '${controller.playbackSpeed.value} FPS',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: DS.textDim,
                       fontSize: 10,
                       fontWeight: FontWeight.w700),
                 )),
             const SizedBox(width: 2),
-            const Icon(Icons.arrow_drop_down_rounded,
+            Icon(Icons.arrow_drop_down_rounded,
                 size: 14, color: DS.textDim),
           ],
         ),
@@ -219,7 +219,7 @@ class _FrameTile extends StatelessWidget {
                         gaplessPlayback: true)
                     : Container(
                         color: DS.surface,
-                        child: const Center(
+                        child: Center(
                           child: SizedBox(
                               width: 14,
                               height: 14,
@@ -286,12 +286,12 @@ class _FrameTile extends StatelessWidget {
             Container(
                 width: 36,
                 height: 4,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     color: DS.border, borderRadius: DS.r4)),
             const SizedBox(height: 12),
             ListTile(
-              leading: const Icon(Icons.copy_rounded, color: DS.cyan, size: 20),
-              title: const Text('Nhân đôi frame',
+              leading: Icon(Icons.copy_rounded, color: DS.cyan, size: 20),
+              title: Text('Nhân đôi frame',
                   style: TextStyle(
                       color: DS.cyan,
                       fontSize: 13,
@@ -302,9 +302,9 @@ class _FrameTile extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.copy_all_rounded,
+              leading: Icon(Icons.copy_all_rounded,
                   color: DS.gold, size: 20),
-              title: const Text('Sao chép frame',
+              title: Text('Sao chép frame',
                   style: TextStyle(
                       color: DS.gold,
                       fontSize: 13,
@@ -316,8 +316,8 @@ class _FrameTile extends StatelessWidget {
             ),
             ListTile(
               leading:
-                  const Icon(Icons.delete_rounded, color: DS.crimson, size: 20),
-              title: const Text('Xoá frame',
+                  Icon(Icons.delete_rounded, color: DS.crimson, size: 20),
+              title: Text('Xoá frame',
                   style: TextStyle(
                       color: DS.crimson,
                       fontSize: 13,
@@ -350,7 +350,7 @@ class _Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(top: BorderSide(color: DS.border))),
       child: Row(
         children: [

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../controllers/draw_controller.dart';
 import 'studio_sidebar_layers.dart';
 import 'studio_sidebar_frames.dart';
@@ -32,7 +31,7 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOutCubic,
       width: _collapsed ? 32 : 272,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: DS.surface,
         border: Border(left: BorderSide(color: DS.border)),
       ),
@@ -113,7 +112,7 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
     ];
     return Container(
       height: 44,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(bottom: BorderSide(color: DS.border)),
       ),
       child: Row(

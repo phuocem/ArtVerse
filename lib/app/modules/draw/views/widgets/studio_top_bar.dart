@@ -37,7 +37,7 @@ class _StudioTopBarState extends State<StudioTopBar>
     final c = widget.controller;
     return Container(
       height: 48,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: DS.surface,
         border: Border(bottom: BorderSide(color: DS.border, width: 1)),
       ),
@@ -134,7 +134,7 @@ class _StudioTopBarState extends State<StudioTopBar>
         child: TextField(
           controller: _titleCtrl,
           autofocus: true,
-          style: const TextStyle(
+          style: TextStyle(
               color: DS.text, fontSize: 13, fontWeight: FontWeight.w700),
           decoration: InputDecoration(
             isDense: true,
@@ -176,7 +176,7 @@ class _StudioTopBarState extends State<StudioTopBar>
             Flexible(
               child: Text(
                 widget.controller.currentProjectName ?? 'Untitled',
-                style: const TextStyle(
+                style: TextStyle(
                     color: DS.text,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
@@ -184,7 +184,7 @@ class _StudioTopBarState extends State<StudioTopBar>
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(Icons.edit_rounded, size: 10, color: DS.textDim),
+            Icon(Icons.edit_rounded, size: 10, color: DS.textDim),
           ],
         ),
       ),
@@ -238,7 +238,7 @@ class _StudioTopBarState extends State<StudioTopBar>
               mx <= 1.0
                   ? '${(val.value * 100).toInt()}%'
                   : '${val.value.toInt()}',
-              style: const TextStyle(
+              style: TextStyle(
                   color: DS.text,
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
@@ -280,9 +280,9 @@ class _StudioTopBarState extends State<StudioTopBar>
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 13, color: DS.violet),
-          const SizedBox(width: 5),
+          SizedBox(width: 5),
           Text(tool.toUpperCase(),
-              style: const TextStyle(
+              style: TextStyle(
                   color: DS.violet,
                   fontSize: 9,
                   fontWeight: FontWeight.w900,
@@ -292,11 +292,12 @@ class _StudioTopBarState extends State<StudioTopBar>
     );
   }
   Widget _iconBtn(IconData icon, bool active, VoidCallback onTap,
-      {String? tip, bool danger = false, Color accent = DS.violet}) {
+      {String? tip, bool danger = false, Color? accent}) {
+    final effectiveAccent = accent ?? DS.violet;
     final col = danger
         ? DS.crimson.withValues(alpha: 0.7)
         : active
-            ? accent
+            ? effectiveAccent
             : DS.textDim;
     final btn = InkWell(
       onTap: onTap,
@@ -306,11 +307,11 @@ class _StudioTopBarState extends State<StudioTopBar>
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: active && !danger ? accent.withValues(alpha: 0.12) : Colors.transparent,
+          color: active && !danger ? effectiveAccent.withValues(alpha: 0.12) : Colors.transparent,
           borderRadius: DS.r8,
           border: Border.all(
               color: active && !danger
-                  ? accent.withValues(alpha: 0.3)
+                  ? effectiveAccent.withValues(alpha: 0.3)
                   : Colors.transparent),
         ),
         alignment: Alignment.center,

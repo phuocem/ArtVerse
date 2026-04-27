@@ -9,22 +9,23 @@ class SettingsView extends GetView<SettingsController> {
   const SettingsView({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bg,
+    final lc = Get.find<LayoutController>();
+    return Obx(() => Scaffold(
+      backgroundColor: lc.backgroundColor,
       body: Column(
         children: [
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 24),
             decoration: BoxDecoration(
-              color: AppColors.surface.withValues(alpha: 0.9),
-              border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+              color: lc.surfaceColor.withValues(alpha: 0.9),
+              border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
             ),
             child: Row(
               children: [
                 GestureDetector(
                   onTap: () => Get.back<void>(),
-                  child: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary, size: 20),
+                  child: Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Text('Settings', style: GoogleFonts.lexend(
@@ -45,7 +46,7 @@ class SettingsView extends GetView<SettingsController> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 class _SettingsNav extends StatefulWidget {
@@ -65,8 +66,8 @@ class _SettingsNavState extends State<_SettingsNav> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.surface,
+      decoration: BoxDecoration(
+        color: Get.find<LayoutController>().surfaceColor,
         border: Border(right: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: ListView(
@@ -125,7 +126,7 @@ class _SettingsContent extends StatelessWidget {
                 icon: Icons.login_rounded,
                 title: 'Sign In',
                 subtitle: 'Connect your account',
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.textTertiary),
+                trailing: Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.textTertiary),
                 onTap: () => Get.toNamed<void>('/login'),
               );
             }
@@ -212,7 +213,7 @@ class _SettingsContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.surface,
+              color: lc.surfaceColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.border, width: 0.5),
             ),
@@ -369,15 +370,16 @@ class _SettingsTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color titleColor;
+  final Color? titleColor;
   final Widget? trailing;
   final VoidCallback? onTap;
-  const _SettingsTile({
+  _SettingsTile({
     required this.icon, required this.title, required this.subtitle,
-    this.titleColor = AppColors.textPrimary, this.trailing, this.onTap,
+    this.titleColor, this.trailing, this.onTap,
   });
   @override
   Widget build(BuildContext context) {
+    final effectiveTitleColor = titleColor ?? AppColors.textPrimary;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -389,20 +391,20 @@ class _SettingsTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: titleColor == AppColors.textPrimary ? AppColors.textTertiary : titleColor),
+            Icon(icon, size: 18, color: effectiveTitleColor == AppColors.textPrimary ? AppColors.textTertiary : effectiveTitleColor),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: GoogleFonts.plusJakartaSans(
-                    color: titleColor, fontSize: 13, fontWeight: FontWeight.w600)),
+                    color: effectiveTitleColor, fontSize: 13, fontWeight: FontWeight.w600)),
                   Text(subtitle, style: GoogleFonts.plusJakartaSans(
                     color: AppColors.textTertiary, fontSize: 11)),
                 ],
               ),
             ),
-            trailing ?? const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.textTertiary),
+            trailing ?? Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.textTertiary),
           ],
         ),
       ),
@@ -485,7 +487,7 @@ class _LangOption extends StatelessWidget {
               fontSize: 13, fontWeight: selected ? FontWeight.w700 : FontWeight.w500)),
             if (selected) ...[
               const SizedBox(width: 8),
-              const Icon(Icons.check_rounded, size: 14, color: AppColors.violet),
+              Icon(Icons.check_rounded, size: 14, color: AppColors.violet),
             ],
           ],
         ),

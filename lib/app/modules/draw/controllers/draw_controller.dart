@@ -838,7 +838,9 @@ class DrawController extends GetxController {
         final paint = Paint()
           ..color = Colors.white.withValues(alpha: layer.opacity)
           ..blendMode = BlendMode.values[layer.blendModeIndex];
+        canvas.saveLayer(null, paint);
         canvas.drawPicture(_layerCache[i]!);
+        canvas.restore();
     }
     currentBackgroundPicture.value = recorder.endRecording();
     currentBackgroundPicture.refresh();

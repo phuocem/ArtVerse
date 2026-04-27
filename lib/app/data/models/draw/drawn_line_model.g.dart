@@ -1,10 +1,10 @@
-
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'drawn_line_model.dart';
 
-
-
-
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class DrawnLineAdapter extends TypeAdapter<DrawnLine> {
   @override

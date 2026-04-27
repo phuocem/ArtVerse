@@ -158,7 +158,7 @@ class _DrawViewState extends State<DrawView> {
                 28,
                 (i) => Expanded(
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       border: Border(
                           right:
                               BorderSide(color: DS.border, width: 0.5)),
@@ -167,7 +167,7 @@ class _DrawViewState extends State<DrawView> {
                     padding: const EdgeInsets.only(left: 3, bottom: 2),
                     child: Text(
                       '${i * 64}',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: DS.textFaint,
                           fontSize: 6.5,
                           fontFamily: 'monospace'),
@@ -190,7 +190,7 @@ class _DrawViewState extends State<DrawView> {
                 18,
                 (i) => Expanded(
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       border: Border(
                           bottom: BorderSide(color: DS.border, width: 0.5)),
                     ),
@@ -200,7 +200,7 @@ class _DrawViewState extends State<DrawView> {
                       quarterTurns: 3,
                       child: Text(
                         '${i * 54}',
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: DS.textFaint,
                             fontSize: 6.5,
                             fontFamily: 'monospace'),
@@ -219,7 +219,7 @@ class _DrawViewState extends State<DrawView> {
             width: 18,
             height: 18,
             color: DS.surface,
-            child: const Icon(Icons.crop_free_rounded,
+            child: Icon(Icons.crop_free_rounded,
                 size: 9, color: DS.textFaint),
           ),
         ),
@@ -243,7 +243,7 @@ class _DrawViewState extends State<DrawView> {
               border: Border.all(color: DS.border),
               boxShadow: DS.elevation,
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.fullscreen_exit_rounded,

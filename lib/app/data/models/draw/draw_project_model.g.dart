@@ -1,10 +1,10 @@
-
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'draw_project_model.dart';
 
-
-
-
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class DrawProjectModelAdapter extends TypeAdapter<DrawProjectModel> {
   @override

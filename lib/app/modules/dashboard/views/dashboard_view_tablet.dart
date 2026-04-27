@@ -17,7 +17,7 @@ class DashboardViewTablet extends GetView<DashboardController> {
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
-                return const Center(
+                return Center(
                   child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2),
                 );
               }
@@ -74,7 +74,7 @@ class _DashTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface.withValues(alpha: 0.9),
-        border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
@@ -120,7 +120,7 @@ class _DashTopBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: AppColors.border, width: 0.5),
               ),
-              child: const Icon(Icons.refresh_rounded, size: 16, color: AppColors.textTertiary),
+              child: Icon(Icons.refresh_rounded, size: 16, color: AppColors.textTertiary),
             ),
           ),
         ],
@@ -199,7 +199,7 @@ class _ChartCard extends StatelessWidget {
       child: Obx(() {
         final values = controller.chartValues;
         if (values.isEmpty) {
-          return const SizedBox(height: 140, child: Center(
+          return SizedBox(height: 140, child: Center(
             child: Text('No data', style: TextStyle(color: AppColors.textTertiary)),
           ));
         }
@@ -220,7 +220,7 @@ class _ChartCard extends StatelessWidget {
                         duration: Duration(milliseconds: 300 + e.key * 50),
                         height: h.clamp(4.0, 120.0),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
+                          gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [AppColors.violet, AppColors.violetPinkColor],
@@ -250,7 +250,7 @@ class _RecentProjectsCard extends StatelessWidget {
       child: Obx(() {
         final posts = controller.recentProjects;
         if (posts.isEmpty) {
-          return const Padding(
+          return Padding(
             padding: EdgeInsets.all(16),
             child: Text('No works yet', style: TextStyle(color: AppColors.textTertiary, fontSize: 12)),
           );
@@ -289,7 +289,7 @@ class _PostRow extends StatelessWidget {
                   ? DecorationImage(image: NetworkImage(post.url), fit: BoxFit.cover)
                   : null,
             ),
-            child: post.url.isEmpty ? const Icon(Icons.image_outlined, size: 16, color: AppColors.textTertiary) : null,
+            child: post.url.isEmpty ? Icon(Icons.image_outlined, size: 16, color: AppColors.textTertiary) : null,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -364,7 +364,7 @@ class _AchievementsCard extends StatelessWidget {
       child: Obx(() {
         final ach = controller.achievements;
         if (ach.isEmpty) {
-          return const Padding(
+          return Padding(
             padding: EdgeInsets.all(16),
             child: Text('Keep creating to unlock achievements!',
               style: TextStyle(color: AppColors.textTertiary, fontSize: 12)),

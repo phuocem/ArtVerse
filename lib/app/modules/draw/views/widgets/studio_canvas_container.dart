@@ -70,7 +70,7 @@ class StudioGlareLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 1,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(colors: [Colors.transparent, DS.violet, Colors.transparent]),
       ),
     );

@@ -9,14 +9,12 @@ class StudioAiDialog extends StatefulWidget {
   State<StudioAiDialog> createState() => _StudioAiDialogState();
 }
 class _StudioAiDialogState extends State<StudioAiDialog> {
-  late final AiDrawController _aiCtrl;
   late final DrawController _drawCtrl;
   final TextEditingController _textCtrl = TextEditingController();
-  bool _generated = false;
   @override
   void initState() {
     super.initState();
-    _aiCtrl = Get.put(AiDrawController());
+    Get.put(AiDrawController());
     _drawCtrl = Get.find<DrawController>();
   }
   @override
@@ -28,7 +26,7 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: DS.card,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
           borderRadius: DS.r24, side: BorderSide(color: DS.border)),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -43,11 +41,11 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
                   decoration: BoxDecoration(
                       color: DS.rose.withValues(alpha: 0.12),
                       borderRadius: DS.r12),
-                  child: const Icon(Icons.auto_awesome_rounded,
+                  child: Icon(Icons.auto_awesome_rounded,
                       color: DS.rose, size: 20),
                 ),
                 const SizedBox(width: 12),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('AI STUDIO',
@@ -64,7 +62,7 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
                 InkWell(
                   onTap: () => Get.back(),
                   borderRadius: DS.r50,
-                  child: const Padding(
+                  child: Padding(
                     padding: EdgeInsets.all(6),
                     child: Icon(Icons.close_rounded,
                         color: DS.textDim, size: 18),
@@ -80,9 +78,9 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
                   border: Border.all(color: DS.border)),
               child: TextField(
                 controller: _textCtrl,
-                style: const TextStyle(color: DS.text, fontSize: 13),
+                style: TextStyle(color: DS.text, fontSize: 13),
                 maxLines: 3,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText:
                       'Mô tả cảnh muốn vẽ... (vd: "hoàng hôn trên biển", "rừng nhiệt đới")',
                   hintStyle: TextStyle(color: DS.textDim, fontSize: 12),
@@ -111,7 +109,7 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
                           Border.all(color: DS.rose.withValues(alpha: 0.25)),
                     ),
                     child: Text(p,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: DS.rose, fontSize: 11)),
                   ),
                 );
@@ -124,7 +122,7 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('PALETTE TẠO RA',
+                  Text('PALETTE TẠO RA',
                       style: TextStyle(
                           color: DS.textDim,
                           fontSize: 9,
@@ -173,7 +171,7 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
                 Expanded(
                   child: TextButton(
                     onPressed: () => Get.back(),
-                    child: const Text('Huỷ',
+                    child: Text('Huỷ',
                         style: TextStyle(color: DS.textDim)),
                   ),
                 ),
@@ -181,13 +179,12 @@ class _StudioAiDialogState extends State<StudioAiDialog> {
                 Expanded(
                   child: Container(
                     height: 42,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                         gradient: DS.crimsonGrad, borderRadius: DS.r12),
                     child: TextButton(
                       onPressed: () {
                         if (_textCtrl.text.isNotEmpty) {
                           _drawCtrl.generatePaletteFromAI(_textCtrl.text);
-                          setState(() => _generated = true);
                         }
                       },
                       child: const Text('✦ Tạo Palette',

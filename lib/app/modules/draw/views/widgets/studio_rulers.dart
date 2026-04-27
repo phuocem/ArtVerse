@@ -16,10 +16,10 @@ class StudioRulers extends StatelessWidget {
             child: Row(
               children: List.generate(28, (i) => Expanded(
                 child: Container(
-                  decoration: const BoxDecoration(border: Border(right: BorderSide(color: DS.border, width: 0.5))),
+                  decoration: BoxDecoration(border: Border(right: BorderSide(color: DS.border, width: 0.5))),
                   alignment: Alignment.bottomLeft,
                   padding: const EdgeInsets.only(left: 3, bottom: 2),
-                  child: Text('${i * 64}', style: const TextStyle(color: DS.textFaint, fontSize: 7, fontFamily: 'monospace')),
+                  child: Text('${i * 64}', style: TextStyle(color: DS.textFaint, fontSize: 7, fontFamily: 'monospace')),
                 ),
               )),
             ),
@@ -33,12 +33,12 @@ class StudioRulers extends StatelessWidget {
             child: Column(
               children: List.generate(18, (i) => Expanded(
                 child: Container(
-                  decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: DS.border, width: 0.5))),
+                  decoration: BoxDecoration(border: Border(bottom: BorderSide(color: DS.border, width: 0.5))),
                   alignment: Alignment.topRight,
                   padding: const EdgeInsets.only(top: 2, right: 2),
                   child: RotatedBox(
                     quarterTurns: 3,
-                    child: Text('${i * 54}', style: const TextStyle(color: DS.textFaint, fontSize: 7, fontFamily: 'monospace')),
+                    child: Text('${i * 54}', style: TextStyle(color: DS.textFaint, fontSize: 7, fontFamily: 'monospace')),
                   ),
                 ),
               )),
@@ -50,7 +50,7 @@ class StudioRulers extends StatelessWidget {
           child: Container(
             width: 20, height: 20,
             color: DS.surface,
-            child: const Icon(Icons.crop_free_rounded, size: 10, color: DS.textFaint),
+            child: Icon(Icons.crop_free_rounded, size: 10, color: DS.textFaint),
           ),
         ),
       ],

@@ -25,7 +25,11 @@ class UserModel extends HiveObject {
   @HiveField(20) String? handle;
   @HiveField(21) String? selectedFrame;
   @HiveField(22) String? gender;
-  UserModel({this.id, required this.createdAt, required this.editedAt, required this.name, required this.bio, required this.email, this.avatarUrl, this.followersCount = 0, this.followingCount = 0, this.location, this.website, this.instagramUrl, this.twitterUrl, this.isStudio = false, this.balance = 0.0, this.likesCount = 0, this.viewsCount = 0, this.isVerified = false, this.specialties, this.tools, this.handle, this.selectedFrame, this.gender});
+  @HiveField(23) int xp;
+  @HiveField(24) int level;
+  @HiveField(25) List<String>? badges;
+  @HiveField(26) String? coverUrl;
+  UserModel({this.id, required this.createdAt, required this.editedAt, required this.name, required this.bio, required this.email, this.avatarUrl, this.followersCount = 0, this.followingCount = 0, this.location, this.website, this.instagramUrl, this.twitterUrl, this.isStudio = false, this.balance = 0.0, this.likesCount = 0, this.viewsCount = 0, this.isVerified = false, this.specialties, this.tools, this.handle, this.selectedFrame, this.gender, this.xp = 0, this.level = 1, this.badges, this.coverUrl});
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: (json['id'] ?? '').toString(),
@@ -51,6 +55,10 @@ class UserModel extends HiveObject {
       handle: json['handle']?.toString(),
       selectedFrame: json['selected_frame']?.toString(),
       gender: json['gender']?.toString(),
+      xp: _parseInt(json['xp']),
+      level: _parseInt(json['level']) == 0 ? 1 : _parseInt(json['level']),
+      badges: _parseStringList(json['badges']),
+      coverUrl: json['cover_url']?.toString(),
     );
   }
   static List<String> _parseStringList(dynamic value) => value is List ? value.map((e) => e.toString()).toList() : [];
@@ -69,7 +77,7 @@ class UserModel extends HiveObject {
     return 0;
   }
   Map<String, dynamic> toJson() {
-    return {'created_at': createdAt.toIso8601String(), 'edited_at': editedAt.toIso8601String(), 'name': name, 'bio': bio, 'email': email, 'avatar_url': avatarUrl, 'followers_count': followersCount, 'following_count': followingCount, 'location': location, 'website': website, 'instagram_url': instagramUrl, 'twitter_url': twitterUrl, 'is_studio': isStudio, 'balance': balance, 'likes_count': likesCount, 'views_count': viewsCount, 'is_verified': isVerified, 'specialties': specialties, 'tools': tools, 'handle': handle, 'selected_frame': selectedFrame, 'gender': gender};
+    return {'created_at': createdAt.toIso8601String(), 'edited_at': editedAt.toIso8601String(), 'name': name, 'bio': bio, 'email': email, 'avatar_url': avatarUrl, 'followers_count': followersCount, 'following_count': followingCount, 'location': location, 'website': website, 'instagram_url': instagramUrl, 'twitter_url': twitterUrl, 'is_studio': isStudio, 'balance': balance, 'likes_count': likesCount, 'views_count': viewsCount, 'is_verified': isVerified, 'specialties': specialties, 'tools': tools, 'handle': handle, 'selected_frame': selectedFrame, 'gender': gender, 'xp': xp, 'level': level, 'badges': badges, 'cover_url': coverUrl};
   }
   static DateTime _parseDate(dynamic date) {
     if (date == null) return DateTime.now();

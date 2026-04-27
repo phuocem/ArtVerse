@@ -36,12 +36,12 @@ class _CollabBanner extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const PulsingDot(color: DS.mint),
+              PulsingDot(color: DS.mint),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   '${collab.activeMembers.length} người đang vẽ',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: DS.mint, fontSize: 11, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -87,13 +87,13 @@ class _LayerHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: DS.border))),
       child: Row(
         children: [
-          const Icon(Icons.layers_rounded, size: 14, color: DS.violet),
+          Icon(Icons.layers_rounded, size: 14, color: DS.violet),
           const SizedBox(width: 6),
-          const Text('LAYERS',
+          Text('LAYERS',
               style: TextStyle(
                   color: DS.violet,
                   fontSize: 9,
@@ -102,7 +102,7 @@ class _LayerHeader extends StatelessWidget {
           const Spacer(),
           Obx(() => Text('${controller.layers.length} lớp',
               style:
-                  const TextStyle(color: DS.textDim, fontSize: 10))),
+                  TextStyle(color: DS.textDim, fontSize: 10))),
         ],
       ),
     );
@@ -227,7 +227,7 @@ class _LayerTile extends StatelessWidget {
               const SizedBox(height: 6),
               Row(
                 children: [
-                  const Icon(Icons.opacity_rounded,
+                  Icon(Icons.opacity_rounded,
                       size: 11, color: DS.textDim),
                   const SizedBox(width: 4),
                   Expanded(
@@ -253,7 +253,7 @@ class _LayerTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 4),
                   Text('${(layer.opacity * 100).toInt()}%',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: DS.textDim,
                           fontSize: 9,
                           fontFamily: 'monospace')),
@@ -279,7 +279,7 @@ class _LayerTile extends StatelessWidget {
             Container(
                 width: 36,
                 height: 4,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     color: DS.border,
                     borderRadius: DS.r4)),
             const SizedBox(height: 12),
@@ -312,12 +312,12 @@ class _LayerTile extends StatelessWidget {
     Get.dialog(AlertDialog(
       backgroundColor: DS.card,
       shape: const RoundedRectangleBorder(borderRadius: DS.r16),
-      title: const Text('Đổi tên lớp',
+      title: Text('Đổi tên lớp',
           style: TextStyle(color: DS.text, fontWeight: FontWeight.w700)),
       content: TextField(
         controller: ctrl,
         autofocus: true,
-        style: const TextStyle(color: DS.text),
+        style: TextStyle(color: DS.text),
         decoration: InputDecoration(
           filled: true,
           fillColor: DS.surface,
@@ -327,7 +327,7 @@ class _LayerTile extends StatelessWidget {
       actions: [
         TextButton(
             onPressed: () => Get.back(),
-            child: const Text('Huỷ',
+            child: Text('Huỷ',
                 style: TextStyle(color: DS.textDim))),
         ElevatedButton(
           style: ElevatedButton.styleFrom(backgroundColor: DS.violet),
@@ -367,7 +367,7 @@ class _LayerFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 6, 10, 10),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(top: BorderSide(color: DS.border))),
       child: Row(
         children: [

@@ -134,19 +134,19 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 16, 14, 12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(bottom: BorderSide(color: DS.border))),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
                 gradient: DS.crimsonGrad, borderRadius: DS.r10),
             child: const Icon(Icons.palette_rounded,
                 color: Colors.white, size: 16),
           ),
           const SizedBox(width: 12),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('CHỌN MÀU',
@@ -163,7 +163,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
           InkWell(
             onTap: () => Navigator.of(context).pop(),
             borderRadius: DS.r50,
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.all(6),
               child:
                   Icon(Icons.close_rounded, color: DS.textDim, size: 18),
@@ -199,14 +199,14 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('MÀU HIỆN TẠI',
+                  Text('MÀU HIỆN TẠI',
                       style: TextStyle(
                           color: DS.textDim,
                           fontSize: 8,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.5)),
                   Text(_colorToHex(c),
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: DS.text,
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
@@ -243,7 +243,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
   Widget _buildFooter() {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 14),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
           border: Border(top: BorderSide(color: DS.border))),
       child: Row(
         children: [
@@ -254,7 +254,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
             decoration: BoxDecoration(
                 color: DS.textFaint.withValues(alpha: 0.2),
                 borderRadius: DS.r8),
-            child: const Text('#',
+            child: Text('#',
                 style: TextStyle(
                     color: DS.textDim,
                     fontWeight: FontWeight.w900,
@@ -270,7 +270,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
                   border: Border.all(color: DS.border)),
               child: TextField(
                 controller: _hexCtrl,
-                style: const TextStyle(
+                style: TextStyle(
                     color: DS.text,
                     fontFamily: 'monospace',
                     fontSize: 13,
@@ -301,7 +301,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
             child: Container(
               height: 34,
               padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                   gradient: DS.violetGrad, borderRadius: DS.r10),
               alignment: Alignment.center,
               child: const Text('Chọn',
@@ -389,7 +389,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label,
-                style: const TextStyle(
+                style: TextStyle(
                     color: DS.textDim,
                     fontSize: 10,
                     fontWeight: FontWeight.w700)),
@@ -397,7 +397,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
               isPercent
                   ? '${(value * 100).toInt()}%'
                   : value.toInt().toString(),
-              style: const TextStyle(
+              style: TextStyle(
                   color: DS.text,
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
@@ -430,7 +430,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
   Widget _paletteGrid() {
     return Obx(() {
       if (widget.controller.importedPalettes.isEmpty) {
-        return const Column(
+        return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.palette_outlined, size: 36, color: DS.textFaint),
@@ -451,7 +451,7 @@ class _ColorPickerDialogState extends State<_ColorPickerDialog>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(pl['name'] ?? 'Palette',
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: DS.textDim,
                         fontSize: 11,
                         fontWeight: FontWeight.w600)),

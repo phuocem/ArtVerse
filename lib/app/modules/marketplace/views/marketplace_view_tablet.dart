@@ -45,7 +45,7 @@ class _MarketTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface.withValues(alpha: 0.9),
-        border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
@@ -117,7 +117,7 @@ class _MarketLeftPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(right: BorderSide(color: AppColors.border, width: 0.5)),
       ),
@@ -215,7 +215,7 @@ class _OwnedAssetRow extends StatelessWidget {
               style: GoogleFonts.plusJakartaSans(
                 color: AppColors.textPrimary, fontSize: 11, fontWeight: FontWeight.w600)),
           ),
-          const Icon(Icons.check_circle_rounded, size: 14, color: AppColors.teal),
+          Icon(Icons.check_circle_rounded, size: 14, color: AppColors.teal),
         ],
       ),
     );
@@ -265,14 +265,14 @@ class _MarketGrid extends StatelessWidget {
     return Obx(() {
       final resources = controller.filteredResources;
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
+        return Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
       }
       if (resources.isEmpty) {
         return Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.shopping_bag_outlined, size: 48, color: AppColors.textTertiary),
+              Icon(Icons.shopping_bag_outlined, size: 48, color: AppColors.textTertiary),
               const SizedBox(height: 12),
               Text('No assets found', style: GoogleFonts.plusJakartaSans(
                 color: AppColors.textTertiary, fontSize: 14)),
@@ -353,7 +353,7 @@ class _AssetCard extends StatelessWidget {
                       top: 10, left: 10,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(color: AppColors.teal, shape: BoxShape.circle),
+                        decoration: BoxDecoration(color: AppColors.teal, shape: BoxShape.circle),
                         child: const Icon(Icons.check_rounded, size: 10, color: Colors.white),
                       ),
                     ),
@@ -374,7 +374,7 @@ class _AssetCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.download_outlined, size: 12, color: AppColors.textTertiary),
+                      Icon(Icons.download_outlined, size: 12, color: AppColors.textTertiary),
                       const SizedBox(width: 3),
                       Text('${resource.downloadsCount}', style: GoogleFonts.ibmPlexMono(
                         color: AppColors.textTertiary, fontSize: 9)),

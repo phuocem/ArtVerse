@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../widgets/global/global_artwork_card.dart';
 import '../controllers/profile_controller.dart';
@@ -35,7 +36,7 @@ class _GuestView extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: AppColors.violet.withValues(alpha: 0.2)),
             ),
-            child: const Icon(Icons.person_outline_rounded, size: 36, color: AppColors.textTertiary),
+            child: Icon(Icons.person_outline_rounded, size: 36, color: AppColors.textTertiary),
           ),
           const SizedBox(height: 20),
           Text('Sign in to view your profile', style: GoogleFonts.lexend(
@@ -92,7 +93,7 @@ class _ProfileTopBar extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
         color: AppColors.surface.withValues(alpha: 0.9),
-        border: const Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
+        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: Row(
         children: [
@@ -128,7 +129,18 @@ class _ProfileTopBar extends StatelessWidget {
           )),
           const SizedBox(width: 12),
           GestureDetector(
-            onTap: () => Get.toNamed<void>('/profile/edit'),
+            onTap: () {
+              final user = controller.currentUser.value;
+              if (user != null) {
+                controller.showEditProfileDialog(
+                  id: user.id ?? '',
+                  name: user.name,
+                  bio: user.bio,
+                  avatarUrl: user.avatarUrl,
+                  onUpdated: () {},
+                );
+              }
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
@@ -139,7 +151,7 @@ class _ProfileTopBar extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.edit_outlined, size: 13, color: AppColors.textSecondary),
+                  Icon(Icons.edit_outlined, size: 13, color: AppColors.textSecondary),
                   const SizedBox(width: 6),
                   Text('Edit', style: GoogleFonts.plusJakartaSans(
                     color: AppColors.textSecondary, fontSize: 12)),
@@ -158,7 +170,7 @@ class _ProfileSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(right: BorderSide(color: AppColors.border, width: 0.5)),
       ),
@@ -173,7 +185,7 @@ class _ProfileSidebar extends StatelessWidget {
                   children: [
                     Container(
                       width: 80, height: 80,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: AppColors.violetPink,
                       ),
@@ -260,11 +272,11 @@ class _ProfileSidebar extends StatelessWidget {
                 if (user.location?.isNotEmpty == true)
                   _InfoRow(icon: Icons.location_on_outlined, text: user.location!),
                 if (user.website?.isNotEmpty == true)
-                  _InfoRow(icon: Icons.link_rounded, text: user.website!),
+                  _InfoRow(icon: Icons.link_rounded, text: user.website!, url: user.website!),
                 if (user.instagramUrl?.isNotEmpty == true)
-                  const _InfoRow(icon: Icons.camera_alt_outlined, text: 'Instagram'),
+                  _InfoRow(icon: Icons.camera_alt_outlined, text: user.instagramUrl!, url: user.instagramUrl!, baseUrl: 'https://instagram.com/'),
                 if (user.twitterUrl?.isNotEmpty == true)
-                  const _InfoRow(icon: Icons.alternate_email_rounded, text: 'Twitter / X'),
+                  _InfoRow(icon: Icons.alternate_email_rounded, text: user.twitterUrl!, url: user.twitterUrl!, baseUrl: 'https://x.com/'),
               ],
             );
           }),
@@ -280,7 +292,7 @@ class _ProfileSidebar extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.account_balance_wallet_outlined, size: 16, color: AppColors.amber),
+                  Icon(Icons.account_balance_wallet_outlined, size: 16, color: AppColors.amber),
                   const SizedBox(width: 10),
                   Obx(() => Text('\$${controller.currentUser.value?.balance.toStringAsFixed(2) ?? '0.00'}',
                     style: GoogleFonts.lexend(color: AppColors.textPrimary, fontSize: 16, fontWeight: FontWeight.w900))),
@@ -315,20 +327,51 @@ class _StatColumn extends StatelessWidget {
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String text;
-  const _InfoRow({required this.icon, required this.text});
+  final String? url;
+  final String? baseUrl;
+
+  const _InfoRow({required this.icon, required this.text, this.url, this.baseUrl});
+
+  Future<void> _handleTap() async {
+    if (url == null || url!.isEmpty) return;
+    String finalUrl = url!;
+    if (!finalUrl.startsWith('http')) {
+      if (baseUrl != null) {
+        finalUrl = '$baseUrl${finalUrl.replaceAll('@', '')}';
+      } else {
+        finalUrl = 'https://$finalUrl';
+      }
+    }
+    final uri = Uri.parse(finalUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    final row = Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
         children: [
-          Icon(icon, size: 14, color: AppColors.textTertiary),
+          Icon(icon, size: 14, color: url != null ? AppColors.violet : AppColors.textTertiary),
           const SizedBox(width: 8),
           Expanded(child: Text(text, maxLines: 1, overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.plusJakartaSans(color: AppColors.textSecondary, fontSize: 11))),
+            style: GoogleFonts.plusJakartaSans(color: url != null ? AppColors.violet : AppColors.textSecondary, fontSize: 11, decoration: url != null ? TextDecoration.underline : TextDecoration.none, decorationColor: AppColors.violet))),
         ],
       ),
     );
+
+    if (url != null) {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: _handleTap,
+          child: row,
+        ),
+      );
+    }
+    return row;
   }
 }
 class _ArtworkGrid extends StatelessWidget {
@@ -339,7 +382,7 @@ class _ArtworkGrid extends StatelessWidget {
     return Obx(() {
       final posts = controller.post;
       if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
+        return Center(child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2));
       }
       if (posts.isEmpty) {
         return Center(
@@ -352,7 +395,7 @@ class _ArtworkGrid extends StatelessWidget {
                   color: AppColors.violet.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(Icons.palette_outlined, size: 28, color: AppColors.textTertiary),
+                child: Icon(Icons.palette_outlined, size: 28, color: AppColors.textTertiary),
               ),
               const SizedBox(height: 14),
               Text('No artworks yet', style: GoogleFonts.plusJakartaSans(
@@ -376,7 +419,7 @@ class _ArtworkGrid extends StatelessWidget {
         itemCount: posts.length + (controller.isLoadingMore.value ? 1 : 0),
         itemBuilder: (ctx, i) {
           if (i == posts.length) {
-            return const Center(child: Padding(
+            return Center(child: Padding(
               padding: EdgeInsets.all(20),
               child: CircularProgressIndicator(color: AppColors.violet, strokeWidth: 2),
             ));

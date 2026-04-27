@@ -102,7 +102,7 @@ class _QuickCardState extends State<QuickCard> {
                           const SizedBox(height: 4),
                           Text(
                             item['title'] as String,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 19,
                               fontWeight: FontWeight.w900,
                               color: AppColors.textPrimary,
@@ -192,4 +192,3 @@ class HeroStat extends StatelessWidget {
     );
   }
 }
-
