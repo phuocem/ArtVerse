@@ -1,10 +1,12 @@
 import 'dart:typed_data';
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../layout/controllers/layout_controller.dart';
+import '../../../../core/theme/app_colors.dart';
 
 class ProjectCard extends StatefulWidget {
   final String id;
@@ -41,52 +43,85 @@ class ProjectCard extends StatefulWidget {
 }
 
 class _ProjectCardState extends State<ProjectCard> {
+  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
     final lc = Get.find<LayoutController>();
     
     return MouseRegion(
       cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
       child: GestureDetector(
         onTap: widget.onTap,
         onSecondaryTap: () => _showContextMenu(context, lc),
         onLongPress: () => _showContextMenu(context, lc),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: lc.surfaceColor,
-                  borderRadius: BorderRadius.circular(2), 
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.05), width: 0.5),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    _buildThumbnail(lc),
-
-                    if (widget.isAnimation)
-                      Positioned.fill(
-                        child: _VideoBackgroundPlayer(
-                          key: ValueKey(widget.id),
-                          assetPath: 'assets/video/complex_anim.mp4',
-                          startAtSeconds: 1, 
-                        ),
-                      ),
-
-                    _buildDarkGradientOverlay(),
-  
-                    Positioned(top: 12, left: 12, child: _buildTypeBadge()),
-                    Positioned(bottom: 12, right: 12, child: _buildActionButtons(lc)),
-                  ],
-                ),
+        child: AnimatedScale(
+          scale: _isHovered ? 1.03 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: lc.cardColor,
+              borderRadius: BorderRadius.circular(20), 
+              border: Border.all(
+                color: _isHovered 
+                    ? lc.primaryColor.withValues(alpha: 0.3) 
+                    : AppColors.border, 
+                width: 0.8,
               ),
+              boxShadow: _isHovered
+                  ? [
+                      BoxShadow(
+                        color: lc.primaryColor.withValues(alpha: 0.12),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      )
+                    ]
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.03),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      )
+                    ],
             ),
-            const SizedBox(height: 16),
-            _buildProjectInfo(lc),
-          ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        _buildThumbnail(lc),
+
+                        if (widget.isAnimation)
+                          Positioned.fill(
+                            child: _VideoBackgroundPlayer(
+                              key: ValueKey(widget.id),
+                              assetPath: 'assets/video/complex_anim.mp4',
+                              startAtSeconds: 1, 
+                            ),
+                          ),
+
+                        _buildDarkGradientOverlay(),
+      
+                        Positioned(top: 10, left: 10, child: _buildTypeBadge()),
+                        Positioned(bottom: 10, right: 10, child: _buildActionButtons(lc)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _buildProjectInfo(lc),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -94,7 +129,7 @@ class _ProjectCardState extends State<ProjectCard> {
 
   Widget _buildProjectInfo(LayoutController lc) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -103,33 +138,32 @@ class _ProjectCardState extends State<ProjectCard> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 11,
-              fontWeight: FontWeight.w900,
-              color: Colors.white,
-              letterSpacing: 1.5,
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: lc.textColor,
+              letterSpacing: 0.2,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Row(
             children: [
               Text(
                 _formatTimeAgo(),
                 style: GoogleFonts.ibmPlexMono(
-                  fontSize: 8,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white24,
-                  letterSpacing: 1,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w600,
+                  color: lc.textColor.withValues(alpha: 0.4),
                 ),
               ),
               const Spacer(),
               if (widget.isAnimation)
                 Text(
                   'SEQUENCE',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: GoogleFonts.ibmPlexMono(
                     fontSize: 8,
-                    fontWeight: FontWeight.w900,
-                    color: lc.primaryColor.withValues(alpha: 0.4),
-                    letterSpacing: 1,
+                    fontWeight: FontWeight.w800,
+                    color: lc.primaryColor,
+                    letterSpacing: 0.5,
                   ),
                 ),
             ],
@@ -147,13 +181,13 @@ class _ProjectCardState extends State<ProjectCard> {
       );
     }
     return Container(
-      color: Colors.white.withValues(alpha: 0.01),
+      color: lc.textColor.withValues(alpha: 0.01),
       child: Center(
         child: widget.isAnimation 
           ? const SizedBox.shrink()
-          : const Icon(
+          : Icon(
               Icons.edit_note_rounded,
-              color: Colors.white10,
+              color: lc.textColor.withValues(alpha: 0.1),
               size: 24,
             ),
       ),
@@ -176,19 +210,22 @@ class _ProjectCardState extends State<ProjectCard> {
   }
 
   Widget _buildTypeBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.8),
-        border: Border.all(color: Colors.white12),
-      ),
-      child: Text(
-        (widget.isAnimation ? "ANIM" : "ART").toUpperCase(),
-        style: GoogleFonts.ibmPlexMono(
-          color: Colors.white,
-          fontSize: 7,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 1,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          color: Colors.black.withValues(alpha: 0.5),
+          child: Text(
+            (widget.isAnimation ? "ANIM" : "ART").toUpperCase(),
+            style: GoogleFonts.ibmPlexMono(
+              color: Colors.white,
+              fontSize: 8,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.5,
+            ),
+          ),
         ),
       ),
     );
@@ -198,22 +235,28 @@ class _ProjectCardState extends State<ProjectCard> {
     return GestureDetector(
       onTap: () => widget.onFavoriteChanged?.call(!widget.isFavorite),
       child: Container(
-        width: 32,
-        height: 32,
+        width: 30,
+        height: 30,
         decoration: BoxDecoration(
-          color: widget.isFavorite ? Colors.white : Colors.black.withValues(alpha: 0.4),
-          border: Border.all(color: Colors.white12),
+          color: widget.isFavorite ? AppColors.amber : Colors.black.withValues(alpha: 0.4),
           shape: BoxShape.circle,
+          boxShadow: widget.isFavorite
+              ? [
+                  BoxShadow(
+                    color: AppColors.amber.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                  )
+                ]
+              : [],
         ),
         child: Icon(
           widget.isFavorite ? Icons.star_rounded : Icons.star_outline_rounded,
-          color: widget.isFavorite ? Colors.black : Colors.white24,
+          color: Colors.white,
           size: 16,
         ),
       ),
     );
   }
-
 
   String _formatTimeAgo() {
     try {
@@ -253,7 +296,6 @@ class _ProjectCardState extends State<ProjectCard> {
   }
 }
 
-
 class _VideoBackgroundPlayer extends StatefulWidget {
   final String assetPath;
   final int startAtSeconds;
@@ -264,7 +306,6 @@ class _VideoBackgroundPlayer extends StatefulWidget {
     this.startAtSeconds = 0,
   });
 
-  
   static VideoPlayerController? _sharedController;
   static bool _isInitializing = false;
 
@@ -281,7 +322,6 @@ class _VideoBackgroundPlayer extends StatefulWidget {
     await controller.seekTo(Duration(seconds: startAt));
     await controller.play();
 
-    
     controller.addListener(() {
       final pos = controller.value.position;
       if (pos >= const Duration(seconds: 8)) {
@@ -307,10 +347,7 @@ class _VideoBackgroundPlayerState extends State<_VideoBackgroundPlayer> {
   }
 
   Future<void> _setupController() async {
-    
     await _VideoBackgroundPlayer._ensureInitialized(widget.assetPath, widget.startAtSeconds);
-    
-    
     if (mounted) {
       setState(() {
         _showVideo = true;
@@ -340,4 +377,3 @@ class _VideoBackgroundPlayerState extends State<_VideoBackgroundPlayer> {
     );
   }
 }
-

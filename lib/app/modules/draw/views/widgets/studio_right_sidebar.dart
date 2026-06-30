@@ -17,7 +17,6 @@ class StudioRightSidebar extends StatefulWidget {
 class _StudioRightSidebarState extends State<StudioRightSidebar>
     with TickerProviderStateMixin {
   late TabController _tab;
-  bool _collapsed = false;
   bool _lastIsAnimation = false;
 
   @override
@@ -46,24 +45,33 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
   Widget build(BuildContext context) {
     return Obx(() {
       final isAnim = widget.controller.isAnimation.value;
+      final collapsed = widget.controller.isSidebarCollapsed.value;
       WidgetsBinding.instance.addPostFrameCallback((_) => _rebuildTab(isAnim));
-      return AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOutCubic,
-        width: _collapsed ? 32 : 272,
-        decoration: BoxDecoration(
-          color: DS.surface,
-          border: Border(left: BorderSide(color: DS.border)),
+
+      return GlassContainer(
+        borderRadius: 20,
+        opacity: 0.05,
+        blur: 15,
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 0.8),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOutCubic,
+          width: collapsed ? 36.0 : 240.0,
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
+          ),
+          child: collapsed 
+              ? _collapsedBar(isAnim, collapsed) 
+              : _expandedPanel(isAnim, collapsed),
         ),
-        child: _collapsed ? _collapsedBar(isAnim) : _expandedPanel(isAnim),
       );
     });
   }
 
-  Widget _collapsedBar(bool isAnim) {
+  Widget _collapsedBar(bool isAnim, bool collapsed) {
     return Column(
       children: [
-        _collapseBtn(),
+        _collapseBtn(collapsed),
         const Spacer(),
         _colIcon(Icons.tune_rounded, 0, 'Thuộc tính'),
         _colIcon(Icons.layers_rounded, 1, 'Lớp'),
@@ -74,17 +82,17 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
     );
   }
 
-  Widget _collapseBtn() {
+  Widget _collapseBtn(bool collapsed) {
     return Tooltip(
-      message: _collapsed ? 'Mở bảng điều khiển' : 'Thu gọn',
+      message: collapsed ? 'Mở bảng điều khiển' : 'Thu gọn',
       child: InkWell(
-        onTap: () => setState(() => _collapsed = !_collapsed),
+        onTap: widget.controller.toggleSidebar,
         child: Container(
           height: 36,
           width: 32,
           alignment: Alignment.center,
           child: Icon(
-            _collapsed ? Icons.chevron_left_rounded : Icons.chevron_right_rounded,
+            collapsed ? Icons.chevron_left_rounded : Icons.chevron_right_rounded,
             size: 16,
             color: DS.textDim,
           ),
@@ -98,7 +106,7 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
       message: tip,
       child: InkWell(
         onTap: () {
-          setState(() => _collapsed = false);
+          widget.controller.isSidebarCollapsed.value = false;
           _tab.animateTo(tabIdx);
         },
         child: Padding(
@@ -109,7 +117,7 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
     );
   }
 
-  Widget _expandedPanel(bool isAnim) {
+  Widget _expandedPanel(bool isAnim, bool collapsed) {
     final tabs = [
       (Icons.tune_rounded, 'Thuộc tính'),
       (Icons.layers_rounded, 'Lớp'),
@@ -126,7 +134,7 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
 
     return Column(
       children: [
-        _buildTabBar(tabs),
+        _buildTabBar(tabs, collapsed),
         Expanded(
           child: TabBarView(
             controller: _tab,
@@ -138,7 +146,7 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
     );
   }
 
-  Widget _buildTabBar(List<(IconData, String)> tabs) {
+  Widget _buildTabBar(List<(IconData, String)> tabs, bool collapsed) {
     return Container(
       height: 44,
       decoration: BoxDecoration(
@@ -146,7 +154,7 @@ class _StudioRightSidebarState extends State<StudioRightSidebar>
       ),
       child: Row(
         children: [
-          _collapseBtn(),
+          _collapseBtn(collapsed),
           Container(width: 1, height: 28, color: DS.border),
           Expanded(
             child: TabBar(

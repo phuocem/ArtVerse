@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../../controllers/draw_controller.dart';
 import '../../../../data/models/draw/drawn_line_model.dart';
 import 'studio_widgets.dart';
+import '../dialogs/studio_perspective_sheet.dart';
+import '../dialogs/studio_ai_dialog.dart';
 class StudioTopBar extends StatefulWidget {
   final DrawController controller;
   const StudioTopBar({super.key, required this.controller});
@@ -35,94 +36,98 @@ class _StudioTopBarState extends State<StudioTopBar>
   @override
   Widget build(BuildContext context) {
     final c = widget.controller;
-    return Container(
-      height: 48,
-      decoration: BoxDecoration(
-        color: DS.surface,
-        border: Border(bottom: BorderSide(color: DS.border, width: 1)),
-      ),
-      child: Row(
-        children: [
-          _backBtn(c),
-          _vDiv(),
-          _titleArea(),
-          _vDiv(),
-          _topBtn('Mới', Icons.add_rounded, c.clearCanvas, accent: DS.textDim),
-          _topBtn('Lưu', Icons.save_rounded, c.save, accent: DS.mint),
-          _topBtn('Xuất', Icons.upload_rounded, () => _showExportMenu(context, c), accent: DS.gold),
-          _vDiv(),
-          _miniSlider(Icons.line_weight_rounded, c.selectedWidth, 1, 100, DS.violet, (v) => c.changeWidth(v)),
-          const SizedBox(width: 12),
-          _miniSlider(Icons.opacity_rounded, c.selectedOpacity, 0, 1, DS.cyan, (v) => c.changeOpacity(v)),
-          _vDiv(),
-          Obx(() => _toolBadge(c.currentToolTooltip, c.currentToolIcon)),
-          _vDiv(),
-          Obx(() => _iconBtn(
-                Icons.vertical_align_center_rounded,
-                c.symmetryType.value != SymmetryType.none,
-                () {
-                  c.symmetryType.value = c.symmetryType.value == SymmetryType.none
-                      ? SymmetryType.horizontal
-                      : SymmetryType.none;
-                },
-                tip: 'Đối xứng',
-                accent: DS.violet,
-              )),
-          Obx(() => _iconBtn(
-                Icons.grid_on_rounded,
-                c.showGrid.value,
-                c.toggleGrid,
-                tip: 'Lưới',
-                accent: DS.cyan,
-              )),
-          Obx(() => _iconBtn(
-                Icons.self_improvement_rounded,
-                c.isZenMode.value,
-                c.toggleZenMode,
-                tip: 'Zen mode',
-                accent: DS.gold,
-              )),
-          _vDiv(),
-          Obx(() => _undoRedoBtn(
-                Icons.undo_rounded,
-                c.undoStack.isNotEmpty,
-                c.undo,
-                tip: 'Hoàn tác',
-              )),
-          Obx(() => _undoRedoBtn(
-                Icons.redo_rounded,
-                c.redoStack.isNotEmpty,
-                c.redo,
-                tip: 'Làm lại',
-              )),
-          _vDiv(),
-          _iconBtn(Icons.delete_sweep_rounded, false, c.clearCanvas,
-              tip: 'Xoá canvas', danger: true),
-          const SizedBox(width: 8),
-          Obx(() => _autoSaveDot(c.isChanged.value)),
-          const SizedBox(width: 12),
-        ],
+    return GlassContainer(
+      borderRadius: 16,
+      opacity: 0.05,
+      blur: 15,
+      border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 0.8),
+      child: SizedBox(
+        height: 48,
+        child: Row(
+          children: [
+            _backBtn(c),
+            _vDiv(),
+            _titleArea(),
+            _vDiv(),
+            Obx(() => _toolSelector(c)),
+            _vDiv(),
+            Obx(() => _iconBtn(
+                  Icons.vertical_align_center_rounded,
+                  c.symmetryType.value != SymmetryType.none,
+                  () {
+                    c.symmetryType.value = c.symmetryType.value == SymmetryType.none
+                        ? SymmetryType.horizontal
+                        : SymmetryType.none;
+                  },
+                  tip: 'Đối xứng',
+                  accent: DS.violet,
+                )),
+            Obx(() => _iconBtn(
+                  Icons.grid_on_rounded,
+                  c.showGrid.value,
+                  c.toggleGrid,
+                  tip: 'Lưới',
+                  accent: DS.cyan,
+                )),
+            Obx(() => _iconBtn(
+                  Icons.grid_3x3_rounded,
+                  c.isIsometricSnapEnabled.value,
+                  () => c.isIsometricSnapEnabled.toggle(),
+                  tip: 'Hút Isometric',
+                  accent: DS.mint,
+                )),
+            _iconBtn(
+              Icons.grid_4x4,
+              false,
+              () {
+                Get.bottomSheet(
+                    StudioPerspectiveSheet(controller: c),
+                    isScrollControlled: true);
+              },
+              tip: 'Phối cảnh',
+              accent: DS.gold,
+            ),
+            _iconBtn(
+              Icons.auto_awesome_rounded,
+              false,
+              () => Get.dialog(const StudioAiDialog()),
+              tip: 'Trợ lý AI',
+              accent: DS.rose,
+            ),
+            Obx(() => _iconBtn(
+                  Icons.self_improvement_rounded,
+                  c.isZenMode.value,
+                  c.toggleZenMode,
+                  tip: 'Zen mode',
+                  accent: DS.gold,
+                )),
+            _vDiv(),
+            _iconBtn(Icons.delete_sweep_rounded, false, c.clearCanvas,
+                tip: 'Xoá canvas', danger: true),
+            _vDiv(),
+            const Spacer(),
+            _topBtn('Mới', Icons.add_rounded, c.clearCanvas, accent: DS.textDim),
+            _topBtn('Lưu', Icons.save_rounded, c.save, accent: DS.mint),
+            _topBtn('Xuất', Icons.upload_rounded, () => _showExportMenu(context, c), accent: DS.gold),
+            _vDiv(),
+            Obx(() => _autoSaveDot(c.isChanged.value)),
+            const SizedBox(width: 12),
+          ],
+        ),
       ),
     );
   }
+
+
   Widget _backBtn(DrawController c) {
-    return Tooltip(
-      message: 'Thoát Studio',
-      child: InkWell(
-        onTap: c.leaveSaving,
-        borderRadius: DS.r8,
-        child: Container(
-          width: 52,
-          height: 48,
-          alignment: Alignment.center,
-          child: AnimatedBuilder(
-            animation: _pulse,
-            builder: (_, __) => ShaderMask(
-              shaderCallback: (r) => DS.crimsonGrad.createShader(r),
-              child: const Icon(Icons.brush_rounded, color: Colors.white, size: 20),
-            ),
-          ),
-        ),
+    return _HoverScaleBtn(
+      onTap: c.leaveSaving,
+      tooltip: 'Quay lại',
+      child: Container(
+        width: 48,
+        height: 48,
+        alignment: Alignment.center,
+        child: Icon(Icons.arrow_back_ios_new_rounded, color: DS.textDim, size: 18),
       ),
     );
   }
@@ -193,101 +198,134 @@ class _StudioTopBarState extends State<StudioTopBar>
   Widget _topBtn(String label, IconData icon, VoidCallback onTap,
       {Color? accent}) {
     final col = accent ?? DS.textDim;
-    return Tooltip(
-      message: label,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: DS.r8,
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 2),
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          decoration: BoxDecoration(
-            color: accent != null
-                ? accent.withValues(alpha: 0.06)
-                : DS.card,
-            borderRadius: DS.r8,
-            border: Border.all(
-                color: accent != null
-                    ? accent.withValues(alpha: 0.2)
-                    : DS.border),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 13, color: col),
-              const SizedBox(width: 5),
-              Text(label,
-                  style: TextStyle(
-                      color: col,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600)),
-            ],
-          ),
+    return _HoverScaleBtn(
+      onTap: onTap,
+      tooltip: label,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: accent != null
+              ? accent.withValues(alpha: 0.06)
+              : DS.card,
+          borderRadius: DS.r8,
+          border: Border.all(
+              color: accent != null
+                  ? accent.withValues(alpha: 0.25)
+                  : DS.border,
+              width: 0.8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 13, color: col),
+            const SizedBox(width: 5),
+            Text(label,
+                style: TextStyle(
+                    color: col,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600)),
+          ],
         ),
       ),
     );
   }
-  Widget _miniSlider(IconData icon, RxDouble val, double mn, double mx,
-      Color accent, ValueChanged<double> onChange) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 13, color: accent.withValues(alpha: 0.8)),
-        const SizedBox(width: 4),
-        Obx(() => Text(
-              mx <= 1.0
-                  ? '${(val.value * 100).toInt()}%'
-                  : '${val.value.toInt()}',
-              style: TextStyle(
-                  color: DS.text,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'monospace'),
-            )),
-        SizedBox(
-          width: 64,
-          child: Obx(() => SliderTheme(
-                data: SliderThemeData(
-                  trackHeight: 2,
-                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-                  overlayShape: const RoundSliderOverlayShape(overlayRadius: 10),
-                  activeTrackColor: accent,
-                  inactiveTrackColor: DS.border,
-                  thumbColor: Colors.white,
-                  overlayColor: accent.withValues(alpha: 0.12),
-                ),
-                child: Slider(
-                  value: val.value.clamp(mn, mx),
-                  min: mn,
-                  max: mx,
-                  onChanged: onChange,
-                ),
-              )),
-        ),
-      ],
-    );
-  }
-  Widget _toolBadge(String tool, IconData icon) {
+
+  Widget _toolSelector(DrawController c) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: DS.violet.withValues(alpha: 0.1),
-        borderRadius: DS.r8,
-        border: Border.all(color: DS.violet.withValues(alpha: 0.3)),
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: DS.r12,
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 13, color: DS.violet),
-          SizedBox(width: 5),
-          Text(tool.toUpperCase(),
-              style: TextStyle(
-                  color: DS.violet,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2)),
+          _topToolBtn(c, Icons.edit_rounded, 'Chì', () {
+            c.setBrushPreset(type: BrushType.pencil);
+          }, isActive: c.selectedTool.value == ToolType.brush && c.selectedBrushType.value == BrushType.pencil),
+          _topToolBtn(c, Icons.brush_rounded, 'Cọ', () {
+            c.setBrushPreset(type: BrushType.brush);
+          }, isActive: c.selectedTool.value == ToolType.brush && c.selectedBrushType.value == BrushType.brush),
+          _topToolBtn(c, Icons.blur_on_rounded, 'Phun', () {
+            c.setBrushPreset(type: BrushType.airbrush);
+          }, isActive: c.selectedTool.value == ToolType.brush && c.selectedBrushType.value == BrushType.airbrush),
+          _topToolBtn(c, Icons.history_edu_rounded, 'Mực', () {
+            c.setBrushPreset(type: BrushType.pen);
+          }, isActive: c.selectedTool.value == ToolType.brush && c.selectedBrushType.value == BrushType.pen),
+          
+          _vDivMini(),
+          
+          _topToolBtn(c, Icons.rectangle_outlined, 'Hình', () {
+            if (c.selectedTool.value == ToolType.rectangle) {
+              c.selectTool(ToolType.circle);
+            } else if (c.selectedTool.value == ToolType.circle) {
+              c.selectTool(ToolType.line);
+            } else {
+              c.selectTool(ToolType.rectangle);
+            }
+          }, isActive: c.selectedTool.value == ToolType.rectangle || c.selectedTool.value == ToolType.circle || c.selectedTool.value == ToolType.line,
+             iconOverride: c.selectedTool.value == ToolType.rectangle 
+                 ? Icons.rectangle_outlined 
+                 : c.selectedTool.value == ToolType.circle 
+                     ? Icons.circle_outlined 
+                     : c.selectedTool.value == ToolType.line 
+                         ? Icons.show_chart_rounded 
+                         : Icons.category_outlined),
+          
+          _topToolBtn(c, Icons.format_color_fill_rounded, 'Sơn', () {
+            c.selectTool(ToolType.bucket);
+          }, isActive: c.selectedTool.value == ToolType.bucket),
+          _topToolBtn(c, Icons.text_fields_rounded, 'Chữ', () {
+            c.selectTool(ToolType.text);
+          }, isActive: c.selectedTool.value == ToolType.text),
+          
+          _vDivMini(),
+          
+          _topToolBtn(c, Icons.auto_fix_normal_rounded, 'Tẩy', () {
+            c.selectEraser();
+          }, isActive: c.selectedTool.value == ToolType.eraser, danger: true),
         ],
+      ),
+    );
+  }
+
+  Widget _vDivMini() => Container(
+        width: 1,
+        height: 16,
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        color: Colors.white.withValues(alpha: 0.08),
+      );
+
+  Widget _topToolBtn(
+    DrawController c,
+    IconData icon,
+    String tooltip,
+    VoidCallback onTap, {
+    required bool isActive,
+    IconData? iconOverride,
+    bool danger = false,
+  }) {
+    final effectiveIcon = iconOverride ?? icon;
+    final color = danger
+        ? DS.crimson
+        : isActive
+            ? DS.violet
+            : DS.textDim;
+    return _HoverScaleBtn(
+      onTap: onTap,
+      tooltip: tooltip,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: isActive ? color.withValues(alpha: 0.12) : Colors.transparent,
+          borderRadius: DS.r6,
+        ),
+        alignment: Alignment.center,
+        child: Icon(effectiveIcon, size: 14, color: color),
       ),
     );
   }
@@ -299,9 +337,9 @@ class _StudioTopBarState extends State<StudioTopBar>
         : active
             ? effectiveAccent
             : DS.textDim;
-    final btn = InkWell(
+    return _HoverScaleBtn(
       onTap: onTap,
-      borderRadius: DS.r8,
+      tooltip: tip,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
         width: 32,
@@ -312,31 +350,15 @@ class _StudioTopBarState extends State<StudioTopBar>
           border: Border.all(
               color: active && !danger
                   ? effectiveAccent.withValues(alpha: 0.3)
-                  : Colors.transparent),
+                  : Colors.transparent,
+              width: 0.8),
         ),
         alignment: Alignment.center,
         child: Icon(icon, size: 16, color: col),
       ),
     );
-    if (tip != null) return Tooltip(message: tip, child: btn);
-    return btn;
   }
-  Widget _undoRedoBtn(IconData icon, bool enabled, VoidCallback onTap,
-      {String? tip}) {
-    final btn = InkWell(
-      onTap: enabled ? onTap : null,
-      borderRadius: DS.r8,
-      child: Container(
-        width: 32,
-        height: 32,
-        alignment: Alignment.center,
-        child: Icon(icon,
-            size: 16, color: enabled ? DS.textDim : DS.textDim.withValues(alpha: 0.3)),
-      ),
-    );
-    if (tip != null) return Tooltip(message: tip, child: btn);
-    return btn;
-  }
+
   Widget _autoSaveDot(bool isChanged) {
     return Tooltip(
       message: isChanged ? 'Có thay đổi chưa lưu' : 'Đã lưu',
@@ -399,5 +421,55 @@ class _StudioTopBarState extends State<StudioTopBar>
                 color: DS.text, fontSize: 13, fontWeight: FontWeight.w600)),
       ]),
     );
+  }
+}
+
+class _HoverScaleBtn extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final String? tooltip;
+  const _HoverScaleBtn({required this.child, this.onTap, this.tooltip});
+
+  @override
+  State<_HoverScaleBtn> createState() => _HoverScaleBtnState();
+}
+
+class _HoverScaleBtnState extends State<_HoverScaleBtn> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasTap = widget.onTap != null;
+    Widget current = MouseRegion(
+      cursor: hasTap ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      onEnter: (_) {
+        if (hasTap) setState(() => _isHovered = true);
+      },
+      onExit: (_) {
+        if (hasTap) setState(() => _isHovered = false);
+      },
+      child: AnimatedScale(
+        scale: _isHovered ? 1.08 : 1.0,
+        duration: const Duration(milliseconds: 150),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: widget.child,
+        ),
+      ),
+    );
+
+    if (widget.tooltip != null) {
+      current = Tooltip(
+        message: widget.tooltip!,
+        decoration: BoxDecoration(
+          color: DS.card,
+          borderRadius: DS.r8,
+          border: Border.all(color: DS.border),
+        ),
+        textStyle: TextStyle(color: DS.text, fontSize: 11),
+        child: current,
+      );
+    }
+    return current;
   }
 }

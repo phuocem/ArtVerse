@@ -9,10 +9,6 @@ class StudioVerticalSliders extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 52,
-      decoration: BoxDecoration(
-        color: DS.surface.withValues(alpha: 0.95),
-        border: Border(left: BorderSide(color: DS.border)),
-      ),
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
       child: Column(
         children: [

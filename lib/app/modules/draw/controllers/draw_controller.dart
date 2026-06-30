@@ -84,6 +84,7 @@ class DrawController extends GetxController {
   final selectedVFX = 'none'.obs;
   final RxBool isSmoothingEnabled = true.obs;
   final transformationController = TransformationController();
+  final RxDouble currentZoom = 1.0.obs;
   final cursorPosition = Rx<Offset?>(null);
   final RxnString referenceImage = RxnString(null);
   final RxDouble referenceOpacity = 0.5.obs;
@@ -225,6 +226,9 @@ class DrawController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    transformationController.addListener(() {
+      currentZoom.value = transformationController.value.getMaxScaleOnAxis();
+    });
     Get.put<UploadController>(UploadController(), permanent: true);
     initDrawing();
     addFrame();

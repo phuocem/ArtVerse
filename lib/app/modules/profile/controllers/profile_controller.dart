@@ -41,7 +41,7 @@ class ProfileController extends GetxController
   final isLoadingMore = false.obs;
   bool _isPickingFile = false;
   final selectedTab = 'All'.obs;
-  final List<String> tabArt = ['All', '2D Art'];
+  final List<String> tabArt = ['All', '2D Art', 'Animation'];
   final ScrollController scrollController = ScrollController();
   final RxInt crossAxisCount = 3.obs;
   final isMaleMode = true.obs;
@@ -50,7 +50,16 @@ class ProfileController extends GetxController
   final int _postLimit = 15;
   final equippedFrameUrl = RxnString();
   final ownedGear = <dynamic>[].obs;
-  List<PostModel> get filteredPosts => post;
+  List<PostModel> get filteredPosts {
+    if (selectedTab.value == 'All') {
+      return post;
+    } else if (selectedTab.value == '2D Art') {
+      return post.where((p) => !p.isVideo).toList();
+    } else if (selectedTab.value == 'Animation') {
+      return post.where((p) => p.isVideo).toList();
+    }
+    return post;
+  }
   late final userBox = Get.find<DatabaseService>().userBox;
   @override
   void onInit() {

@@ -6,106 +6,83 @@ import 'studio_widgets.dart';
 import '../dialogs/show_color_picker.dart';
 import '../dialogs/studio_perspective_sheet.dart';
 import '../dialogs/studio_ai_dialog.dart';
-class StudioLeftSidebar extends StatefulWidget {
+class StudioLeftSidebar extends StatelessWidget {
   final DrawController controller;
   const StudioLeftSidebar({super.key, required this.controller});
-  @override
-  State<StudioLeftSidebar> createState() => _StudioLeftSidebarState();
-}
-class _StudioLeftSidebarState extends State<StudioLeftSidebar> {
-  bool _collapsed = false;
-
-  void _toggle() {
-    setState(() => _collapsed = !_collapsed);
-  }
 
   @override
   Widget build(BuildContext context) {
-    final c = widget.controller;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.easeInOutCubic,
-      width: _collapsed ? 32 : 64,
-      decoration: BoxDecoration(
-        color: DS.surface,
-        border: Border(right: BorderSide(color: DS.border)),
-      ),
-      child: _collapsed ? _collapsedBar() : _expandedPanel(c),
-    );
-  }
-
-  Widget _collapsedBar() {
-    return Column(
-      children: [
-        _CollapseBtn(collapsed: true, onTap: _toggle),
-      ],
-    );
-  }
-
-  Widget _expandedPanel(DrawController c) {
-    return Column(
-      children: [
-        _CollapseBtn(collapsed: false, onTap: _toggle),
-        Divider(color: DS.border, height: 1, thickness: 1),
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Column(
-              children: [
-                _grp('VẼ', DS.violet),
-                _brushTool(c, 'Chì', Icons.edit_rounded, BrushType.pencil, DS.violet),
-                _brushTool(c, 'Cọ', Icons.brush_rounded, BrushType.brush, DS.violet),
-                _brushTool(c, 'Phun', Icons.blur_on_rounded, BrushType.airbrush, DS.violet),
-                _brushTool(c, 'Mực', Icons.history_edu_rounded, BrushType.pen, DS.violet),
-                const SizedBox(height: 4),
-                _sep(),
-                _grp('HÌNH', DS.gold),
-                _shapeTool(c, 'Rect', Icons.rectangle_outlined, ToolType.rectangle, DS.gold),
-                _shapeTool(c, 'Elip', Icons.circle_outlined, ToolType.circle, DS.gold),
-                _shapeTool(c, 'Line', Icons.show_chart_rounded, ToolType.line, DS.gold),
-                _sep(),
-                _grp('KHÁC', DS.cyan),
-                _shapeTool(c, 'Fill', Icons.format_color_fill_rounded, ToolType.bucket, DS.cyan),
-                _shapeTool(c, 'Text', Icons.text_fields_rounded, ToolType.text, DS.cyan),
-                _eraserTool(c),
-                _sep(),
-                _grp('EXTRA', DS.rose),
-                _toggleTool(c, 'Lazy', Icons.gesture_rounded, DS.rose,
-                    c.isStabilizerEnabled,
-                    () => c.isStabilizerEnabled.toggle()),
-                _toggleTool(c, 'ISO', Icons.grid_3x3_rounded, DS.mint,
-                    c.isIsometricSnapEnabled,
-                    () => c.isIsometricSnapEnabled.toggle()),
-                _actionTool(c, 'Persp', Icons.grid_4x4, DS.gold, () {
-                  Get.bottomSheet(
-                      StudioPerspectiveSheet(controller: c),
-                      isScrollControlled: true);
-                }),
-                _actionTool(c, 'AI', Icons.auto_awesome_rounded, DS.rose,
-                    () => Get.dialog(const StudioAiDialog())),
-                const SizedBox(height: 8),
-                _sep(),
-                _grp('SYM', DS.violet),
-                _symTool(c, 'H-Sym', Icons.swap_horiz_rounded, SymmetryType.horizontal, DS.violet),
-                _symTool(c, 'V-Sym', Icons.swap_vert_rounded, SymmetryType.vertical, DS.violet),
-                _symTool(c, 'R4', Icons.rotate_90_degrees_ccw_rounded, SymmetryType.radial4, DS.cyan),
-                _symTool(c, 'R8', Icons.filter_8_rounded, SymmetryType.radial8, DS.cyan),
-              ],
+    final c = controller;
+    return GlassContainer(
+      borderRadius: 20,
+      opacity: 0.05,
+      blur: 15,
+      border: Border.all(color: Colors.white.withValues(alpha: 0.08), width: 0.8),
+      child: SizedBox(
+        width: 64,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  children: [
+                    _grp('VẼ', DS.violet),
+                    _brushTool(c, 'Chì', Icons.edit_rounded, BrushType.pencil, DS.violet),
+                    _brushTool(c, 'Cọ', Icons.brush_rounded, BrushType.brush, DS.violet),
+                    _brushTool(c, 'Phun', Icons.blur_on_rounded, BrushType.airbrush, DS.violet),
+                    _brushTool(c, 'Mực', Icons.history_edu_rounded, BrushType.pen, DS.violet),
+                    const SizedBox(height: 4),
+                    _sep(),
+                    _grp('HÌNH', DS.gold),
+                    _shapeTool(c, 'Rect', Icons.rectangle_outlined, ToolType.rectangle, DS.gold),
+                    _shapeTool(c, 'Elip', Icons.circle_outlined, ToolType.circle, DS.gold),
+                    _shapeTool(c, 'Line', Icons.show_chart_rounded, ToolType.line, DS.gold),
+                    _sep(),
+                    _grp('KHÁC', DS.cyan),
+                    _shapeTool(c, 'Fill', Icons.format_color_fill_rounded, ToolType.bucket, DS.cyan),
+                    _shapeTool(c, 'Text', Icons.text_fields_rounded, ToolType.text, DS.cyan),
+                    _eraserTool(c),
+                    _sep(),
+                    _grp('EXTRA', DS.rose),
+                    _toggleTool(c, 'Lazy', Icons.gesture_rounded, DS.rose,
+                        c.isStabilizerEnabled,
+                        () => c.isStabilizerEnabled.toggle()),
+                    _toggleTool(c, 'ISO', Icons.grid_3x3_rounded, DS.mint,
+                        c.isIsometricSnapEnabled,
+                        () => c.isIsometricSnapEnabled.toggle()),
+                    _actionTool(c, 'Persp', Icons.grid_4x4, DS.gold, () {
+                      Get.bottomSheet(
+                          StudioPerspectiveSheet(controller: c),
+                          isScrollControlled: true);
+                    }),
+                    _actionTool(c, 'AI', Icons.auto_awesome_rounded, DS.rose,
+                        () => Get.dialog(const StudioAiDialog())),
+                    const SizedBox(height: 8),
+                    _sep(),
+                    _grp('SYM', DS.violet),
+                    _symTool(c, 'H-Sym', Icons.swap_horiz_rounded, SymmetryType.horizontal, DS.violet),
+                    _symTool(c, 'V-Sym', Icons.swap_vert_rounded, SymmetryType.vertical, DS.violet),
+                    _symTool(c, 'R4', Icons.rotate_90_degrees_ccw_rounded, SymmetryType.radial4, DS.cyan),
+                    _symTool(c, 'R8', Icons.filter_8_rounded, SymmetryType.radial8, DS.cyan),
+                  ],
+                ),
+              ),
             ),
-          ),
+            Divider(color: DS.border, height: 1, thickness: 1),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                children: [
+                  _ColorSwatch(controller: c),
+                  const SizedBox(height: 6),
+                  _recentColors(context, c),
+                ],
+              ),
+            ),
+          ],
         ),
-        Divider(color: DS.border, height: 1, thickness: 1),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            children: [
-              _ColorSwatch(controller: c),
-              const SizedBox(height: 6),
-              _recentColors(context, c),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
   Widget _grp(String label, Color accent) => Padding(
@@ -162,50 +139,15 @@ class _StudioLeftSidebarState extends State<StudioLeftSidebar> {
   }
   Widget _tile(String label, IconData icon, Color accent, bool isSel,
       VoidCallback onTap) {
-    return Tooltip(
-      message: label,
-      preferBelow: false,
-      decoration: BoxDecoration(
-          color: DS.card,
-          borderRadius: DS.r8,
-          border: Border.all(color: DS.border)),
-      textStyle: TextStyle(color: DS.text, fontSize: 11),
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOutCubic,
-          width: 50,
-          height: 50,
-          margin: const EdgeInsets.symmetric(vertical: 1),
-          decoration: BoxDecoration(
-            color: isSel ? accent.withValues(alpha: 0.14) : Colors.transparent,
-            borderRadius: DS.r12,
-            border: Border.all(
-                color: isSel
-                    ? accent.withValues(alpha: 0.45)
-                    : Colors.transparent),
-            boxShadow: isSel ? DS.glowShadow(accent, radius: 10) : null,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon,
-                  size: 18, color: isSel ? accent : DS.textDim),
-              const SizedBox(height: 3),
-              Text(label.toUpperCase(),
-                  style: TextStyle(
-                      color: isSel ? accent : DS.textDim,
-                      fontSize: 7,
-                      fontWeight:
-                          isSel ? FontWeight.w900 : FontWeight.w500,
-                      letterSpacing: 0.3)),
-            ],
-          ),
-        ),
-      ),
+    return _StudioToolTile(
+      label: label,
+      icon: icon,
+      accent: accent,
+      isSel: isSel,
+      onTap: onTap,
     );
   }
+
   Widget _recentColors(BuildContext context, DrawController c) {
     return Obx(() {
       final recent = c.recentColors.take(4).toList();
@@ -232,51 +174,143 @@ class _StudioLeftSidebarState extends State<StudioLeftSidebar> {
     });
   }
 }
-class _CollapseBtn extends StatelessWidget {
-  final bool collapsed;
+
+class _StudioToolTile extends StatefulWidget {
+  final String label;
+  final IconData icon;
+  final Color accent;
+  final bool isSel;
   final VoidCallback onTap;
-  const _CollapseBtn({required this.collapsed, required this.onTap});
+
+  const _StudioToolTile({
+    required this.label,
+    required this.icon,
+    required this.accent,
+    required this.isSel,
+    required this.onTap,
+  });
+
+  @override
+  State<_StudioToolTile> createState() => _StudioToolTileState();
+}
+
+class _StudioToolTileState extends State<_StudioToolTile> {
+  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
+    final accent = widget.accent;
+    final isSel = widget.isSel;
     return Tooltip(
-      message: collapsed ? 'Mở thanh công cụ' : 'Ẩn thanh công cụ',
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          height: 32,
-          width: double.infinity,
-          alignment: Alignment.center,
-          child: Icon(
-            collapsed
-                ? Icons.chevron_right_rounded
-                : Icons.chevron_left_rounded,
-            size: 16,
-            color: DS.textDim,
+      message: widget.label,
+      preferBelow: false,
+      decoration: BoxDecoration(
+        color: DS.card,
+        borderRadius: DS.r8,
+        border: Border.all(color: DS.border),
+      ),
+      textStyle: TextStyle(color: DS.text, fontSize: 11),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          onTap: widget.onTap,
+          child: AnimatedScale(
+            scale: isSel ? 1.05 : (_isHovered ? 1.05 : 1.0),
+            duration: const Duration(milliseconds: 150),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOutCubic,
+              width: 48,
+              height: 48,
+              margin: const EdgeInsets.symmetric(vertical: 2),
+              decoration: BoxDecoration(
+                color: isSel 
+                    ? accent.withValues(alpha: 0.15) 
+                    : (_isHovered ? accent.withValues(alpha: 0.05) : Colors.transparent),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: isSel
+                      ? accent
+                      : (_isHovered ? accent.withValues(alpha: 0.4) : Colors.transparent),
+                  width: isSel ? 1.5 : 1.0,
+                ),
+                boxShadow: isSel 
+                    ? DS.glowShadow(accent, radius: 10) 
+                    : (_isHovered ? [BoxShadow(color: accent.withValues(alpha: 0.05), blurRadius: 4)] : []),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    widget.icon,
+                    size: 18, 
+                    color: isSel ? accent : (_isHovered ? accent.withValues(alpha: 0.8) : DS.textDim),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    widget.label.toUpperCase(),
+                    style: TextStyle(
+                      color: isSel ? accent : (_isHovered ? accent.withValues(alpha: 0.8) : DS.textDim),
+                      fontSize: 7,
+                      fontWeight: isSel || _isHovered ? FontWeight.w900 : FontWeight.w500,
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 }
-class _ColorSwatch extends StatelessWidget {
+
+
+class _ColorSwatch extends StatefulWidget {
   final DrawController controller;
   const _ColorSwatch({required this.controller});
+
+  @override
+  State<_ColorSwatch> createState() => _ColorSwatchState();
+}
+
+class _ColorSwatchState extends State<_ColorSwatch> {
+  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
-    return Obx(() => GestureDetector(
-          onTap: () => showColorPicker(context, controller),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 250),
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: controller.selectedColor.value,
-              borderRadius: DS.r12,
-              border: Border.all(color: DS.border, width: 2),
-              boxShadow: DS.glowShadow(controller.selectedColor.value, radius: 14),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: Obx(() {
+        final color = widget.controller.selectedColor.value;
+        return GestureDetector(
+          onTap: () => showColorPicker(context, widget.controller),
+          child: AnimatedScale(
+            scale: _isHovered ? 1.08 : 1.0,
+            duration: const Duration(milliseconds: 150),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: DS.r12,
+                border: Border.all(
+                  color: _isHovered ? Colors.white : DS.border, 
+                  width: 2,
+                ),
+                boxShadow: DS.glowShadow(color, radius: _isHovered ? 18 : 14),
+              ),
+              child: const Icon(Icons.colorize_rounded, color: Colors.white70, size: 16),
             ),
-            child: const Icon(Icons.colorize_rounded, color: Colors.white70, size: 16),
           ),
-        ));
+        );
+      }),
+    );
   }
 }
